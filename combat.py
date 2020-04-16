@@ -18,11 +18,12 @@ class Minion:
 	attack = None
 	# minion type = "demon" etc.
 
-	def __init__(self, name, attack, life):
+	def __init__(self, name, attack, life, tier):
 		# minion_type
 		self.name = name
 		self.attack = attack
 		self.life = life
+		self.tier = tier
 		# self.minion_type = minion_type
 		#minion type
 
@@ -59,18 +60,18 @@ class Player:
 		# ?wtf is warband?
 
 
-rockpool_hunter = Minion("Rockpool Hunter", 2, 3)
-righteous_protector = Minion("Righteous Protector", 1, 1)
-gosia = Minion("Goslawix", 3, 2)
-szymon = Minion("Szymbox", 2, 4)
-szuwar = Minion("Szuwarex", 4, 2)
-meret = Minion("Meretux", 3, 3)
-bob = Minion("Bob", 1, 4)
-rafal = Minion("Rafson", 9, 1)
-greg = Minion("Gregson", 1, 10)
+rockpool_hunter = Minion("Rockpool Hunter", 2, 3, 1)
+righteous_protector = Minion("Righteous Protector", 1, 1, 2)
+gosia = Minion("Goslawix", 3, 2, 3)
+szymon = Minion("Szymbox", 2, 4, 1)
+szuwar = Minion("Szubarux", 4, 2, 2)
+meret = Minion("Meretux", 3, 3, 3)
+gaben = Minion("Gaben", 1, 4, 1)
+baben = Minion("Baben", 9, 1, 2)
+maden = Minion("Maden", 1, 10, 3)
 
 minions_1 = [gosia, meret, szymon, szuwar, righteous_protector] 
-minions_2 = [rafal, greg, bob, rockpool_hunter]
+minions_2 = [maden, baben, gaben, rockpool_hunter]
 
 Player_1 = Player("Gosia", minions_1)
 Player_2 = Player("Bob", minions_2)
@@ -84,6 +85,15 @@ def attack(minion_1, minion_2):
 
 
 	return minion_1, minion_2
+
+def count_damage(minions):
+
+	damage = 0
+
+	for minion in minions:
+		damage += minion.tier
+
+	return damage
 
 
 
@@ -102,71 +112,76 @@ else:
 
 i = 1
 
+k = 0
+l = 0
+
 while p1 and p2:
-	print()
+	print(k, l)
 
-	if i == 0:
-		
+
+	if i % 2 != 0:
+
+
 		j = random.randint(0, len(p2) - 1)
-		minion_1 = p1[0]
+
+
+		minion_1 = p1[k]
 		minion_2 = p2[j]
 
-		print(minion_1.name, minion_1.attack, minion_1.life)
-		print(minion_2.name, minion_2.attack, minion_2.life)
 
 		minion_1, minion_2 = attack(minion_1, minion_2)
 
-		print(minion_1.name, minion_1.attack, minion_1.life)
-		print(minion_2.name, minion_2.attack, minion_2.life)
 
 		if minion_1.life <= 0:
-			p1 = p1[1:]
+			del p1[k]
+			k -= 1
 
 		if minion_2.life <= 0:
 			del p2[j]
 
-
-	elif i % 2 == 0:
-
-		j = random.randint(0, len(p2) - 1)
-
-		minion_1 = p1.next
-		minion_2 = p2[j]
-		print(minion_1.name, minion_1.attack, minion_1.life)
-		print(minion_2.name, minion_2.attack, minion_2.life)
-
-		minion_1, minion_2 = attack(minion_1, minion_2)
-
-		print(minion_1.name, minion_1.attack, minion_1.life)
-		print(minion_2.name, minion_2.attack, minion_2.life)
-
-		if minion_1.life <= 0:
-			p1 = p1[1:]
-
-		if minion_2.life <= 0:
-			del p2[j]
+		k += 1
 
 	else:
-
+		
 		j = random.randint(0, len(p1) - 1)
 
-
-		minion_1 = p2.next
+		minion_1 = p2[l]
 		minion_2 = p1[j]
-		print(minion_1.name, minion_1.attack, minion_1.life)
-		print(minion_2.name, minion_2.attack, minion_2.life)
 
 		minion_1, minion_2 = attack(minion_1, minion_2)
 
-		print(minion_1.name, minion_1.attack, minion_1.life)
-		print(minion_2.name, minion_2.attack, minion_2.life)
+		if minion_1.life <= 0:
+			del p2[l]
+			l -= 1
 
 		if minion_2.life <= 0:
 			del p1[j]
 
-		if minion_1.life <= 0:
-			p2 = p2[1:]
+		l += 1
 
+
+	if k >= len(p1):
+		k = 0
+
+	if l >= len(p2):
+		l = 0
 
 	i += 1
+
+
+	if not p1 and not p2:
+		print("NO WINNER")
+
+	elif not p2:
+		print(Player_1.name, "WINNER")
+		damage = count_damage(p1)
+
+	elif not p1:
+		print(Player_2.name, "WINNER")
+		damage = count_damage(p2)
+		
+print(damage)
+
+
+
 
