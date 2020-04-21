@@ -120,52 +120,55 @@ else:
 	p1 = random.choice([Player_2.minions, Player_2.minions])
 	# tbc
 
-i = 0
-f = 1
 
-k, l = 0, 0
+#game
+index = 0
+factor = 1
 
-r = k
+first_player_idx, second_player_idx = 0, 0
+
+next_minion = first_player_idx
 
 game = [p1, p2]
 
 while p1 and p2:
 
-	j = random.randint(0, len(game[i + f]) - 1)
+	random_minion = random.randint(0, len(game[index + factor]) - 1)
 
-	minion_1 = game[i][r]
-	minion_2 = game[i + f][j]
+	minion_1 = game[index][next_minion]
+	minion_2 = game[index + factor][random_minion]
 
 	minion_1, minion_2 = attack(minion_1, minion_2)
 
 	if minion_1.life <= 0:
-		del game[i][r]
-		r -= 1
+		del game[index][next_minion]
+		next_minion -= 1
 
 	if minion_2.life <= 0:
-		del game[i + f][j]
+		del game[index + factor][random_minion]
 
-	r += 1
+	next_minion += 1
 
-	if i == 0:
-		i += 1
-		f -= 2
-		k = r
+	if index == 0:
+		index += 1
+		factor -= 2
+		
+		first_player_idx = next_minion
 
-		if l >= len(game[1]):
-			l = 0
+		if second_player_idx >= len(game[1]):
+			second_player_idx = 0
 
-		r = l
+		next_minion = second_player_idx
 
 	else:
-		i -= 1
-		f += 2
-		l = r
+		index -= 1
+		factor += 2
+		second_player_idx = next_minion
 		
-		if k >= len(game[0]):
-			k = 0
+		if first_player_idx >= len(game[0]):
+			first_player_idx = 0
 
-		r = k
+		next_minion = first_player_idx
 
 	if not p1 and not p2:
 		print("NO WINNER")
