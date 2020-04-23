@@ -52,6 +52,14 @@ class Minion:
 # it attacks another random minion
 # if minion
 
+class Event:
+	def __init__(self, evnt):
+		self.evnt = evnt
+
+
+
+
+
 class Player:
 
 	def __init__(self, name, minions):
@@ -152,7 +160,7 @@ while p1 and p2:
 	if index == 0:
 		index += 1
 		factor -= 2
-		
+
 		first_player_idx = next_minion
 
 		if second_player_idx >= len(game[1]):
