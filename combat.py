@@ -19,14 +19,14 @@ class Minion:
 	attack = None
 	# minion type = "demon" etc.
 
-	def __init__(self, name, attack, life, tier):
+	def __init__(self, name, attack, life, m_type, tier):
 		# minion_type
 		self.name = name
 		self.attack = attack
 		self.life = life
 		self.tier = tier
-		# self.minion_type = minion_type
-		#minion type
+		self.m_type = m_type
+
 
 	# def attack(self):
 
