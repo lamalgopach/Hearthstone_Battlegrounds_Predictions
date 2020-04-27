@@ -4,28 +4,40 @@ from random import choice
 import copy
 
 class MinionType(Enum):
-	BEAST = 1
-	DEMON = 2
-	DRAGON = 3
+	
+	MURLOC = 1
+	DRAGON = 2
+	BEAST = 3
 	MECH = 4
-	MURLOC = 5
+	DEMON = 5
 
 
-
-class Minion:
-
+class Card:
 	name = None
 	life = None
 	attack = None
-	# minion type = "demon" etc.
+	tier = None
+	# None or 0?
 
-	def __init__(self, name, attack, life, m_type, tier):
-		# minion_type
+	def __init__(self, name, attack, life, tier):
 		self.name = name
 		self.attack = attack
 		self.life = life
 		self.tier = tier
-		self.m_type = m_type
+
+
+class Minion(Card):
+
+# How to add additional instance attribute?
+
+	def __init__(self, name, attack, life, tier):
+		super().__init__(name, attack, life, tier)
+		
+
+class Murloc(Minion):
+
+	def __init__(self, name, attack, life, tier):
+		super().__init__(name, attack, life, tier, "MURLOC")
 
 
 	# def attack(self):
@@ -55,8 +67,6 @@ class Minion:
 class Event:
 	def __init__(self, evnt):
 		self.evnt = evnt
-
-
 
 
 
