@@ -3,8 +3,11 @@ import random
 from random import choice
 import copy
 
+#do not create class of minions
+
 class MinionType(Enum):
-	
+
+	PLAIN = 0
 	MURLOC = 1
 	DRAGON = 2
 	BEAST = 3
@@ -17,83 +20,94 @@ class Card:
 	life = None
 	attack = None
 	tier = None
-	# None or 0?
 
-	def __init__(self, name, attack, life, tier):
+	def __init__(self, name, attack, life, tier, m_type):
 		self.name = name
 		self.attack = attack
 		self.life = life
 		self.tier = tier
-
-
-class Minion(Card):
-
-# How to add additional instance attribute?
-
-	def __init__(self, name, attack, life, tier):
-		super().__init__(name, attack, life, tier)
-		
-
-class Murloc(Minion):
-
-	def __init__(self, name, attack, life, tier):
-		super().__init__(name, attack, life, tier, "MURLOC")
-
-
-	# def attack(self):
-
-
-	# def die(self):
-	# 	if attack >= self.life:
+		self.m_type = m_type
 
 
 
-# class *name_minion type(Minion):
-	# this class can rewrite method from the Minion class
-	# or can have different initializer than Minion
-	# or:
-	# def __init__(self, name, life, attack):
-    	# super().__init__(name, life, attack, 'name_minion type')
-    	# initializing with default minion type
-
-
-
-# we have some number of minions, two opposite players
-# so we start from the left and attack the random opposite minion
-# after first minion, the first minion form the second player plays
-# it attacks another random minion
-# if minion
 
 class Event:
 	def __init__(self, evnt):
 		self.evnt = evnt
 
+#CHECKCHEKCCHECKCHEKCHCKLECHEKCHEKCHEKCHEKCHECK
+
+
+class AddingAttack(Event):
+	# murloc_warleader
+
+	is_alive = True
+	is_attack_added = False
+
+	def __init__(self, is_alive, additional_attack, objects_to_whom):
+		
+		for i in self.objects_to_whom:
+			i.attack += additional_attack
+
+		is_added = True
+
+class DoublingAttack(Event):
+	# glyph guardian
+
+	# is_attacking = True
+
+	def __init__(self, attack):
+		self.attack = 2*attack
+
+# class Taunt(Event):
+# 	is_attacked_first = True
+
+
+
+class StartOfCombat(Event):
+	# red whelp
+	is_attacking = True
+
+	def __init__(self, warband):
+		damage = sum(1 for i in self.warband if i.m_type == 2)
+
+
+
 
 
 class Player:
 
-	def __init__(self, name, minions):
+	def __init__(self, name, warband):
 		self.name = name
-		self.minions = minions
-		# self.warband = warband
-		# ?wtf is warband?
+		self.warband = warband
+		# type of warband -> list
+
+# classes written:
+murloc_warleader = Card("Murloc Warleader", 3, 3, 2, 1)
+glyph_guardian = Card("Glyph Guardian", 2, 4, 2, 2)
+red_whelp = Card("Red Whelp", 1, 2, 1, 2)
 
 
-rockpool_hunter = Minion("Rockpool Hunter", 2, 3, 1)
-righteous_protector = Minion("Righteous Protector", 3, 2, 2)
-gosia = Minion("Goslawix", 3, 2, 3)
-szymon = Minion("Szymbox", 3, 4, 1)
-szuwar = Minion("Szubarux", 4, 3, 2)
-meret = Minion("Meretux", 3, 3, 3)
-gaben = Minion("Gaben", 3, 2, 1)
-baben = Minion("Baben", 4, 4, 2)
-maden = Minion("Maden", 5, 4, 3)
+#taunt:
+dragonspawn_lieutenant = Card("Dragonspawn Lieutenant", 2, 3, 1, 2)
+# + divine shield
+righteous_protector = Card("Righteous Protector", 1, 1, 1, 0)
 
-minions_1 = [gosia, meret, szymon, szuwar, righteous_protector] 
-minions_2 = [maden, baben, gaben, rockpool_hunter]
 
-Player_1 = Player("Gosia", minions_1)
-Player_2 = Player("Bob", minions_2)
+
+#deathrattles:
+spawn_of_nzoth = Card("Spawn Of n'Zoth", 2, 2, 2, 0)
+infested_wolf = Card("Infested Wolf", 3, 3, 3, 3)
+selfless_hero = Card("Selfless Hero", 2, 1, 1, 0)
+
+# battlecry:
+rockpool_hunter = Card("Rockpool Hunter", 2, 3, 1, 1)
+
+alices_warband = [spawn_of_nzoth, dragonspawn_lieutenant, infested_wolf, murloc_warleader] 
+bobs_warband = [rockpool_hunter, righteous_protector, glyph_guardian, selfless_hero, red_whelp]
+
+Player_1 = Player("Alice", alices_warband)
+Player_2 = Player("Bob", bobs_warband)
 
 
 
@@ -105,38 +119,43 @@ def attack(minion_1, minion_2):
 
 	return minion_1, minion_2
 
-def count_damage(minions):
+def count_damage(warband):
 
 	damage = 0
 
-	for minion in minions:
+	for minion in warband:
 		damage += minion.tier
 
 	return damage
 
 
 
-if len(Player_1.minions) > len(Player_2.minions):
+if len(Player_1.warband) > len(Player_2.warband):
 	
-	p1 = Player_1.minions
-	p2 = Player_2.minions
+	p1 = Player_1.warband
+	p2 = Player_2.warband
 
-	Player_1.minions = copy.deepcopy(p1)
-	Player_2.minions = copy.deepcopy(p2)
+	Player_1.warband = copy.deepcopy(p1)
+	Player_2.warband = copy.deepcopy(p2)
 
 
-elif len(Player_1.minions) < len(Player_2.minions):
+elif len(Player_1.warband) < len(Player_2.warband):
 	
-	p1 = Player_2.minions
-	p2 = Player_1.minions
+	p1 = Player_2.warband
+	p2 = Player_1.warband
 
-	Player_1.minions = copy.deepcopy(p1)
-	Player_2.minions = copy.deepcopy(p2)
+	Player_1.warband = copy.deepcopy(p1)
+	Player_2.warband = copy.deepcopy(p2)
 
 else:
 	
-	p1 = random.choice([Player_2.minions, Player_2.minions])
-	# tbc
+	p1 = random.choice([Player_2.warband, Player_2.warband])
+
+
+	if p1 == Player_1.warband:
+		p2 = Player_2.warband
+	else:
+		p2 = Player_1.warband
 
 
 #game
@@ -213,10 +232,10 @@ print("DAMAGE: ", damage)
 # print()
 
 
-# for z in Player_1.minions:
+# for z in Player_1.warband:
 # 	print(z.name)
 
 # print()
 
-# for z in Player_2.minions:
+# for z in Player_2.warband:
 # 	print(z.name)
