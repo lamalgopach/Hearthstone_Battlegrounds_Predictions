@@ -18,22 +18,23 @@ class MinionType(Enum):
 
 class Card:
 
-	def __init__(self, name, attack, life, tier, m_type, is_taunted):
+	def __init__(self, name, attack, health, tier, m_type, is_taunted, has_ds):
 		self.name = name
 		self.attack = attack
-		self.life = life
+		self.health = health
 		self.tier = tier
 		self.m_type = m_type
 		self.is_taunted = is_taunted
+		self.has_ds = has_ds
+
+	def change_health(self):
+		pass
+
 
 class Event:
 	def __init__(self, evnt):
 		self.evnt = evnt
 
-def Taunt(Event):
-
-	def is_attacked_first(self):
-		attacked_first = True
 
 
 #CHECKCHEKCCHECKCHEKCHCKLECHEKCHEKCHEKCHEKCHECK

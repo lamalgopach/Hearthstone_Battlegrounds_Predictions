@@ -5,31 +5,34 @@ from minions import Card, Player
 
 
 
-
-
 # classes written:
-murloc_warleader = Card("Murloc Warleader", 3, 3, 2, 1, False)
-glyph_guardian = Card("Glyph Guardian", 2, 4, 2, 2, False)
-red_whelp = Card("Red Whelp", 1, 2, 1, 2, False)
+murloc_warleader = Card("Murloc Warleader", 3, 3, 2, 1, False, False)
+glyph_guardian = Card("Glyph Guardian", 2, 4, 2, 2, False, False)
+red_whelp = Card("Red Whelp", 1, 2, 1, 2, False, False)
 
 
 #taunt:
-dragonspawn_lieutenant = Card("Dragonspawn Lieutenant", 2, 3, 1, 2, True)
+dragonspawn_lieutenant = Card("Dragonspawn Lieutenant", 2, 3, 1, 2, True, False)
 # + divine shield
-righteous_protector = Card("Righteous Protector", 1, 1, 1, 0, True)
+righteous_protector = Card("Righteous Protector", 1, 1, 1, 0, True, True)
 
 
 
 #deathrattles:
-spawn_of_nzoth = Card("Spawn Of n'Zoth", 2, 2, 2, 0, False)
-infested_wolf = Card("Infested Wolf", 3, 3, 3, 3, False)
-selfless_hero = Card("Selfless Hero", 2, 1, 1, 0, False)
+spawn_of_nzoth = Card("Spawn Of n'Zoth", 2, 2, 2, 0, False, False)
+infested_wolf = Card("Infested Wolf", 3, 3, 3, 3, False, False)
+selfless_hero = Card("Selfless Hero", 2, 1, 1, 0, False, False)
 
 # battlecry:
-rockpool_hunter = Card("Rockpool Hunter", 2, 3, 1, 1, False)
+rockpool_hunter = Card("Rockpool Hunter", 2, 3, 1, 1, False, False)
+red_whelp_a = Card("Red Whelp_a", 1, 2, 1, 2, False, False)
+red_whelp_b = Card("Red Whelp_b", 1, 2, 1, 2, False, False)
 
-alices_warband = [red_whelp, selfless_hero, dragonspawn_lieutenant] 
-bobs_warband = [righteous_protector, selfless_hero]
+print(red_whelp_a)
+print(red_whelp_b)
+
+alices_warband = [dragonspawn_lieutenant, red_whelp_a] 
+bobs_warband = [righteous_protector, red_whelp_b]
 
 Player_1 = Player("Alice", alices_warband)
 Player_2 = Player("Bob", bobs_warband)
@@ -38,8 +41,8 @@ Player_2 = Player("Bob", bobs_warband)
 
 def attack(minion_1, minion_2):
 
-	minion_1.life -= minion_2.attack
-	minion_2.life -= minion_1.attack
+	minion_1.health -= minion_2.attack
+	minion_2.health -= minion_1.attack
 
 	return minion_1, minion_2
 
@@ -55,33 +58,25 @@ def count_damage(warband):
 
 def play_first():
 
-	if len(Player_1.warband) > len(Player_2.warband):
-		
-		p1 = Player_1.warband
-		p2 = Player_2.warband
+	order = True
 
-		Player_1.warband = copy.deepcopy(p1)
-		Player_2.warband = copy.deepcopy(p2)
+	p1 = Player_1.warband
+	p2 = Player_2.warband
 
-	elif len(Player_1.warband) < len(Player_2.warband):
+	Player_1.warband = copy.deepcopy(p1)
+	Player_2.warband = copy.deepcopy(p2)
 
-		
-		p1 = Player_2.warband
-		p2 = Player_1.warband
+	if len(Player_1.warband) < len(Player_2.warband):
+		order = False
+	elif len(Player_1.warband) == len(Player_2.warband):
+		order = random.choice([True, False])
 
-		Player_1.warband = copy.deepcopy(p1)
-		Player_2.warband = copy.deepcopy(p2)
-
+	if order == True:
+		game = [p1, p2]
 	else:
-		
-		p1 = random.choice([Player_2.warband, Player_2.warband])
+		game = [p2, p1]
 
-		if p1 == Player_1.warband:
-			p2 = Player_2.warband
-		else:
-			p2 = Player_1.warband
-
-	return p1, p2
+	return p1, p2, game
 
 def count_taunts(px):
 
@@ -98,9 +93,9 @@ def count_taunts(px):
 	return output, taunted_minions
 
 
-p1, p2 = play_first()
+p1, p2, game = play_first()
 
-def combat(p1, p2):
+def combat(p1, p2, game):
 
 	#game
 	index = 0
@@ -110,9 +105,9 @@ def combat(p1, p2):
 
 	next_minion = first_player_idx
 
-	game = [p1, p2]
 
 	while p1 and p2:
+
 
 		taunts_num, taunts = count_taunts(game[index + factor])
 		attacked_minion = None
@@ -124,21 +119,33 @@ def combat(p1, p2):
 				if game[index + factor][i].name == minion.name:
 					attacked_minion = i
 					break
-					
+
 		else:
 			attacked_minion = random.randint(0, len(game[index + factor]) - 1)
 
+
+
 		minion_1 = game[index][next_minion]
 		minion_2 = game[index + factor][attacked_minion]
+		print()
+
+		print(minion_1.name, minion_1.attack, minion_1.health)
+		print(minion_2.name, minion_2.attack, minion_2.health)
 
 		minion_1, minion_2 = attack(minion_1, minion_2)
 
+		print(minion_1.name, minion_1.attack, minion_1.health)
+		print(minion_2.name, minion_2.attack, minion_2.health)
+		print(minion_2.health, minion_2.name)
+		print(p1)
+		print(p2)
 
-		if minion_1.life <= 0:
+
+		if minion_1.health <= 0:
 			del game[index][next_minion]
 			next_minion -= 1
 
-		if minion_2.life <= 0:
+		if minion_2.health <= 0:
 			del game[index + factor][attacked_minion]
 
 
@@ -169,14 +176,23 @@ def combat(p1, p2):
 			print("NO WINNER")
 			damage = 0
 
-		elif not p2:
-			print(Player_1.name, "WINNER")
-			damage = count_damage(p1)
 
-		elif not p1:
-			print(Player_2.name, "WINNER")
-			damage = count_damage(p2)
+		else:	
+			winner = Player_1.name if p1 else Player_2.name 
+			print(f'{winner} WINNER')
+			
+			damage = count_damage(p1) if p1 else count_damage(p2)
+			print(f'DAMAGE: {damage}')
 
-	print("DAMAGE: ", damage)
 
-combat(p1, p2)
+		# elif not p2:
+		# 	print(Player_1.name, "WINNER")
+		# 	damage = count_damage(p1)
+
+		# elif not p1:
+		# 	print(Player_2.name, "WINNER")
+		# 	damage = count_damage(p2)
+
+	# print("DAMAGE: ", damage)
+
+combat(p1, p2, game)
