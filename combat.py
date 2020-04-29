@@ -8,28 +8,28 @@ from minions import Card, Player
 
 
 # classes written:
-murloc_warleader = Card("Murloc Warleader", 3, 3, 2, 1)
-glyph_guardian = Card("Glyph Guardian", 2, 4, 2, 2)
-red_whelp = Card("Red Whelp", 1, 2, 1, 2)
+murloc_warleader = Card("Murloc Warleader", 3, 3, 2, 1, False)
+glyph_guardian = Card("Glyph Guardian", 2, 4, 2, 2, False)
+red_whelp = Card("Red Whelp", 1, 2, 1, 2, False)
 
 
 #taunt:
-dragonspawn_lieutenant = Card("Dragonspawn Lieutenant", 2, 3, 1, 2)
+dragonspawn_lieutenant = Card("Dragonspawn Lieutenant", 2, 3, 1, 2, True)
 # + divine shield
-righteous_protector = Card("Righteous Protector", 1, 1, 1, 0)
+righteous_protector = Card("Righteous Protector", 1, 1, 1, 0, True)
 
 
 
 #deathrattles:
-spawn_of_nzoth = Card("Spawn Of n'Zoth", 2, 2, 2, 0)
-infested_wolf = Card("Infested Wolf", 3, 3, 3, 3)
-selfless_hero = Card("Selfless Hero", 2, 1, 1, 0)
+spawn_of_nzoth = Card("Spawn Of n'Zoth", 2, 2, 2, 0, False)
+infested_wolf = Card("Infested Wolf", 3, 3, 3, 3, False)
+selfless_hero = Card("Selfless Hero", 2, 1, 1, 0, False)
 
 # battlecry:
-rockpool_hunter = Card("Rockpool Hunter", 2, 3, 1, 1)
+rockpool_hunter = Card("Rockpool Hunter", 2, 3, 1, 1, False)
 
-alices_warband = [righteous_protector, dragonspawn_lieutenant] 
-bobs_warband = [red_whelp, selfless_hero, red_whelp]
+alices_warband = [red_whelp, selfless_hero, dragonspawn_lieutenant] 
+bobs_warband = [righteous_protector, selfless_hero]
 
 Player_1 = Player("Alice", alices_warband)
 Player_2 = Player("Bob", bobs_warband)
@@ -75,7 +75,6 @@ def play_first():
 	else:
 		
 		p1 = random.choice([Player_2.warband, Player_2.warband])
-		print("goni")
 
 		if p1 == Player_1.warband:
 			p2 = Player_2.warband
@@ -84,11 +83,24 @@ def play_first():
 
 	return p1, p2
 
+def count_taunts(px):
+
+	output = 0
+	taunted_minions = []
+
+
+	for p in px:
+
+		if p.is_taunted == True:
+			output += 1
+			taunted_minions.append(p)
+
+	return output, taunted_minions
 
 
 p1, p2 = play_first()
 
-def combat():
+def combat(p1, p2):
 
 	#game
 	index = 0
@@ -102,23 +114,33 @@ def combat():
 
 	while p1 and p2:
 
-		# if game[index + factor].is_taunted() == True:
-			# write new block
-			# pass
-		# else:
-		random_minion = random.randint(0, len(game[index + factor]) - 1)
+		taunts_num, taunts = count_taunts(game[index + factor])
+		attacked_minion = None
+
+		if taunts_num > 0:
+			minion = taunts[0]
+
+			for i in range(len(game[index + factor])):
+				if game[index + factor][i].name == minion.name:
+					attacked_minion = i
+					break
+					
+		else:
+			attacked_minion = random.randint(0, len(game[index + factor]) - 1)
 
 		minion_1 = game[index][next_minion]
-		minion_2 = game[index + factor][random_minion]
+		minion_2 = game[index + factor][attacked_minion]
 
 		minion_1, minion_2 = attack(minion_1, minion_2)
+
 
 		if minion_1.life <= 0:
 			del game[index][next_minion]
 			next_minion -= 1
 
 		if minion_2.life <= 0:
-			del game[index + factor][random_minion]
+			del game[index + factor][attacked_minion]
+
 
 		next_minion += 1
 
@@ -157,4 +179,4 @@ def combat():
 
 	print("DAMAGE: ", damage)
 
-combat()
+combat(p1, p2)

@@ -17,18 +17,14 @@ class MinionType(Enum):
 	DEMON = 5
 
 class Card:
-	name = None
-	life = None
-	attack = None
-	tier = None
 
-	def __init__(self, name, attack, life, tier, m_type):
+	def __init__(self, name, attack, life, tier, m_type, is_taunted):
 		self.name = name
 		self.attack = attack
 		self.life = life
 		self.tier = tier
 		self.m_type = m_type
-
+		self.is_taunted = is_taunted
 
 class Event:
 	def __init__(self, evnt):
