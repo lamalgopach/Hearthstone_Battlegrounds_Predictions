@@ -18,6 +18,7 @@ class MinionType(Enum):
 
 class Card:
 
+
 	def __init__(self, name, attack, health, tier, m_type, is_taunted, has_ds):
 		self.name = name
 		self.attack = attack
@@ -27,8 +28,22 @@ class Card:
 		self.is_taunted = is_taunted
 		self.has_ds = has_ds
 
-	def change_health(self):
-		pass
+
+	def take_damage(self, damage):
+		if damage == 0:
+			return
+
+		if self.has_ds:
+			self.has_ds = False
+			print("goslaw")
+		else:
+			self.health -= damage
+
+
+	def remove_ds(self):
+		self.has_ds = False
+
+
 
 
 class Event:

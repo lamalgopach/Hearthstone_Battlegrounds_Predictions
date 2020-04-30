@@ -25,14 +25,12 @@ selfless_hero = Card("Selfless Hero", 2, 1, 1, 0, False, False)
 
 # battlecry:
 rockpool_hunter = Card("Rockpool Hunter", 2, 3, 1, 1, False, False)
-red_whelp_a = Card("Red Whelp_a", 1, 2, 1, 2, False, False)
-red_whelp_b = Card("Red Whelp_b", 1, 2, 1, 2, False, False)
+red_whelp_a = Card("Red Whelp", 1, 2, 1, 2, False, False)
+red_whelp_b = Card("Red Whelp", 1, 2, 1, 2, False, False)
+red_whelp_c = Card("Red Whelp", 1, 2, 1, 2, False, False)
 
-print(red_whelp_a)
-print(red_whelp_b)
-
-alices_warband = [dragonspawn_lieutenant, red_whelp_a] 
-bobs_warband = [righteous_protector, red_whelp_b]
+alices_warband = [dragonspawn_lieutenant, red_whelp_a, selfless_hero] 
+bobs_warband = [righteous_protector, red_whelp_b, spawn_of_nzoth]
 
 Player_1 = Player("Alice", alices_warband)
 Player_2 = Player("Bob", bobs_warband)
@@ -41,8 +39,11 @@ Player_2 = Player("Bob", bobs_warband)
 
 def attack(minion_1, minion_2):
 
-	minion_1.health -= minion_2.attack
-	minion_2.health -= minion_1.attack
+
+	minion_1.take_damage(minion_2.attack)
+	minion_2.take_damage(minion_1.attack)
+	print(minion_1.has_ds, "taak")
+	print(minion_2.has_ds, "ahhak")
 
 	return minion_1, minion_2
 
@@ -113,7 +114,8 @@ def combat(p1, p2, game):
 		attacked_minion = None
 
 		if taunts_num > 0:
-			minion = taunts[0]
+			r = random.randint(0, len(taunts) - 1)
+			minion = taunts[r]
 
 			for i in range(len(game[index + factor])):
 				if game[index + factor][i].name == minion.name:
@@ -127,6 +129,9 @@ def combat(p1, p2, game):
 
 		minion_1 = game[index][next_minion]
 		minion_2 = game[index + factor][attacked_minion]
+
+
+
 		print()
 
 		print(minion_1.name, minion_1.attack, minion_1.health)
@@ -177,7 +182,7 @@ def combat(p1, p2, game):
 			damage = 0
 
 
-		else:	
+		elif not p1 or not p2:
 			winner = Player_1.name if p1 else Player_2.name 
 			print(f'{winner} WINNER')
 			
