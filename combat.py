@@ -71,6 +71,12 @@ def count_taunts(px):
 
 	return output, taunted_minions
 
+def kill_minion(minion, minions):
+	if minion.has_friendly_deathrattle and minions:
+		minion.deathrattle(minions)
+	return minions
+
+
 
 p1, p2, game = game_order()
 
@@ -116,18 +122,13 @@ def combat(p1, p2, game):
 
 
 		if minion_1.health <= 0:
-			if minion_1.has_deathrattle:
-				random_m = random.choice(game[index])
-				minion_1.deathrattle(random_m)
 			del game[index][next_minion]
+			kill_minion(minion_1, game[index])
 			next_minion -= 1
 
 		if minion_2.health <= 0:
-			if minion_2.has_deathrattle:
-				random_m = random.choice(game[index + factor])
-				minion_2.deathrattle(random_m)
 			del game[index + factor][attacked_minion]
-
+			kill_minion(minion_2, game[index + factor])
 
 		next_minion += 1
 
