@@ -15,6 +15,22 @@ for minion in minions:
 	else:
 		bobs_warband.append(minion)
 
+# change it:
+# create objects immidietely
+# choose randomly fromthe list
+# make minions dict??? or what?
+
+# for i in range(14):
+# 	s = random.choice([0, 1, 2, 3, 4, 5, 6, 7, 8])
+# 	p = random.choice([1, 2])
+
+# 	if p == 2:
+# 		minion = create_minion(s)
+# 		alices_warband.append(minion)
+# 	else:
+# 		bobs_warband.append(minion)
+
+
 
 Player_1 = Player("Alice", alices_warband)
 Player_2 = Player("Bob", bobs_warband)
@@ -72,7 +88,7 @@ def count_taunts(px):
 	return output, taunted_minions
 
 def kill_minion(minion, minions):
-	if minion.has_friendly_deathrattle and minions:
+	if minion.has_deathrattle:
 		minion.deathrattle(minions)
 	return minions
 
@@ -88,8 +104,6 @@ def combat(p1, p2, game):
 
 	while p1 and p2:
 
-
-		# taunts_num, taunts = count_taunts(game[index + factor])
 		attacked_minion = None
 
 		if count_taunts(game[index + factor])[0] > 0:
@@ -122,13 +136,45 @@ def combat(p1, p2, game):
 
 
 		if minion_1.health <= 0:
+			print()
+			print("minion1")
+			for i in game[index]:
+				print(i.name)
+				print(i.health)
+				print(i.attack)
+			print()
+			print("killed:", game[index][next_minion].name)
+			print()
 			del game[index][next_minion]
+			
 			kill_minion(minion_1, game[index])
+			print(not p1, not p2)
+			for i in game[index]:
+				print(i.name)
+				print(i.health)
+				print(i.attack)
+			print()
 			next_minion -= 1
 
 		if minion_2.health <= 0:
+			print()
+			print("minion2")
+			for i in game[index+factor]:
+				print(i.name)
+				print(i.health)
+				print(i.attack)
+			print()
+			print("killed:", game[index + factor][attacked_minion].name)
+			print()
 			del game[index + factor][attacked_minion]
+
 			kill_minion(minion_2, game[index + factor])
+			print(not p1, not p2)
+			for i in game[index+factor]:
+				print(i.name)
+				print(i.health)
+				print(i.attack)
+			print()
 
 		next_minion += 1
 
