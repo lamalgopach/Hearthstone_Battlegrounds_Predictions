@@ -120,6 +120,10 @@ def combat(p1, p2, game):
 			attacked_minion = random.randint(0, len(game[index + factor]) - 1)
 
 		minion_1 = game[index][next_minion]
+		
+		if minion_1.has_add_attack:
+			minion_1.add_attack()
+
 		minion_2 = game[index + factor][attacked_minion]
 		
 		# print()

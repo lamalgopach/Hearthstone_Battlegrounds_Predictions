@@ -22,7 +22,7 @@ class MinionType(Enum):
 class Card:
 
 	def __init__(self, name, attack, health, tier, m_type, is_taunted, has_ds, 
-		has_deathrattle):
+		has_deathrattle, has_add_attack):
 		self.name = name
 		self.attack = attack
 		self.health = health
@@ -31,6 +31,7 @@ class Card:
 		self.is_taunted = is_taunted
 		self.has_ds = has_ds
 		self.has_deathrattle = has_deathrattle
+		self.has_add_attack = has_add_attack
 
 
 	def take_damage(self, damage):
@@ -66,42 +67,44 @@ class SpawnOfnZoth(Card):
 		return friendly_minions	
 
 class InfestedWolf(Card):
-	#summon two 1/1 spiders
 
 	def deathrattle(self, friendly_minions):
-		spider = Card("Spider", 1, 1, 1, 3, False, False, False)
+		spider = Card("Spider", 1, 1, 1, 3, False, False, False, False)
 		friendly_minions.append(spider)
 
 		if len(friendly_minions) < 6:
 			spider_2 = copy.copy(spider)
 			friendly_minions.append(spider_2)
 
-		print(friendly_minions)
 		return friendly_minions
+
+class GlyphGuardian(Card):
+
+	def add_attack(self):
+		self.attack = 2 * self.attack
+
+
 
 			
 
 
 
-# types of cards:
 # minions completed:
 
-dragonspawn_lieutenant = Card("Dragonspawn Lieutenant", 2, 3, 1, 2, True, False, False)
-righteous_protector = Card("Righteous Protector", 1, 1, 1, 0, True, True, False)
-
+dragonspawn_lieutenant = Card("Dragonspawn Lieutenant", 2, 3, 1, 2, True, False, False, False)
+righteous_protector = Card("Righteous Protector", 1, 1, 1, 0, True, True, False, False)
+spawn_of_nzoth = SpawnOfnZoth("Spawn Of n'Zoth", 2, 2, 2, 0, False, False, True, False)
+infested_wolf = InfestedWolf("Infested Wolf", 3, 3, 3, 3, False, False, True, False)
+selfless_hero = SelflessHero("Selfless Hero", 2, 1, 1, 0, False, False, True, False)
 
 # classes written:
-murloc_warleader = Card("Murloc Warleader", 3, 3, 2, 1, False, False, False)
-glyph_guardian = Card("Glyph Guardian", 2, 4, 2, 2, False, False, False)
-red_whelp = Card("Red Whelp", 1, 2, 1, 2, False, False, False)
+murloc_warleader = Card("Murloc Warleader", 3, 3, 2, 1, False, False, False, False)
+glyph_guardian = GlyphGuardian("Glyph Guardian", 2, 4, 2, 2, False, False, False, True)
+red_whelp = Card("Red Whelp", 1, 2, 1, 2, False, False, False, False)
 
-#deathrattles:
-spawn_of_nzoth = SpawnOfnZoth("Spawn Of n'Zoth", 2, 2, 2, 0, False, False, True)
-infested_wolf = InfestedWolf("Infested Wolf", 3, 3, 3, 3, False, False, True)
-selfless_hero = SelflessHero("Selfless Hero", 2, 1, 1, 0, False, False, True)
 
 # battlecry:
-rockpool_hunter = Card("Rockpool Hunter", 2, 3, 1, 1, False, False, False)
+rockpool_hunter = Card("Rockpool Hunter", 2, 3, 1, 1, False, False, False, False)
 
 minions = [dragonspawn_lieutenant, righteous_protector, murloc_warleader,
 			glyph_guardian, red_whelp, spawn_of_nzoth, infested_wolf, selfless_hero, 
