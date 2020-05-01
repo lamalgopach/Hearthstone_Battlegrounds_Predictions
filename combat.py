@@ -79,7 +79,7 @@ def kill_minion(minion, minions):
 		minion.deathrattle(minions)
 	return minions
 
-def start_of_combat(redwhelp, game, attackers_minions, opponents_minions, i):
+def redwhelp_attack(redwhelp, game, attackers_minions, opponents_minions, i):
 	start_rw_attack = redwhelp.attack
 
 	redwhelp.add_damage(attackers_minions)
@@ -105,6 +105,19 @@ def start_of_combat(redwhelp, game, attackers_minions, opponents_minions, i):
 
 	return game
 
+def start_of_combat(game):
+
+	i = 1
+	for attackers_minions in game:
+		opponents_minions = game[i]
+		for minion in attackers_minions:
+			if isinstance(minion, RedWhelp):
+				redwhelp_attack(minion, game, attackers_minions, opponents_minions, i)
+		i = 0
+
+	p1 = game[0]
+	p2 = game[1]
+	return p1, p2, game
 
 def count_taunts(px):
 	output = 0
@@ -122,9 +135,9 @@ def count_taunts(px):
 
 p1, p2, game = game_order()
 
+p1, p2, game = start_of_combat(game)
+
 def combat(p1, p2, game):
-
-
 
 	# for p in game:
 	# 	for minion in p:
@@ -132,15 +145,11 @@ def combat(p1, p2, game):
 	# 		print(minion.health)
 	# 	print()
 
+	# start of combat:
 
-	# start of combat: 
-	i = 1
-	for attackers_minions in game:
-		opponents_minions = game[i]
-		for minion in attackers_minions:
-			if isinstance(minion, RedWhelp):
-				start_of_combat(minion, game, attackers_minions, opponents_minions, i)
-		i = 0
+
+
+
 
 	# for p in game:
 	# 	for minion in p:
