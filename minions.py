@@ -85,23 +85,22 @@ class GlyphGuardian(Card):
 
 
 class RedWhelp(Card):
-	start_attack = 1
 
 	def add_damage(self, minions):
-
 		damage = 1
 
 		for minion in minions:
 			if minion.m_type == 2:
 				damage += 1
-
 		self.attack += damage
 
-	def add_divine_shield(self):
+
+	def take_no_damage(self):
 		self.has_ds = True
 
-	def reduce_attack(self):
-		self.attack = self.start_attack
+	# def reduce_attack(self, start_attack):
+
+	# 	self.attack = start_attack
 
 
 

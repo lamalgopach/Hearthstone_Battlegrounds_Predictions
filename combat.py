@@ -74,21 +74,15 @@ def game_order():
 	return p1, p2, game
 
 def start_of_combat(redwhelp, game, attackers_minions, opponents_minions):
-	
+	start_attack = redwhelp.attack
+
 	redwhelp.add_damage(attackers_minions)
-	redwhelp.add_divine_shield()
-
-
+	redwhelp.take_no_damage()
 	attacked_minion = random.choice(opponents_minions)
-
-
 	redwhelp, attacked_minion = attack_in_combat(redwhelp, attacked_minion)
-
-	redwhelp.reduce_attack()
+	redwhelp.attack = start_attack
 
 	return game
-
-
 
 
 def count_taunts(px):
@@ -114,6 +108,7 @@ def kill_minion(minion, minions):
 p1, p2, game = game_order()
 
 def combat(p1, p2, game):
+
 	index, factor = 0, 1
 	first_player_idx, second_player_idx = 0, 0
 
