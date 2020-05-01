@@ -1,7 +1,8 @@
 import random
 from random import choice
 import copy
-from minions import Card, Player, minions_lst, RedWhelp
+from minions import Player, minions_lst, Card, SelflessHero, SpawnOfnZoth, InfestedWolf
+from minions import GlyphGuardian, RedWhelp
 
 alices_warband = [] 
 bobs_warband = []
@@ -73,20 +74,39 @@ def game_order():
 
 	return p1, p2, game
 
-def start_of_combat(redwhelp, game, attackers_minions, opponents_minions):
-	start_attack = redwhelp.attack
+def kill_minion(minion, minions):
+	if minion.has_deathrattle:
+		minion.deathrattle(minions)
+	return minions
+
+def start_of_combat(redwhelp, game, attackers_minions, opponents_minions, i):
+	start_rw_attack = redwhelp.attack
 
 	redwhelp.add_damage(attackers_minions)
 	redwhelp.take_no_damage()
 	attacked_minion = random.choice(opponents_minions)
 	redwhelp, attacked_minion = attack_in_combat(redwhelp, attacked_minion)
-	redwhelp.attack = start_attack
+
+	redwhelp.attack = start_rw_attack
+
+	if attacked_minion.health < 1:
+		
+		# for minion in game[i]:
+		# 	print(minion.name)
+		# print()
+		# print(attacked_minion.name, "goni")
+		# print()
+		game[i].remove(attacked_minion)
+		game[i] = kill_minion(attacked_minion, opponents_minions)
+		
+		# for minion in game[i]:
+		# 	print(minion.name)
+		# print()
 
 	return game
 
 
 def count_taunts(px):
-
 	output = 0
 	taunted_minions = []
 
@@ -99,131 +119,141 @@ def count_taunts(px):
 
 	return output, taunted_minions
 
-def kill_minion(minion, minions):
-	if minion.has_deathrattle:
-		minion.deathrattle(minions)
-	return minions
-
 
 p1, p2, game = game_order()
 
 def combat(p1, p2, game):
 
-	index, factor = 0, 1
-	first_player_idx, second_player_idx = 0, 0
 
-	next_minion = first_player_idx
-
-	opponents_minions = game[1]
-	for attackers_minions in game:
-		for minion in attackers_minions:
-			if isinstance(minion, RedWhelp):
-				start_of_combat(minion, game, attackers_minions, opponents_minions)
-		opponents_minions = game[0]
 
 	# for p in game:
 	# 	for minion in p:
 	# 		print(minion.name)
 	# 		print(minion.health)
+	# 	print()
 
+
+	# start of combat: 
+	i = 1
+	for attackers_minions in game:
+		opponents_minions = game[i]
+		for minion in attackers_minions:
+			if isinstance(minion, RedWhelp):
+				start_of_combat(minion, game, attackers_minions, opponents_minions, i)
+		i = 0
+
+	# for p in game:
+	# 	for minion in p:
+	# 		print(minion.name, 2)
+	# 		print(minion.health, 2)
+	# 	print()
+
+	a, b = 0, 1
+	first_player_attack_minion = 0
+	second_player_attack_minion = 0
+
+	attacking_minion = first_player_attack_minion
 
 	while p1 and p2:
 
 		attacked_minion = None
 
-		if count_taunts(game[index + factor])[0] > 0:
-			taunts = count_taunts(game[index + factor])[1]
+		if count_taunts(game[a + b])[0] > 0:
+			taunts = count_taunts(game[a + b])[1]
 			r = random.randint(0, len(taunts) - 1)
 			minion = taunts[r]
 
-			for i in range(len(game[index + factor])):
-				if game[index + factor][i].name == minion.name:
+			for i in range(len(game[a + b])):
+				if game[a + b][i].name == minion.name:
 					attacked_minion = i
 					break
 
 		else:
-			attacked_minion = random.randint(0, len(game[index + factor]) - 1)
+			attacked_minion = random.randint(0, len(game[a + b]) - 1)
 
-		minion_1 = game[index][next_minion]
+		minion1 = game[a][attacking_minion]
 
-		minion_2 = game[index + factor][attacked_minion]
+		minion2 = game[a + b][attacked_minion]
 		
 		# print()
-		# print(minion_1.name, minion_1.attack, minion_1.health)
-		# print(minion_2.name, minion_2.attack, minion_2.health)
+		# print(minion1.name, minion1.attack, minion1.health)
+		# print(minion2.name, minion2.attack, minion2.health)
 
-		minion_1, minion_2 = attack_in_combat(minion_1, minion_2)
+		minion1, minion2 = attack_in_combat(minion1, minion2)
 
-		# print(minion_1.name, minion_1.attack, minion_1.health)
-		# print(minion_2.name, minion_2.attack, minion_2.health)
-		# print(minion_2.health, minion_2.name)
+		# print(minion1.name, minion1.attack, minion1.health)
+		# print(minion2.name, minion2.attack, minion2.health)
+		# print(minion2.health, minion2.name)
 		# print(p1)
 		# print(p2)
 
 
-		if minion_1.health <= 0:
+		if minion1.health <= 0:
 			# print()
 			# print("minion1")
-			# for i in game[index]:
+			# for i in game[a]:
 			# 	print(i.name)
 			# 	print(i.health)
 			# 	print(i.attack)
 			# print()
-			# print("killed:", game[index][next_minion].name)
+			# print("killed:", game[a][attacking_minion].name)
 			# print()
-			del game[index][next_minion]
+			del game[a][attacking_minion]
 			
-			kill_minion(minion_1, game[index])
+			kill_minion(minion1, game[a])
 			# print(not p1, not p2)
-			# for i in game[index]:
+			# for i in game[a]:
 			# 	print(i.name)
 			# 	print(i.health)
 			# 	print(i.attack)
 			# print()
-			next_minion -= 1
+			attacking_minion -= 1
+			# ??
 
-		if minion_2.health <= 0:
+		if minion2.health <= 0:
 			# print()
 			# print("minion2")
-			# for i in game[index+factor]:
+			# for i in game[a + b]:
 			# 	print(i.name)
 			# 	print(i.health)
 			# 	print(i.attack)
 			# print()
-			# print("killed:", game[index + factor][attacked_minion].name)
+			# print("killed:", game[a + b][attacked_minion].name)
 			# print()
-			del game[index + factor][attacked_minion]
+			del game[a + b][attacked_minion]
 
-			# kill_minion(minion_2, game[index + factor])
+			kill_minion(minion2, game[a + b])
 			# print(not p1, not p2)
-			# for i in game[index+factor]:
+			# for i in game[a + b]:
 			# 	print(i.name)
 			# 	print(i.health)
 			# 	print(i.attack)
 			# print()
 
-		next_minion += 1
+		attacking_minion += 1
 
-		if index == 0:
-			index += 1
-			factor -= 2
+		if a == 0:
+			a = 1
+			b = -1
 
-			first_player_idx = next_minion
+			first_player_attack_minion = attacking_minion
 
-			if second_player_idx >= len(game[1]):
-				second_player_idx = 0
+			if second_player_attack_minion >= len(game[1]):
+				second_player_attack_minion = 0
 
-			next_minion = second_player_idx
+			attacking_minion = second_player_attack_minion
 
 		else:
-			index -= 1
-			factor += 2
-			second_player_idx = next_minion
-			
-			if first_player_idx >= len(game[0]):
-				first_player_idx = 0
+			a = 0
+			b = 1
 
-			next_minion = first_player_idx
+			second_player_attack_minion = attacking_minion
+			
+			if first_player_attack_minion >= len(game[0]):
+				first_player_attack_minion = 0
+
+			attacking_minion = first_player_attack_minion
+
 
 	if not p1 and not p2:
 		print("NO WINNER")

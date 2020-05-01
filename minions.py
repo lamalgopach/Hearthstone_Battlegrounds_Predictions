@@ -46,6 +46,9 @@ class Card:
 	def remove_ds(self):
 		self.has_ds = False
 
+	# def die(self, friendly_minions):
+	# 	del friendly_minions
+
 
 class SelflessHero(Card):
 
@@ -99,7 +102,6 @@ class RedWhelp(Card):
 		self.has_ds = True
 
 	# def reduce_attack(self, start_attack):
-
 	# 	self.attack = start_attack
 
 
@@ -116,11 +118,12 @@ spawn_of_nzoth = SpawnOfnZoth("Spawn Of n'Zoth", 2, 2, 2, 0, False, False, True,
 infested_wolf = InfestedWolf("Infested Wolf", 3, 3, 3, 3, False, False, True, False)
 selfless_hero = SelflessHero("Selfless Hero", 2, 1, 1, 0, False, False, True, False)
 glyph_guardian = GlyphGuardian("Glyph Guardian", 2, 4, 2, 2, False, False, False, True)
+red_whelp = RedWhelp("Red Whelp", 1, 2, 1, 2, False, False, False, False)
+
+
 
 # classes written:
 murloc_warleader = Card("Murloc Warleader", 3, 3, 2, 1, False, False, False, False)
-red_whelp = RedWhelp("Red Whelp", 1, 2, 1, 2, False, False, False, False)
-
 
 # battlecry:
 rockpool_hunter = Card("Rockpool Hunter", 2, 3, 1, 1, False, False, False, False)
