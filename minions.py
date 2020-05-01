@@ -22,7 +22,7 @@ class MinionType(Enum):
 class Card:
 
 	def __init__(self, name, attack, health, tier, m_type, is_taunted, has_ds, 
-		has_deathrattle, has_add_attack):
+		has_deathrattle, start_of_combat):
 		self.name = name
 		self.attack = attack
 		self.health = health
@@ -31,7 +31,7 @@ class Card:
 		self.is_taunted = is_taunted
 		self.has_ds = has_ds
 		self.has_deathrattle = has_deathrattle
-		self.has_add_attack = has_add_attack
+		self.start_of_combat = start_of_combat
 
 
 	def take_damage(self, damage):
@@ -84,6 +84,26 @@ class GlyphGuardian(Card):
 		self.attack = 2 * self.attack
 
 
+class RedWhelp(Card):
+	start_attack = 1
+
+	def add_damage(self, minions):
+
+		damage = 1
+
+		for minion in minions:
+			if minion.m_type == 2:
+				damage += 1
+
+		self.attack += damage
+
+	def add_divine_shield(self):
+		self.has_ds = True
+
+	def reduce_attack(self):
+		self.attack = self.start_attack
+
+
 
 			
 
@@ -96,17 +116,17 @@ righteous_protector = Card("Righteous Protector", 1, 1, 1, 0, True, True, False,
 spawn_of_nzoth = SpawnOfnZoth("Spawn Of n'Zoth", 2, 2, 2, 0, False, False, True, False)
 infested_wolf = InfestedWolf("Infested Wolf", 3, 3, 3, 3, False, False, True, False)
 selfless_hero = SelflessHero("Selfless Hero", 2, 1, 1, 0, False, False, True, False)
+glyph_guardian = GlyphGuardian("Glyph Guardian", 2, 4, 2, 2, False, False, False, True)
 
 # classes written:
 murloc_warleader = Card("Murloc Warleader", 3, 3, 2, 1, False, False, False, False)
-glyph_guardian = GlyphGuardian("Glyph Guardian", 2, 4, 2, 2, False, False, False, True)
-red_whelp = Card("Red Whelp", 1, 2, 1, 2, False, False, False, False)
+red_whelp = RedWhelp("Red Whelp", 1, 2, 1, 2, False, False, False, False)
 
 
 # battlecry:
 rockpool_hunter = Card("Rockpool Hunter", 2, 3, 1, 1, False, False, False, False)
 
-minions = [dragonspawn_lieutenant, righteous_protector, murloc_warleader,
+minions_lst = [dragonspawn_lieutenant, righteous_protector, murloc_warleader,
 			glyph_guardian, red_whelp, spawn_of_nzoth, infested_wolf, selfless_hero, 
 			rockpool_hunter]
 
