@@ -189,45 +189,50 @@ def combat(p1, p2, game):
 	second_player_minion_attacker = 0
 	# associated with game[1]
 
-	attacking_minion = first_player_minion_attacker
+	offensive = first_player_minion_attacker
+
+	# offensive = first_player_minion_attacker
+	defensive = second_player_minion_attacker
 
 	while p1 and p2:
 		print()
-		print(first_player_minion_attacker)
-		print(second_player_minion_attacker)
+		print(first_player_minion_attacker, offensive)
+		print(second_player_minion_attacker, defensive)
 
 
 		attacked_minion = None
 		dead_attacker_minion = 0
 		dead_attacked_minion = 0
 
-		if count_taunts(game[a + b])[0] > 0:
-			taunts = count_taunts(game[a + b])[1]
+		if count_taunts(game[b])[0] > 0:
+			taunts = count_taunts(game[b])[1]
 			r = random.randint(0, len(taunts) - 1)
 			minion = taunts[r]
 
-			for i in range(len(game[a + b])):
-				if game[a + b][i].name == minion.name:
+			for i in range(len(game[b])):
+				if game[b][i].name == minion.name:
 					attacked_minion = i
 					break
 
 		else:
-			attacked_minion = random.randint(0, len(game[a + b]) - 1)
+			attacked_minion = random.randint(0, len(game[b]) - 1)
 
-		minion1 = game[a][attacking_minion]
+		minion1 = game[a][offensive]
 
-		minion2 = game[a + b][attacked_minion]
+		minion2 = game[b][attacked_minion]
 		
 		print()
 		print("attacker", minion1.name, minion1.attack, minion1.health)
-		print(minion2.name, minion2.attack, minion2.health)
+		# print(minion2.name, minion2.attack, minion2.health)
 
 		minion1, minion2 = attack_in_combat(minion1, minion2)
 
-		print(minion1.name, minion1.attack, minion1.health)
-		print(minion2.name, minion2.attack, minion2.health)
-		print(game[0])
-		print(game[1])
+		if minion1.health < 1:
+			print("dead:", minion1.name)
+		if minion2.health < 1:
+			print("dead:", minion2.name)
+		# print(game[0])
+		# print(game[1])
 		# print(minion2.health, minion2.name)
 		# print(p1)
 		# print(p2)
@@ -241,9 +246,9 @@ def combat(p1, p2, game):
 			# 	print(i.health)
 			# 	print(i.attack)
 			# print()
-			# print("killed:", game[a][attacking_minion].name)
+			# print("killed:", game[a][offensive].name)
 			# print()
-			del game[a][attacking_minion]
+			del game[a][offensive]
 			
 			kill_minion(minion1, game[a])
 			# print(not p1, not p2)
@@ -258,18 +263,18 @@ def combat(p1, p2, game):
 		if minion2.health <= 0:
 			# print()
 			# print("minion2")
-			# for i in game[a + b]:
+			# for i in game[b]:
 			# 	print(i.name)
 			# 	print(i.health)
 			# 	print(i.attack)
 			# print()
-			# print("killed:", game[a + b][attacked_minion].name)
+			# print("killed:", game[b][attacked_minion].name)
 			# print()
-			del game[a + b][attacked_minion]
+			del game[b][attacked_minion]
 
-			kill_minion(minion2, game[a + b])
+			kill_minion(minion2, game[b])
 			# print(not p1, not p2)
-			# for i in game[a + b]:
+			# for i in game[b]:
 			# 	print(i.name)
 			# 	print(i.health)
 			# 	print(i.attack)
@@ -277,66 +282,104 @@ def combat(p1, p2, game):
 			dead_attacked_minion += 1
 
 
-		attacking_minion += 1
+		offensive += 1
 
-		# playing_minion = attacking_minion - dead_attacker_minion
-		# non_playing_minion -= dead_attacked_minion
 
-		# if dead_attacker_minion > 0 and non_playing_minion > attacked_minion:
-		# 	non_playing_minion -= dead_attacked_minion
+		#indexing final mess:
+		offensive = offensive - dead_attacker_minion
+
+		if offensive > len(game[a]) - 1:
+			offensive = 0
+
+		if dead_attacked_minion == 1:
+			if defensive > attacked_minion:
+				defensive -= 1
+
+		if defensive > len(game[b]) - 1:
+			defensive = 0
+
+		# end of turn, change the player:
+		
+		print()
+		print("next attacking: ", offensive, "team", a)
+
 
 		if a == 0:
 			a = 1
-			b = -1
+			b = 0
 
-			# first_player_minion_attacker = playing_minion
-			# second_player_minion_attacker = non_playing_minion
-			# attacking_minion = second_player_minion_attacker
+			# first_player_minion_attacker = offensive
+			# second_player_minion_attacker = defensive
 
-			# old:
-			first_player_minion_attacker = attacking_minion - dead_attacker_minion	
-			# if dead minion attacker index should decrease	
-			if first_player_minion_attacker > len(game[0]) - 1:
-				# check if index doesnt exceed the list range
-				first_player_minion_attacker = 0
-			
-			# attacked minion:
-			if dead_attacked_minion > 0:
-				# check if attacked minion is dead
-				if second_player_minion_attacker > attacked_minion:
-					# check if the dead minion is on the next player index
-					# or below
-					# if so its needed to be decreased
-					second_player_minion_attacker -= dead_attacked_minion
 
-			if second_player_minion_attacker > len(game[1]) - 1:
-				# check if idexes doesnt exceed the range of warband
-				second_player_minion_attacker = 0
+			offensive = second_player_minion_attacker
+			defensive = first_player_minion_attacker
 
-			attacking_minion = second_player_minion_attacker
-			# assign index of the second warband to the attacking minion
+
 
 		else:
 			a = 0
 			b = 1
-			# second_player_minion_attacker = playing_minion
-			# first_player_minion_attacker = non_playing_minion
-			# attacking_minion = second_player_minion_attacker
 
-			# old:
-			second_player_minion_attacker = attacking_minion - dead_attacker_minion
+			offensive = first_player_minion_attacker
+			defensive = second_player_minion_attacker
+
+			# first_player_minion_attacker = defensive
+			# second_player_minion_attacker = offensive
+
+
+		# if a == 0:
+		# 	a = 1
+		# 	b = -1
+
+		# 	# first_player_minion_attacker = playing_minion
+		# 	# second_player_minion_attacker = non_playing_minion
+		# 	# offensive = second_player_minion_attacker
+
+		# 	# old:
+		# 	first_player_minion_attacker = offensive - dead_attacker_minion	
+		# 	# if dead minion attacker index should decrease	
+		# 	if first_player_minion_attacker > len(game[0]) - 1:
+		# 		# check if index doesnt exceed the list range
+		# 		first_player_minion_attacker = 0
 			
-			if second_player_minion_attacker > len(game[1]) - 1:
-				second_player_minion_attacker = 0
+			# # attacked minion:
+			# if dead_attacked_minion > 0:
+			# 	# check if attacked minion is dead
+			# 	if second_player_minion_attacker > attacked_minion:
+			# 		# check if the dead minion is on the next player index
+			# 		# or below
+			# 		# if so its needed to be decreased
+			# 		second_player_minion_attacker -= dead_attacked_minion
 
-			if dead_attacked_minion > 0:
-				if first_player_minion_attacker > attacked_minion:
-					first_player_minion_attacker -= dead_attacked_minion
+			# if second_player_minion_attacker > len(game[1]) - 1:
+			# 	# check if idexes doesnt exceed the range of warband
+			# 	second_player_minion_attacker = 0
 
-			if first_player_minion_attacker > len(game[0]) - 1:
-				first_player_minion_attacker = 0
+			# offensive = second_player_minion_attacker
+			# # assign index of the second warband to the attacking minion
 
-			attacking_minion = first_player_minion_attacker
+		# else:
+		# 	a = 0
+		# 	b = 1
+		# 	# second_player_minion_attacker = playing_minion
+		# 	# first_player_minion_attacker = non_playing_minion
+		# 	# offensive = second_player_minion_attacker
+
+		# 	# old:
+		# 	second_player_minion_attacker = offensive - dead_attacker_minion
+			
+		# 	if second_player_minion_attacker > len(game[1]) - 1:
+		# 		second_player_minion_attacker = 0
+
+		# 	if dead_attacked_minion > 0:
+		# 		if first_player_minion_attacker > attacked_minion:
+		# 			first_player_minion_attacker -= dead_attacked_minion
+
+		# 	if first_player_minion_attacker > len(game[0]) - 1:
+		# 		first_player_minion_attacker = 0
+
+		# 	offensive = first_player_minion_attacker
 
 
 
