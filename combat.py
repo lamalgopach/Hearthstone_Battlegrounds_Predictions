@@ -7,14 +7,35 @@ from minions import GlyphGuardian, RedWhelp
 alices_warband = [] 
 bobs_warband = []
 
-for minion in minions_lst:
+# for minion in minions_lst:
 
-	s = random.choice([1, 2])
+# 	s = random.choice([1, 2])
 
-	if s == 2:
-		alices_warband.append(minion)
-	else:
-		bobs_warband.append(minion)
+# 	if s == 2:
+# 		alices_warband.append(minion)
+# 	else:
+# 		bobs_warband.append(minion)
+
+
+dragonspawn_lieutenant = Card("Dragonspawn Lieutenant", 2, 3, 1, 2, True, False, False)
+righteous_protector = Card("Righteous Protector", 1, 1, 1, 0, True, True, False)
+spawn_of_nzoth = SpawnOfnZoth("Spawn Of n'Zoth", 2, 2, 2, 0, False, False, True)
+infested_wolf = InfestedWolf("Infested Wolf", 3, 3, 3, 3, False, False, True)
+selfless_hero = SelflessHero("Selfless Hero", 2, 1, 1, 0, False, False, True)
+glyph_guardian = GlyphGuardian("Glyph Guardian", 2, 4, 2, 2, False, False, False)
+red_whelp = RedWhelp("Red Whelp", 1, 2, 1, 2, False, False, False)
+
+
+
+# classes written:
+murloc_warleader = Card("Murloc Warleader", 3, 3, 2, 1, False, False, False)
+
+# battlecry:
+rockpool_hunter = Card("Rockpool Hunter", 2, 3, 1, 1, False, False, False)
+
+alices_warband = [dragonspawn_lieutenant, righteous_protector, murloc_warleader, glyph_guardian, spawn_of_nzoth, rockpool_hunter]
+bobs_warband = [red_whelp, infested_wolf, selfless_hero]
+
 
 # change it:
 # create objects immidietely
@@ -105,19 +126,6 @@ def redwhelp_attack(redwhelp, game, attackers_minions, opponents_minions, i):
 
 	return game
 
-def start_of_combat(game):
-
-	i = 1
-	for attackers_minions in game:
-		opponents_minions = game[i]
-		for minion in attackers_minions:
-			if isinstance(minion, RedWhelp):
-				redwhelp_attack(minion, game, attackers_minions, opponents_minions, i)
-		i = 0
-
-	p1 = game[0]
-	p2 = game[1]
-	return p1, p2, game
 
 def count_taunts(px):
 	output = 0
@@ -135,19 +143,37 @@ def count_taunts(px):
 
 p1, p2, game = game_order()
 
-p1, p2, game = start_of_combat(game)
 
 def combat(p1, p2, game):
 
-	# for p in game:
-	# 	for minion in p:
-	# 		print(minion.name)
-	# 		print(minion.health)
-	# 	print()
+
+	print("game:")
+	for p in game:
+		for minion in p:
+			print(minion.name)
+			print(minion.health)
+		print()
+
+	print("p1:")
+	print(Player_1.name)
+	for minion in p1:
+		print(minion.name)
+
+	print()
+	print("p2:")
+	print(Player_2.name)
+	for minion in p2:
+		print(minion.name)
 
 	# start of combat:
 
-
+	i = 1
+	for attackers_minions in game:
+		opponents_minions = game[i]
+		for minion in attackers_minions:
+			if isinstance(minion, RedWhelp):
+				redwhelp_attack(minion, game, attackers_minions, opponents_minions, i)
+		i = 0
 
 
 
@@ -158,14 +184,22 @@ def combat(p1, p2, game):
 	# 	print()
 
 	a, b = 0, 1
-	first_player_attack_minion = 0
-	second_player_attack_minion = 0
+	first_player_minion_attacker = 0
+	# associated with game[0]
+	second_player_minion_attacker = 0
+	# associated with game[1]
 
-	attacking_minion = first_player_attack_minion
+	attacking_minion = first_player_minion_attacker
 
 	while p1 and p2:
+		print()
+		print(first_player_minion_attacker)
+		print(second_player_minion_attacker)
+
 
 		attacked_minion = None
+		dead_attacker_minion = 0
+		dead_attacked_minion = 0
 
 		if count_taunts(game[a + b])[0] > 0:
 			taunts = count_taunts(game[a + b])[1]
@@ -184,14 +218,16 @@ def combat(p1, p2, game):
 
 		minion2 = game[a + b][attacked_minion]
 		
-		# print()
-		# print(minion1.name, minion1.attack, minion1.health)
-		# print(minion2.name, minion2.attack, minion2.health)
+		print()
+		print("attacker", minion1.name, minion1.attack, minion1.health)
+		print(minion2.name, minion2.attack, minion2.health)
 
 		minion1, minion2 = attack_in_combat(minion1, minion2)
 
-		# print(minion1.name, minion1.attack, minion1.health)
-		# print(minion2.name, minion2.attack, minion2.health)
+		print(minion1.name, minion1.attack, minion1.health)
+		print(minion2.name, minion2.attack, minion2.health)
+		print(game[0])
+		print(game[1])
 		# print(minion2.health, minion2.name)
 		# print(p1)
 		# print(p2)
@@ -216,7 +252,7 @@ def combat(p1, p2, game):
 			# 	print(i.health)
 			# 	print(i.attack)
 			# print()
-			attacking_minion -= 1
+			dead_attacker_minion = 1
 			# ??
 
 		if minion2.health <= 0:
@@ -238,30 +274,79 @@ def combat(p1, p2, game):
 			# 	print(i.health)
 			# 	print(i.attack)
 			# print()
+			dead_attacked_minion += 1
+
 
 		attacking_minion += 1
+
+		# playing_minion = attacking_minion - dead_attacker_minion
+		# non_playing_minion -= dead_attacked_minion
+
+		# if dead_attacker_minion > 0 and non_playing_minion > attacked_minion:
+		# 	non_playing_minion -= dead_attacked_minion
 
 		if a == 0:
 			a = 1
 			b = -1
 
-			first_player_attack_minion = attacking_minion
+			# first_player_minion_attacker = playing_minion
+			# second_player_minion_attacker = non_playing_minion
+			# attacking_minion = second_player_minion_attacker
 
-			if second_player_attack_minion >= len(game[1]):
-				second_player_attack_minion = 0
+			# old:
+			first_player_minion_attacker = attacking_minion - dead_attacker_minion	
+			# if dead minion attacker index should decrease	
+			if first_player_minion_attacker > len(game[0]) - 1:
+				# check if index doesnt exceed the list range
+				first_player_minion_attacker = 0
+			
+			# attacked minion:
+			if dead_attacked_minion > 0:
+				# check if attacked minion is dead
+				if second_player_minion_attacker > attacked_minion:
+					# check if the dead minion is on the next player index
+					# or below
+					# if so its needed to be decreased
+					second_player_minion_attacker -= dead_attacked_minion
 
-			attacking_minion = second_player_attack_minion
+			if second_player_minion_attacker > len(game[1]) - 1:
+				# check if idexes doesnt exceed the range of warband
+				second_player_minion_attacker = 0
+
+			attacking_minion = second_player_minion_attacker
+			# assign index of the second warband to the attacking minion
 
 		else:
 			a = 0
 			b = 1
+			# second_player_minion_attacker = playing_minion
+			# first_player_minion_attacker = non_playing_minion
+			# attacking_minion = second_player_minion_attacker
 
-			second_player_attack_minion = attacking_minion
+			# old:
+			second_player_minion_attacker = attacking_minion - dead_attacker_minion
 			
-			if first_player_attack_minion >= len(game[0]):
-				first_player_attack_minion = 0
+			if second_player_minion_attacker > len(game[1]) - 1:
+				second_player_minion_attacker = 0
 
-			attacking_minion = first_player_attack_minion
+			if dead_attacked_minion > 0:
+				if first_player_minion_attacker > attacked_minion:
+					first_player_minion_attacker -= dead_attacked_minion
+
+			if first_player_minion_attacker > len(game[0]) - 1:
+				first_player_minion_attacker = 0
+
+			attacking_minion = first_player_minion_attacker
+
+
+
+# imo we dont need that:
+
+		# if first_player_minion_attacker > len(game[0]) - 1:
+		# 	first_player_minion_attacker = 0
+
+		# if second_player_minion_attacker > len(game[1]) - 1:
+		# 	second_player_minion_attacker = 0
 
 
 	if not p1 and not p2:
