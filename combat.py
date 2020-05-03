@@ -157,13 +157,13 @@ def combat(p1, p2, game):
 	print("p1:")
 	print(Player_1.name)
 	for minion in p1:
-		print(minion.name)
+		print(minion.name, minion.health, minion.attack)
 
 	print()
 	print("p2:")
 	print(Player_2.name)
 	for minion in p2:
-		print(minion.name)
+		print(minion.name, minion.health, minion.attack)
 
 	# start of combat:
 
@@ -174,6 +174,13 @@ def combat(p1, p2, game):
 			if isinstance(minion, RedWhelp):
 				redwhelp_attack(minion, game, attackers_minions, opponents_minions, i)
 		i = 0
+
+	print()
+	print("p1 after start of combat:")
+	print(Player_1.name)
+	for minion in p1:
+		print(minion.name, minion.health, minion.attack)
+
 
 
 

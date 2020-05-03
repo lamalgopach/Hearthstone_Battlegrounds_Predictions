@@ -89,7 +89,7 @@ class GlyphGuardian(Card):
 class RedWhelp(Card):
 
 	def add_damage(self, minions):
-		damage = 1
+		damage = 0
 
 		for minion in minions:
 			if minion.m_type == 2:
