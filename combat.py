@@ -223,7 +223,7 @@ def combat(p1, p2, game):
 		
 		print()
 		print("attacker", minion1.name, minion1.attack, minion1.health)
-		# print(minion2.name, minion2.attack, minion2.health)
+		print("attacked", minion2.name, minion2.attack, minion2.health)
 
 		minion1, minion2 = attack_in_combat(minion1, minion2)
 
@@ -284,8 +284,11 @@ def combat(p1, p2, game):
 
 		offensive += 1
 
+		print()
+		print(alices_warband)
+		print(bobs_warband)
+		print()
 
-		#indexing final mess:
 		offensive = offensive - dead_attacker_minion
 
 		if offensive > len(game[a]) - 1:
@@ -304,6 +307,7 @@ def combat(p1, p2, game):
 		print("next attacking: ", offensive, "team", a)
 
 
+
 		if a == 0:
 			a = 1
 			b = 0
@@ -311,6 +315,8 @@ def combat(p1, p2, game):
 			# first_player_minion_attacker = offensive
 			# second_player_minion_attacker = defensive
 
+			first_player_minion_attacker = offensive
+			second_player_minion_attacker = defensive
 
 			offensive = second_player_minion_attacker
 			defensive = first_player_minion_attacker
@@ -320,6 +326,9 @@ def combat(p1, p2, game):
 		else:
 			a = 0
 			b = 1
+
+			first_player_minion_attacker = defensive
+			second_player_minion_attacker = offensive
 
 			offensive = first_player_minion_attacker
 			defensive = second_player_minion_attacker
