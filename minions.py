@@ -94,7 +94,7 @@ class RedWhelp(Card):
 		for minion in minions:
 			if minion.m_type == 2:
 				damage += 1
-		self.attack += damage
+		self.attack = damage
 
 
 	def take_no_damage(self):
@@ -108,12 +108,12 @@ righteous_protector = Card("Righteous Protector", 1, 1, 1, 0, True, True, False)
 spawn_of_nzoth = SpawnOfnZoth("Spawn Of n'Zoth", 2, 2, 2, 0, False, False, True)
 selfless_hero = SelflessHero("Selfless Hero", 2, 1, 1, 0, False, False, True)
 glyph_guardian = GlyphGuardian("Glyph Guardian", 2, 4, 2, 2, False, False, False)
-
+infested_wolf = InfestedWolf("Infested Wolf", 3, 3, 3, 3, False, False, True)
 
 
 # done but need to be finished
 red_whelp = RedWhelp("Red Whelp", 1, 2, 1, 2, False, False, False)
-infested_wolf = InfestedWolf("Infested Wolf", 3, 3, 3, 3, False, False, True)
+
 
 
 # to do:

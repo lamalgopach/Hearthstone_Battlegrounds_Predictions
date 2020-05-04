@@ -16,25 +16,26 @@ bobs_warband = []
 # 	else:
 # 		bobs_warband.append(minion)
 
+# minions completed:
 
 dragonspawn_lieutenant = Card("Dragonspawn Lieutenant", 2, 3, 1, 2, True, False, False)
 righteous_protector = Card("Righteous Protector", 1, 1, 1, 0, True, True, False)
 spawn_of_nzoth = SpawnOfnZoth("Spawn Of n'Zoth", 2, 2, 2, 0, False, False, True)
-infested_wolf = InfestedWolf("Infested Wolf", 3, 3, 3, 3, False, False, True)
 selfless_hero = SelflessHero("Selfless Hero", 2, 1, 1, 0, False, False, True)
 glyph_guardian = GlyphGuardian("Glyph Guardian", 2, 4, 2, 2, False, False, False)
+infested_wolf = InfestedWolf("Infested Wolf", 3, 3, 3, 3, False, False, True)
+
+# done but need to be finished
 red_whelp = RedWhelp("Red Whelp", 1, 2, 1, 2, False, False, False)
 
-
-
-# classes written:
+# to do:
 murloc_warleader = Card("Murloc Warleader", 3, 3, 2, 1, False, False, False)
 
 # battlecry:
 rockpool_hunter = Card("Rockpool Hunter", 2, 3, 1, 1, False, False, False)
 
-alices_warband = [dragonspawn_lieutenant, righteous_protector, murloc_warleader, glyph_guardian, spawn_of_nzoth, rockpool_hunter]
-bobs_warband = [red_whelp, infested_wolf, selfless_hero]
+alices_warband = [red_whelp, righteous_protector, murloc_warleader, glyph_guardian, spawn_of_nzoth, rockpool_hunter]
+bobs_warband = [dragonspawn_lieutenant, infested_wolf, selfless_hero]
 
 
 # change it:
@@ -101,13 +102,15 @@ def kill_minion(minion, minions, j):
 	return minions
 
 def redwhelp_attack(redwhelp, game, attackers_minions, opponents_minions, i):
+
 	start_rw_attack = redwhelp.attack
+
 
 	redwhelp.add_damage(attackers_minions)
 	redwhelp.take_no_damage()
 	attacked_minion = random.choice(opponents_minions)
 	redwhelp, attacked_minion = attack_in_combat(redwhelp, attacked_minion)
-	print("Red Whelp damage: ", attacked_minion.name)
+	print(attacked_minion.name, "attacked by red whelp")
 
 	redwhelp.attack = start_rw_attack
 
@@ -118,8 +121,10 @@ def redwhelp_attack(redwhelp, game, attackers_minions, opponents_minions, i):
 		# print()
 		# print(attacked_minion.name, "goni")
 		# print()
+		j = game[i].index(attacked_minion)
+		print(j)
 		game[i].remove(attacked_minion)
-		game[i] = kill_minion(attacked_minion, opponents_minions, attacked_minion)
+		game[i] = kill_minion(attacked_minion, opponents_minions, j)
 		
 		# for minion in game[i]:
 		# 	print(minion.name)
@@ -181,7 +186,12 @@ def combat(p1, p2, game):
 	print(Player_1.name)
 	for minion in p1:
 		print(minion.name, minion.health, minion.attack)
-
+	print()
+	print(Player_2.name)
+	for minion in p2:
+		print(minion.name, minion.health, minion.attack)
+	print()
+	print()
 
 
 
@@ -203,9 +213,7 @@ def combat(p1, p2, game):
 	defensive = second_player_minion_attacker
 
 	while p1 and p2:
-		print()
-		print(first_player_minion_attacker, offensive)
-		print(second_player_minion_attacker, defensive)
+
 
 
 		attacked_minion = None
@@ -229,16 +237,16 @@ def combat(p1, p2, game):
 
 		minion2 = game[b][attacked_minion]
 		
-		print()
-		print("attacker", minion1.name, minion1.attack, minion1.health)
-		print("attacked", minion2.name, minion2.attack, minion2.health)
+		# print()
+		# print("attacker", minion1.name, minion1.attack, minion1.health)
+		# print("attacked", minion2.name, minion2.attack, minion2.health)
 
 		minion1, minion2 = attack_in_combat(minion1, minion2)
 
-		if minion1.health < 1:
-			print("dead:", minion1.name)
-		if minion2.health < 1:
-			print("dead:", minion2.name)
+		# if minion1.health < 1:
+		# 	print("dead:", minion1.name)
+		# if minion2.health < 1:
+		# 	print("dead:", minion2.name)
 		# print(game[0])
 		# print(game[1])
 		# print(minion2.health, minion2.name)
@@ -292,10 +300,10 @@ def combat(p1, p2, game):
 
 		offensive += 1
 
-		print()
-		print(alices_warband)
-		print(bobs_warband)
-		print()
+		# print()
+		# print(alices_warband)
+		# print(bobs_warband)
+		# print()
 
 		offensive = offensive - dead_attacker_minion
 
@@ -311,8 +319,8 @@ def combat(p1, p2, game):
 
 		# end of turn, change the player:
 		
-		print()
-		print("next attacking: ", offensive, "team", a)
+		# print()
+		# print("next attacking: ", offensive, "team", a)
 
 
 
