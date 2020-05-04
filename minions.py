@@ -51,7 +51,7 @@ class Card:
 
 class SelflessHero(Card):
 
-	def deathrattle(self, friendly_minions):
+	def deathrattle(self, friendly_minions, j):
 		if not friendly_minions:
 			return
 
@@ -61,7 +61,7 @@ class SelflessHero(Card):
 
 class SpawnOfnZoth(Card):
 
-	def deathrattle(self, friendly_minions):
+	def deathrattle(self, friendly_minions, j):
 		if friendly_minions:
 			for minion in friendly_minions:
 				minion.attack += 1
@@ -70,13 +70,13 @@ class SpawnOfnZoth(Card):
 
 class InfestedWolf(Card):
 
-	def deathrattle(self, friendly_minions):
+	def deathrattle(self, friendly_minions, j):
 		spider = Card("Spider", 1, 1, 1, 3, False, False, False)
-		friendly_minions.append(spider)
+		friendly_minions.insert(j, spider)
 
 		if len(friendly_minions) < 6:
 			spider_2 = copy.copy(spider)
-			friendly_minions.append(spider_2)
+			friendly_minions.insert(j + 1, spider)
 
 		return friendly_minions
 
@@ -100,29 +100,25 @@ class RedWhelp(Card):
 	def take_no_damage(self):
 		self.has_ds = True
 
-	# def reduce_attack(self, start_attack):
-	# 	self.attack = start_attack
-
-
-
-			
-
-
 
 # minions completed:
 
 dragonspawn_lieutenant = Card("Dragonspawn Lieutenant", 2, 3, 1, 2, True, False, False)
 righteous_protector = Card("Righteous Protector", 1, 1, 1, 0, True, True, False)
 spawn_of_nzoth = SpawnOfnZoth("Spawn Of n'Zoth", 2, 2, 2, 0, False, False, True)
-infested_wolf = InfestedWolf("Infested Wolf", 3, 3, 3, 3, False, False, True)
 selfless_hero = SelflessHero("Selfless Hero", 2, 1, 1, 0, False, False, True)
 glyph_guardian = GlyphGuardian("Glyph Guardian", 2, 4, 2, 2, False, False, False)
+
+
+
+# done but need to be finished
 red_whelp = RedWhelp("Red Whelp", 1, 2, 1, 2, False, False, False)
+infested_wolf = InfestedWolf("Infested Wolf", 3, 3, 3, 3, False, False, True)
 
 
-
-# classes written:
+# to do:
 murloc_warleader = Card("Murloc Warleader", 3, 3, 2, 1, False, False, False)
+
 
 # battlecry:
 rockpool_hunter = Card("Rockpool Hunter", 2, 3, 1, 1, False, False, False)
@@ -133,52 +129,10 @@ minions_lst = [dragonspawn_lieutenant, righteous_protector, murloc_warleader,
 
 
 
-
-
-
-
-
-
-
-
+# ?
 # class Event:
 # 	def __init__(self, evnt):
 # 		self.evnt = evnt
-
-
-
-#CHECKCHEKCCHECKCHEKCHCKLECHEKCHEKCHEKCHEKCHECK
-
-
-# class AddingAttack(Event):
-# 	# murloc_warleader
-
-# 	is_alive = True
-# 	is_attack_added = False
-
-# 	def __init__(self, is_alive, additional_attack, objects_to_whom):
-		
-# 		for i in self.objects_to_whom:
-# 			i.attack += additional_attack
-
-# 		is_attack_added = True
-
-# class DoublingAttack(Event):
-# 	# glyph guardian
-
-# 	is_attacking = True
-
-# 	def __init__(self, attack):
-# 		self.attack = 2*attack
-
-
-
-# class StartOfCombat(Event):
-# 	# red whelp
-# 	is_attacking = True
-
-# 	def __init__(self, warband):
-# 		damage = sum(1 for i in self.warband if i.m_type == 2)
 
 
 

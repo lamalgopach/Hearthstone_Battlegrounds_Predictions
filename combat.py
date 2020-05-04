@@ -95,9 +95,9 @@ def game_order():
 
 	return p1, p2, game
 
-def kill_minion(minion, minions):
+def kill_minion(minion, minions, j):
 	if minion.has_deathrattle:
-		minion.deathrattle(minions)
+		minion.deathrattle(minions, j)
 	return minions
 
 def redwhelp_attack(redwhelp, game, attackers_minions, opponents_minions, i):
@@ -107,6 +107,7 @@ def redwhelp_attack(redwhelp, game, attackers_minions, opponents_minions, i):
 	redwhelp.take_no_damage()
 	attacked_minion = random.choice(opponents_minions)
 	redwhelp, attacked_minion = attack_in_combat(redwhelp, attacked_minion)
+	print("Red Whelp damage: ", attacked_minion.name)
 
 	redwhelp.attack = start_rw_attack
 
@@ -118,7 +119,7 @@ def redwhelp_attack(redwhelp, game, attackers_minions, opponents_minions, i):
 		# print(attacked_minion.name, "goni")
 		# print()
 		game[i].remove(attacked_minion)
-		game[i] = kill_minion(attacked_minion, opponents_minions)
+		game[i] = kill_minion(attacked_minion, opponents_minions, attacked_minion)
 		
 		# for minion in game[i]:
 		# 	print(minion.name)
@@ -257,7 +258,7 @@ def combat(p1, p2, game):
 			# print()
 			del game[a][offensive]
 			
-			kill_minion(minion1, game[a])
+			kill_minion(minion1, game[a], offensive)
 			# print(not p1, not p2)
 			# for i in game[a]:
 			# 	print(i.name)
@@ -279,7 +280,7 @@ def combat(p1, p2, game):
 			# print()
 			del game[b][attacked_minion]
 
-			kill_minion(minion2, game[b])
+			kill_minion(minion2, game[b], attacked_minion)
 			# print(not p1, not p2)
 			# for i in game[b]:
 			# 	print(i.name)
