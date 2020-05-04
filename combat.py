@@ -34,7 +34,8 @@ murloc_warleader = Card("Murloc Warleader", 3, 3, 2, 1, False, False, False)
 # battlecry:
 rockpool_hunter = Card("Rockpool Hunter", 2, 3, 1, 1, False, False, False)
 
-alices_warband = [red_whelp, righteous_protector, murloc_warleader, glyph_guardian, spawn_of_nzoth, rockpool_hunter]
+alices_warband = [red_whelp, righteous_protector, murloc_warleader, glyph_guardian, 
+					spawn_of_nzoth, rockpool_hunter]
 bobs_warband = [dragonspawn_lieutenant, infested_wolf, selfless_hero]
 
 
@@ -96,10 +97,10 @@ def game_order():
 
 	return p1, p2, game
 
-def kill_minion(minion, minions, j):
-	if minion.has_deathrattle:
-		minion.deathrattle(minions, j)
-	return minions
+# def kill_minion(minion, minions, j):
+# 	if minion.has_deathrattle:
+# 		minion.deathrattle(minions, j)
+# 	return minions
 
 def redwhelp_attack(redwhelp, game, attackers_minions, opponents_minions, i):
 
@@ -114,12 +115,9 @@ def redwhelp_attack(redwhelp, game, attackers_minions, opponents_minions, i):
 	redwhelp.attack = start_rw_attack
 
 	if attacked_minion.health < 1:
-		
 		j = game[i].index(attacked_minion)
+		attacked_minion.die(game[i], j)
 
-		del game[i][j]
-
-		game[i] = kill_minion(attacked_minion, opponents_minions, j)
 
 	return game
 
@@ -128,18 +126,13 @@ def count_taunts(px):
 	output = 0
 	taunted_minions = []
 
-
 	for p in px:
-
 		if p.is_taunted == True:
 			output += 1
 			taunted_minions.append(p)
-
 	return output, taunted_minions
 
-
 p1, p2, game = game_order()
-
 
 def combat(p1, p2, game):
 
@@ -169,7 +162,6 @@ def combat(p1, p2, game):
 			if isinstance(minion, RedWhelp):
 				redwhelp_attack(minion, game, attackers_minions, opponents_minions, i)
 		i = 0
-
 
 	# print("minions after start of combat:")
 	# print("p1 after start of combat:")
@@ -236,16 +228,15 @@ def combat(p1, p2, game):
 		# if minion2.health < 1:
 		# 	print("dead:", minion2.name)
 
-		# if minion1 or minion2 has <0 health -> kill it:
-		if minion1.health <= 0:
-			del game[a][offensive]
-			kill_minion(minion1, game[a], offensive)
+		# if minion1 or minion2 has < 0 health -> minion dies:
+		if minion1.health < 1:
+			minion1.die(game[a], offensive)
 			dead_attacker_minion = 1
 
-		if minion2.health <= 0:
-			del game[b][attacked_minion]
-			kill_minion(minion2, game[b], attacked_minion)
+		if minion2.health < 1:
+			minion2.die(game[b], attacked_minion)
 			dead_attacked_minion += 1
+
 
 		# next minion:
 		offensive += 1
@@ -261,7 +252,7 @@ def combat(p1, p2, game):
 				defensive -= 1
 
 		# if attacked player has attacking his last minion in the warband 
-		# start again: DO WE NEED THAT???
+		# start again:
 		if defensive > len(game[b]) - 1:
 			defensive = 0
 

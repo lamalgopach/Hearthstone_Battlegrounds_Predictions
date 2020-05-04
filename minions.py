@@ -45,8 +45,11 @@ class Card:
 	def remove_ds(self):
 		self.has_ds = False
 
-	# def die(self, friendly_minions):
-	# 	del friendly_minions
+	def die(self, friendly_minions, j):
+		del friendly_minions[j]
+		if self.has_deathrattle:
+			self.deathrattle(friendly_minions, j)
+		return friendly_minions
 
 
 class SelflessHero(Card):
