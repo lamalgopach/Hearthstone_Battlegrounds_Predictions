@@ -1,59 +1,11 @@
 import random
 from random import choice
 import copy
-from minions import Player, minions_lst, Card, SelflessHero, SpawnOfnZoth, InfestedWolf
-from minions import GlyphGuardian, RedWhelp
+from minions import Player, RedWhelp
+from creating_minions_in_warbands import create_warband
 
-alices_warband = [] 
-bobs_warband = []
-
-# for minion in minions_lst:
-
-# 	s = random.choice([1, 2])
-
-# 	if s == 2:
-# 		alices_warband.append(minion)
-# 	else:
-# 		bobs_warband.append(minion)
-
-# minions completed:
-
-dragonspawn_lieutenant = Card("Dragonspawn Lieutenant", 2, 3, 1, 2, True, False, False)
-righteous_protector = Card("Righteous Protector", 1, 1, 1, 0, True, True, False)
-spawn_of_nzoth = SpawnOfnZoth("Spawn Of n'Zoth", 2, 2, 2, 0, False, False, True)
-selfless_hero = SelflessHero("Selfless Hero", 2, 1, 1, 0, False, False, True)
-glyph_guardian = GlyphGuardian("Glyph Guardian", 2, 4, 2, 2, False, False, False)
-infested_wolf = InfestedWolf("Infested Wolf", 3, 3, 3, 3, False, False, True)
-
-# done but need to be finished
-red_whelp = RedWhelp("Red Whelp", 1, 2, 1, 2, False, False, False)
-
-# to do:
-murloc_warleader = Card("Murloc Warleader", 3, 3, 2, 1, False, False, False)
-
-# battlecry:
-rockpool_hunter = Card("Rockpool Hunter", 2, 3, 1, 1, False, False, False)
-
-alices_warband = [red_whelp, righteous_protector, murloc_warleader, glyph_guardian, 
-					spawn_of_nzoth, rockpool_hunter]
-bobs_warband = [dragonspawn_lieutenant, infested_wolf, selfless_hero]
-
-
-# change it:
-# create objects immidietely
-# choose randomly fromthe list
-# make minions dict??? or what?
-
-# for i in range(14):
-# 	s = random.choice([0, 1, 2, 3, 4, 5, 6, 7, 8])
-# 	p = random.choice([1, 2])
-
-# 	if p == 2:
-# 		minion = create_minion(s)
-# 		alices_warband.append(minion)
-# 	else:
-# 		bobs_warband.append(minion)
-
+alices_warband = create_warband()
+bobs_warband = create_warband()
 
 
 Player_1 = Player("Alice", alices_warband)

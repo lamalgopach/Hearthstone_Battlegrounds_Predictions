@@ -99,13 +99,11 @@ class RedWhelp(Card):
 				damage += 1
 		self.attack = damage
 
-
 	def take_no_damage(self):
 		self.has_ds = True
 
 
 # minions completed:
-
 dragonspawn_lieutenant = Card("Dragonspawn Lieutenant", 2, 3, 1, 2, True, False, False)
 righteous_protector = Card("Righteous Protector", 1, 1, 1, 0, True, True, False)
 spawn_of_nzoth = SpawnOfnZoth("Spawn Of n'Zoth", 2, 2, 2, 0, False, False, True)
@@ -113,15 +111,11 @@ selfless_hero = SelflessHero("Selfless Hero", 2, 1, 1, 0, False, False, True)
 glyph_guardian = GlyphGuardian("Glyph Guardian", 2, 4, 2, 2, False, False, False)
 infested_wolf = InfestedWolf("Infested Wolf", 3, 3, 3, 3, False, False, True)
 
-
-# done but need to be finished
+# done but need to be finished (random player order)
 red_whelp = RedWhelp("Red Whelp", 1, 2, 1, 2, False, False, False)
-
-
 
 # to do:
 murloc_warleader = Card("Murloc Warleader", 3, 3, 2, 1, False, False, False)
-
 
 # battlecry:
 rockpool_hunter = Card("Rockpool Hunter", 2, 3, 1, 1, False, False, False)
