@@ -8,10 +8,8 @@ class Player:
 	def __init__(self, name, warband):
 		self.name = name
 		self.warband = warband
-		# type of warband -> list
 
 class MinionType(Enum):
-
 	PLAIN = 0
 	MURLOC = 1
 	DRAGON = 2
@@ -91,6 +89,18 @@ class GlyphGuardian(Card):
 
 class RedWhelp(Card):
 
+	# name = "RedWhelp"
+	# attack = 1
+	# health = 2
+	# tier = 1
+	# m_type = 2
+	# is_taunted = False
+	# has_ds = False
+	# has_deathrattle = False
+
+	def take_no_damage(self):
+		self.has_ds = True
+
 	def add_damage(self, minions):
 		damage = 0
 
@@ -98,9 +108,9 @@ class RedWhelp(Card):
 			if minion.m_type == 2:
 				damage += 1
 		self.attack = damage
+		self.take_no_damage()
 
-	def take_no_damage(self):
-		self.has_ds = True
+
 
 
 # minions completed:
