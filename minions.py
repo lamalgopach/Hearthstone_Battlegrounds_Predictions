@@ -34,6 +34,9 @@ class Card:
 
 	# deathrattle = None
 
+	def attack(self):
+		return
+
 
 	def take_damage(self, damage):
 		if damage == 0:
@@ -63,9 +66,10 @@ class DragonspawnLieutenant(Card):
 class GlyphGuardian(Card):
 	def __init__(self):
 		super().__init__(name="Glyph Guardian", attack_value=2, health=4, tier=2, m_type=2)
-	def add_attack(self):
+	def attack(self):
 		#change it
 		self.attack_value = 2 * self.attack_value
+		
 
 
 class InfestedWolf(Card):

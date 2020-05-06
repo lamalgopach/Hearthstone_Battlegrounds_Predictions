@@ -17,18 +17,23 @@ Player_2 = Player("Bob", bobs_warband)
 print("START OF THE GAME: ")
 print("Alices:")
 for minion in alices_warband:
-	print(minion.name)
-print()
-
+	print(minion.name, minion.attack_value, minion.health, minion.has_ds)
 print("Bobs:")
 for minion in bobs_warband:
-	print(minion.name)
+	print(minion.name, minion.attack_value, minion.health)
 print()
 
 
 def attack_in_combat(minion1, minion2):
-	if minion1.name == "GlyphGuardian":
-		minion1.add_attack()
+	# if minion1.name == "GlyphGuardian":
+	if type(minion1) == GlyphGuardian:
+		print(minion1.attack_value, "BEFORE")
+
+	minion1.attack()
+	# minion2.attack()
+
+	if type(minion1) == GlyphGuardian:
+		print(minion1.attack_value, "AFTER")
 	minion1.take_damage(minion2.attack_value)
 	minion2.take_damage(minion1.attack_value)
 
@@ -91,7 +96,7 @@ def redwhelp_attack(redwhelp, game, attackers_minions, opponents_minions, i):
 
 	for p in game:
 		for minion in p:
-			print(minion.attack_value, minion.health, minion.name)
+			print(minion.name, minion.attack_value, minion.health, minion.has_ds)
 		print()
 	print()
 
