@@ -1,3 +1,11 @@
+class Player:
+
+	def __init__(self, name, warband, life=40):
+		self.name = name
+		self.warband = warband
+		self.life = life
+
+
 
 class Battle():
 	#should I use other classes?

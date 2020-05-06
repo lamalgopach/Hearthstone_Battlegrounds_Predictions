@@ -1,7 +1,8 @@
 import random
 from random import choice
 import copy
-from minions import Player, RedWhelp
+from battle import Player, Battle
+from minions import RedWhelp
 from creating_minions_in_warbands import create_warband
 
 # to be removed later:
@@ -25,15 +26,9 @@ print()
 
 
 def attack_in_combat(minion1, minion2):
-	# if minion1.name == "GlyphGuardian":
-	if type(minion1) == GlyphGuardian:
-		print(minion1.attack_value, "BEFORE")
 
 	minion1.attack()
-	# minion2.attack()
 
-	if type(minion1) == GlyphGuardian:
-		print(minion1.attack_value, "AFTER")
 	minion1.take_damage(minion2.attack_value)
 	minion2.take_damage(minion1.attack_value)
 
@@ -46,7 +41,6 @@ def count_damage(warband):
 		damage += minion.tier
 
 	return damage
-
 
 def game_order():
 
@@ -70,10 +64,6 @@ def game_order():
 
 	return p1, p2, game
 
-# def kill_minion(minion, minions, j):
-# 	if minion.has_deathrattle:
-# 		minion.deathrattle(minions, j)
-# 	return minions
 
 def redwhelp_attack(redwhelp, game, attackers_minions, opponents_minions, i):
 
