@@ -11,39 +11,6 @@ from minions import Card, SpawnOfnZoth, SelflessHero, GlyphGuardian, InfestedWol
 alices_warband = create_warband()
 bobs_warband = create_warband()
 
-
-
-# to be removed later:
-# minions completed:
-# dragonspawn_lieutenant = Card("Dragonspawn Lieutenant", 2, 3, 1, 2, True, False, False)
-# righteous_protector = Card("Righteous Protector", 1, 1, 1, 0, True, True, False)
-# spawn_of_nzoth = SpawnOfnZoth("Spawn Of n'Zoth", 2, 2, 2, 0, False, False, True)
-# spawn_of_nzoth_2 = SpawnOfnZoth("Spawn Of n'Zoth", 2, 2, 2, 0, False, False, True)
-# selfless_hero = SelflessHero("Selfless Hero", 2, 1, 1, 0, False, False, True)
-# selfless_hero_2 = SelflessHero("Selfless Hero", 2, 1, 1, 0, False, False, True)
-# glyph_guardian = GlyphGuardian("Glyph Guardian", 2, 4, 2, 2, False, False, False)
-# infested_wolf = InfestedWolf("Infested Wolf", 3, 3, 3, 3, False, False, True)
-# infested_wolf_2 = InfestedWolf("Infested Wolf", 3, 3, 3, 3, False, False, True)
-# infested_wolf_3 = InfestedWolf("Infested Wolf", 3, 3, 3, 3, False, False, True)
-
-# # done but need to be finished (random player order)
-# red_whelp = RedWhelp("Red Whelp", 1, 2, 1, 2, False, False, False)
-# red_whelp_2 = RedWhelp("Red Whelp", 1, 2, 1, 2, False, False, False)
-
-# # to do:
-# murloc_warleader = Card("Murloc Warleader", 3, 3, 2, 1, False, False, False)
-
-# # battlecry:
-# rockpool_hunter = Card("Rockpool Hunter", 2, 3, 1, 1, False, False, False)
-# rockpool_hunter_2 = Card("Rockpool Hunter", 2, 3, 1, 1, False, False, False)
-
-# alices_warband = [infested_wolf, infested_wolf_2, red_whelp, glyph_guardian, murloc_warleader, 
-# 				rockpool_hunter, infested_wolf_3]
-
-# bobs_warband = [dragonspawn_lieutenant, spawn_of_nzoth, red_whelp_2, rockpool_hunter_2, 
-# 				selfless_hero, selfless_hero_2, spawn_of_nzoth_2]
-
-
 Player_1 = Player("Alice", alices_warband)
 Player_2 = Player("Bob", bobs_warband)
 
@@ -62,8 +29,8 @@ print()
 def attack_in_combat(minion1, minion2):
 	if minion1.name == "GlyphGuardian":
 		minion1.add_attack()
-	minion1.take_damage(minion2.attack)
-	minion2.take_damage(minion1.attack)
+	minion1.take_damage(minion2.attack_value)
+	minion2.take_damage(minion1.attack_value)
 
 	return minion1, minion2
 
@@ -105,15 +72,15 @@ def game_order():
 
 def redwhelp_attack(redwhelp, game, attackers_minions, opponents_minions, i):
 
-	start_rw_attack = redwhelp.attack
+	start_attack_value_rw = redwhelp.attack_value
 
 	redwhelp.add_damage(attackers_minions)
 	# redwhelp.take_no_damage()
 	attacked_minion = random.choice(opponents_minions)
 	redwhelp, attacked_minion = attack_in_combat(redwhelp, attacked_minion)
-	print("red_whelp's attack: ", redwhelp.attack)
+	print("red_whelp's attack: ", redwhelp.attack_value)
 
-	redwhelp.attack = start_rw_attack
+	redwhelp.attack_value = start_attack_value_rw
 
 	if attacked_minion.health < 1:
 		j = game[i].index(attacked_minion)
@@ -124,7 +91,7 @@ def redwhelp_attack(redwhelp, game, attackers_minions, opponents_minions, i):
 
 	for p in game:
 		for minion in p:
-			print(minion.attack, minion.health, minion.name)
+			print(minion.attack_value, minion.health, minion.name)
 		print()
 	print()
 
@@ -159,11 +126,11 @@ def combat(p1, p2, game):
 	print("Minions after start of combat:")
 	print(Player_1.name)
 	for minion in p1:
-		print(minion.name, minion.health, minion.attack)
+		print(minion.name, minion.health, minion.attack_value)
 	print()
 	print(Player_2.name)
 	for minion in p2:
-		print(minion.name, minion.health, minion.attack, minion.has_ds)
+		print(minion.name, minion.health, minion.attack_value, minion.has_ds)
 	print()
 
 	# game indexes, change each turn:
@@ -208,8 +175,8 @@ def combat(p1, p2, game):
 		minion1 = game[a][offensive]
 		minion2 = game[b][attacked_minion]
 			
-		print("attacker", minion1.name, minion1.attack, minion1.health)
-		print("attacked", minion2.name, minion2.attack, minion2.health)
+		print("attacker", minion1.name, minion1.attack_value, minion1.health)
+		print("attacked", minion2.name, minion2.attack_value, minion2.health)
 
 
 		# attack phase:
