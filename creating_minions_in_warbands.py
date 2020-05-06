@@ -1,13 +1,19 @@
 import random
 from random import choice
-from minions import minions_lst
+from minions import DragonspawnLieutenant, GlyphGuardian, InfestedWolf, MurlocWarleader
+from minions import RedWhelp, RighteousProtector, RockpoolHunter, SpawnOfnZoth, SelflessHero
 import copy
+
+
+def create_minion():
+	class_types = [DragonspawnLieutenant(), GlyphGuardian(), InfestedWolf(), 
+				MurlocWarleader(),RedWhelp(), RighteousProtector(), RockpoolHunter(), 
+				SpawnOfnZoth(), SelflessHero()]
+	return random.choice(class_types)
 
 def create_warband():
 	warband = []
 	while len(warband) != 7:
-		s = random.choice([0, 1, 2, 3, 4, 5, 6, 7, 8])
-		obj = copy.copy(minions_lst[s])
-		warband.append(obj)
-
+		minion = create_minion()
+		warband.append(minion)
 	return warband
