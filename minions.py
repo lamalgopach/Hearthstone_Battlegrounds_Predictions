@@ -5,9 +5,10 @@ from enum import Enum
 
 class Player:
 
-	def __init__(self, name, warband):
+	def __init__(self, name, warband, life=40):
 		self.name = name
 		self.warband = warband
+		self.life = life
 
 class MinionType(Enum):
 	PLAIN = 0

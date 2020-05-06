@@ -249,9 +249,17 @@ def combat(p1, p2, game):
 
 	else:
 		winner = Player_1.name if p1 else Player_2.name 
+		loser = Player_2 if p1 else Player_1
 		print(f'{winner} WINNER')
+		print(f'{loser.name} LOSER')
 		
 		damage = count_damage(p1) if p1 else count_damage(p2)
+		loser.life -= damage
+		print(Player_1.life, "P1 life", Player_1.name)
+		print(Player_2.life, "P2 life", Player_2.name)
+
 		print(f'DAMAGE: {damage}')
+
+
 
 combat(p1, p2, game)
