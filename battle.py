@@ -18,11 +18,10 @@ class Player:
 
 
 class Battle():
-	#should I use other classes?
+
 	def __init__(self, player1, player2):
 		self.player1 = player1
 		self.player2 = player2
-		# self.game_state = game_state
 
 
 	def start_of_combat():
@@ -37,11 +36,14 @@ class Battle():
 
 		order = True
 
-		p1 = self.player1.warband
-		p2 = self.player2.warband
+		# p1 = self.player1.warband
+		# p2 = self.player2.warband
 
-		self.player1.warband = copy.deepcopy(p1)
-		self.player2.warband = copy.deepcopy(p2)
+		# self.player1.warband = copy.deepcopy(p1)
+		# self.player2.warband = copy.deepcopy(p2)
+
+		p1 = copy.deepcopy(self.player1.warband)
+		p2 = copy.deepcopy(self.player2.warband)		
 
 		if len(self.player1.warband) < len(self.player2.warband):
 			order = False
@@ -67,17 +69,17 @@ class Battle():
 
 		pass
 
-	def print_state(self, statement):
+	def print_state(self, statement, p1, p2):
 		print()
 		print()
 		print(statement)
 		print()
-		print(self.player1.name)
-		for minion in self.player1.warband:
+
+		for minion in p1:
 			print(minion.name, minion.attack_value, minion.health, minion.has_ds)
 		print()
-		print(self.player2.name)
-		for minion in self.player2.warband:
+
+		for minion in p2:
 			print(minion.name, minion.attack_value, minion.health, minion.has_ds)
 		print()
 
