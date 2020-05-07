@@ -28,33 +28,9 @@ def attack_in_combat(minion1, minion2):
 	return minion1, minion2
 
 
-def game_order():
-
-	order = True
-
-	p1 = Player1.warband
-	p2 = Player2.warband
-
-	Player1.warband = copy.deepcopy(p1)
-	Player2.warband = copy.deepcopy(p2)
-
-	if len(Player1.warband) < len(Player2.warband):
-		order = False
-	elif len(Player1.warband) == len(Player2.warband):
-		order = random.choice([True, False])
-
-	if order == True:
-		game = [p1, p2]
-	else:
-		game = [p2, p1]
-
-	print()
-	print(game)
-	print()
-	battle.print_state()
-	print()
-
-	return p1, p2, game
+p1, p2, game = battle.choose_first()
+print(game[0]==p1)
+print(game[1]==p1)
 
 
 def redwhelp_attack(redwhelp, game, attackers_minions, opponents_minions, i):
@@ -89,7 +65,7 @@ def count_taunts(px):
 			taunted_minions.append(p)
 	return output, taunted_minions
 
-p1, p2, game = game_order()
+# p1, p2, game = game_order()
 
 def combat(p1, p2, game):
 
@@ -235,6 +211,7 @@ def combat(p1, p2, game):
 		print(f'DAMAGE: {damage}')
 		print(Player1.life, "P1 life", Player1.name)
 		print(Player2.life, "P2 life", Player2.name)
+
 
 
 

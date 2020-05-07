@@ -1,3 +1,6 @@
+import copy
+import random
+
 class Player:
 
 	def __init__(self, name, warband, life=40):
@@ -32,9 +35,27 @@ class Battle():
 		# red whelp attack(no damage)
 		pass
 
-	def choose_first():
-		# randomly choose first player
-		pass
+	def choose_first(self):
+
+		order = True
+
+		p1 = self.player1.warband
+		p2 = self.player2.warband
+
+		self.player1.warband = copy.deepcopy(p1)
+		self.player2.warband = copy.deepcopy(p2)
+
+		if len(self.player1.warband) < len(self.player2.warband):
+			order = False
+		elif len(self.player1.warband) == len(self.player2.warband):
+			order = random.choice([True, False])
+
+		if order == True:
+			game = [p1, p2]
+		else:
+			game = [p2, p1]
+
+		return p1, p2, game
 
 	def play():
 		# first player attack
@@ -49,6 +70,7 @@ class Battle():
 		pass
 
 	def print_state(self):
+		print()
 		print(self.player1.name)
 		for minion in self.player1.warband:
 			print(minion.name, minion.attack_value, minion.health, minion.has_ds)
@@ -56,5 +78,6 @@ class Battle():
 		print(self.player2.name)
 		for minion in self.player2.warband:
 			print(minion.name, minion.attack_value, minion.health, minion.has_ds)
+		print()
 
 
