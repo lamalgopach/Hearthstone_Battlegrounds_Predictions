@@ -5,6 +5,8 @@ class Player:
 		self.warband = warband
 		self.life = life
 
+
+	# at the end of the battle count damage:
 	def count_final_damage(self, warband):
 		damage = 0
 
@@ -46,7 +48,13 @@ class Battle():
 
 		pass
 
-	# at the end of the game count damage:
-
+	def print_state(self):
+		print(self.player1.name)
+		for minion in self.player1.warband:
+			print(minion.name, minion.attack_value, minion.health, minion.has_ds)
+		print()
+		print(self.player2.name)
+		for minion in self.player2.warband:
+			print(minion.name, minion.attack_value, minion.health, minion.has_ds)
 
 

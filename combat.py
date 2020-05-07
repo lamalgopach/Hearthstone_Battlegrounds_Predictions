@@ -14,18 +14,9 @@ Player2 = Player("Bob", bobs_warband)
 
 battle = Battle(Player1, Player2)
 
-def print_state():
-	print("Alices:")
-	for minion in alices_warband:
-		print(minion.name, minion.attack_value, minion.health, minion.has_ds)
-	print()
-	print("Bobs:")
-	for minion in bobs_warband:
-		print(minion.name, minion.attack_value, minion.health)
-	print()
 
-# print("START OF THE GAME: ")
-# print_state()
+print("START OF THE GAME: ")
+battle.print_state()
 
 def attack_in_combat(minion1, minion2):
 
@@ -35,7 +26,6 @@ def attack_in_combat(minion1, minion2):
 	minion2.take_damage(minion1.attack_value)
 
 	return minion1, minion2
-
 
 
 def game_order():
@@ -61,7 +51,7 @@ def game_order():
 	print()
 	print(game)
 	print()
-	print_state()
+	battle.print_state()
 	print()
 
 	return p1, p2, game
@@ -85,10 +75,9 @@ def redwhelp_attack(redwhelp, game, attackers_minions, opponents_minions, i):
 	# print()
 	# print("Minion attacked by RedWhelp:", attacked_minion.name)
 	# print("WARBANDS AFTER THIS COMBAT: ")
-	# print_state()
+	# battle.print_state()
 
 	return game
-
 
 def count_taunts(px):
 	output = 0
@@ -116,7 +105,7 @@ def combat(p1, p2, game):
 	# print()
 	# print()
 	# print("Minions after start of combat:")
-	# print_state()
+	# battle.print_state()
 
 	# game indexes, change each turn:
 	# a - attacking
@@ -202,7 +191,7 @@ def combat(p1, p2, game):
 		# print()
 		# print()
 		# print("Warbands after combat:")
-		# print_state()
+		# battle.print_state()
 
 		# end of turn, change the player:
 		if a == 0:
