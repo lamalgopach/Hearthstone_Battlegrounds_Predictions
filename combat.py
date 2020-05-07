@@ -14,9 +14,7 @@ Player2 = Player("Bob", bobs_warband)
 
 battle = Battle(Player1, Player2)
 
-
-print("START OF THE GAME: ")
-battle.print_state()
+battle.print_state("START OF THE GAME: ")
 
 def attack_in_combat(minion1, minion2):
 
@@ -47,11 +45,7 @@ def redwhelp_attack(redwhelp, game, attackers_minions, opponents_minions, i):
 		j = game[i].index(attacked_minion)
 		attacked_minion.die(game[i], j)
 
-	# print()
-	# print()
-	# print("Minion attacked by RedWhelp:", attacked_minion.name)
-	# print("WARBANDS AFTER THIS COMBAT: ")
-	# battle.print_state()
+	battle.print_state("WARBANDS AFTER RED WHELP's START OF COMBAT: ")
 
 	return game
 
@@ -65,7 +59,6 @@ def count_taunts(px):
 			taunted_minions.append(p)
 	return output, taunted_minions
 
-# p1, p2, game = game_order()
 
 def combat(p1, p2, game):
 
@@ -78,10 +71,8 @@ def combat(p1, p2, game):
 				redwhelp_attack(minion, game, attackers_minions, opponents_minions, i)
 		i = 0
 
-	# print()
-	# print()
-	# print("Minions after start of combat:")
-	# battle.print_state()
+
+	battle.print_state("Warbands after start of combat: ")
 
 	# game indexes, change each turn:
 	# a - attacking
@@ -164,10 +155,8 @@ def combat(p1, p2, game):
 		if defensive > len(game[b]) - 1:
 			defensive = 0
 
-		# print()
-		# print()
-		# print("Warbands after combat:")
-		# battle.print_state()
+		p = Player1.name if game[a] == p1 else Player2.name
+		battle.print_state(f'Warbands after {p}\'s attack: ')
 
 		# end of turn, change the player:
 		if a == 0:
@@ -206,15 +195,9 @@ def combat(p1, p2, game):
 
 		damage = Player1.count_final_damage(p1) if p1 else Player2.count_final_damage(p2)
 
-
 		loser.life -= damage
 		print(f'DAMAGE: {damage}')
 		print(Player1.life, "P1 life", Player1.name)
 		print(Player2.life, "P2 life", Player2.name)
-
-
-
-
-
 
 combat(p1, p2, game)
