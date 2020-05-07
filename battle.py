@@ -3,14 +3,15 @@ import random
 
 class Player:
 
-	def __init__(self, name, warband, life=40):
+	def __init__(self, name, warband, tier=1, life=40):
 		self.name = name
 		self.warband = warband
+		self.tier = tier
 		self.life = life
 
 	# at the end of the battle count damage:
 	def count_final_damage(self, alive_minions):
-		damage = 0
+		damage = self.tier
 		for minion in alive_minions:
 			damage += minion.tier
 		return damage
@@ -18,10 +19,10 @@ class Player:
 
 class Battle():
 	#should I use other classes?
-	def __init__(self, player1, player2, game_state=[]):
+	def __init__(self, player1, player2):
 		self.player1 = player1
 		self.player2 = player2
-		self.game_state = game_state
+		# self.game_state = game_state
 
 
 	def start_of_combat():
