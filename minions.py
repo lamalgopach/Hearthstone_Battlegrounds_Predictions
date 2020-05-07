@@ -3,15 +3,8 @@ import copy
 from random import choice
 from enum import Enum
 
-class Player:
-
-	def __init__(self, name, warband, life=40):
-		self.name = name
-		self.warband = warband
-		self.life = life
-
 class MinionType(Enum):
-	PLAIN = 0
+	MINION = 0
 	MURLOC = 1
 	DRAGON = 2
 	BEAST = 3
@@ -19,19 +12,16 @@ class MinionType(Enum):
 	DEMON = 5
 
 class Card:
-
-	def __init__(self, *, name, attack_value, health, tier, m_type, is_taunted=False, 
+	def __init__(self, *, name, attack_value, health, tier, m_type, taunt=False, 
 		has_ds=False, has_deathrattle=False):
 		self.name = name
 		self.attack_value = attack_value
 		self.health = health
 		self.tier = tier
 		self.m_type = m_type
-		self.is_taunted = is_taunted
+		self.taunt = taunt
 		self.has_ds = has_ds
 		self.has_deathrattle = has_deathrattle
-
-
 	# deathrattle = None
 
 	def attack(self):
@@ -59,23 +49,24 @@ class Card:
 
 class DragonspawnLieutenant(Card):
 	def __init__(self):
-		super().__init__(name="Dragonspawn Lieutenant", attack_value=2, health=3, tier=1, m_type=2, 
-			is_taunted=True)
+		super().__init__(name="Dragonspawn Lieutenant", attack_value=2, health=3, tier=1, 
+			m_type=MinionType.DRAGON, taunt=True)
 
 
 class GlyphGuardian(Card):
 	def __init__(self):
-		super().__init__(name="Glyph Guardian", attack_value=2, health=4, tier=2, m_type=2)
+		super().__init__(name="Glyph Guardian", attack_value=2, health=4, tier=2, 
+			m_type=MinionType.DRAGON)
 	def attack(self):
 		#change it
 		self.attack_value = 2 * self.attack_value
-		
+
 
 
 class InfestedWolf(Card):
 	def __init__(self):
-		super().__init__(name="Infested Wolf", attack_value=3, health=3, tier=3, m_type=3, 
-			has_deathrattle=True)
+		super().__init__(name="Infested Wolf", attack_value=3, health=3, tier=3, 
+			m_type=MinionType.MINION, has_deathrattle=True)
 	def deathrattle(self, friendly_minions, j):
 		spider = Spider()
 		#are you sure?
@@ -83,26 +74,30 @@ class InfestedWolf(Card):
 
 		if len(friendly_minions) < 6:
 			spider_2 = copy.copy(spider)
+			# shouldnt copy rather create another spider
+			# summon minion method in Player class
 			friendly_minions.insert(j + 1, spider)
 
 		return friendly_minions
 
 class MurlocWarleader(Card):
 	def __init__(self):
-		super().__init__(name="Murloc Warleader", attack_value=3, health=3, tier=2, m_type=1)
+		super().__init__(name="Murloc Warleader", attack_value=3, health=3, tier=2, 
+			m_type=MinionType.MURLOC)
 
 
 
 class RedWhelp(Card):
 	def __init__(self):
-		super().__init__(name="Red Whelp", attack_value=1, health=2, tier=1, m_type=2)
+		super().__init__(name="Red Whelp", attack_value=1, health=2, tier=1, 
+			m_type=MinionType.DRAGON)
 	def take_no_damage(self):
 		self.has_ds = True
 	def add_damage(self, minions):
 		damage = 0
 
 		for minion in minions:
-			if minion.m_type == 2:
+			if minion.m_type == MinionType.DRAGON:
 				damage += 1
 		self.attack_value = damage
 		# self.take_no_damage()
@@ -112,19 +107,20 @@ class RedWhelp(Card):
 
 class RighteousProtector(Card):
 	def __init__(self):
-		super().__init__(name="Righteous Protector", attack_value=1, health=1, tier=1, m_type=0,
-			is_taunted=True, has_ds =True)
+		super().__init__(name="Righteous Protector", attack_value=1, health=1, tier=1, 
+						m_type=MinionType.MINION, taunt=True, has_ds =True)
 
 
 class RockpoolHunter(Card):
 	def __init__(self):
-		super().__init__(name="Rockpool Hunter", attack_value=2, health=3, tier=1, m_type=1)
+		super().__init__(name="Rockpool Hunter", attack_value=2, health=3, tier=1, 
+						m_type=MinionType.MURLOC)
 
 
 class SelflessHero(Card):
 	def __init__(self):
-		super().__init__(name="Selfless Hero", attack_value=2, health=1, tier=1, m_type=0, 
-			has_deathrattle=True)
+		super().__init__(name="Selfless Hero", attack_value=2, health=1, tier=1, 
+						m_type=MinionType.MINION, has_deathrattle=True)
 	def deathrattle(self, friendly_minions, j):
 		if not friendly_minions:
 			return
@@ -135,8 +131,8 @@ class SelflessHero(Card):
 
 class SpawnOfnZoth(Card):
 	def __init__(self):
-		super().__init__(name="Spawn Of n'Zoth", attack_value=2, health=2, tier=2, m_type=2, 
-			has_deathrattle=True)
+		super().__init__(name="Spawn Of n'Zoth", attack_value=2, health=2, tier=2, 
+						m_type=MinionType.MINION, has_deathrattle=True)
 	def deathrattle(self, friendly_minions, j):
 		if friendly_minions:
 			for minion in friendly_minions:
@@ -145,11 +141,11 @@ class SpawnOfnZoth(Card):
 		return friendly_minions	
 
 
-# class not imported to creating minions in warbands:
-
+# class not imported to create minions in warbands:
 class Spider(Card):
 	def __init__(self):
-		super().__init__(name="Spider", attack_value=1, health=1, tier=1, m_type=3)
+		super().__init__(name="Spider", attack_value=1, health=1, tier=1, 
+			m_type=MinionType.BEAST)
 
 # Jakub:
 # minion = SpawnOfnZoth()
@@ -178,21 +174,6 @@ class Spider(Card):
 
 
 #todo:
-# redwhelp: random player order)
-# glyph_guardian: change add attack
-
-
-# minions_lst = [dragonspawn_lieutenant, righteous_protector, murloc_warleader,
-# 			glyph_guardian, red_whelp, spawn_of_nzoth, infested_wolf, selfless_hero, 
-# 			rockpool_hunter]
-
-
-
-# ?
-# class Event:
-# 	def __init__(self, evnt):
-# 		self.evnt = evnt
-
-
-
-
+# redwhelp: random player order, add pre combat, overcomplicated, 
+# think like effects(kabumbot, unstableghoul)
+# selfless hero: only minions without DS
