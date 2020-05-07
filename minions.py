@@ -91,18 +91,25 @@ class RedWhelp(Card):
 	def __init__(self):
 		super().__init__(name="Red Whelp", attack_value=1, health=2, tier=1, 
 			m_type=MinionType.DRAGON)
-	def take_no_damage(self):
-		self.has_ds = True
-	def add_damage(self, minions):
-		damage = 0
 
+	def add_damage_in_combat(self, minions):
+		damage = 0
 		for minion in minions:
 			if minion.m_type == MinionType.DRAGON:
 				damage += 1
-		self.attack_value = damage
-		# self.take_no_damage()
-		self.has_ds = True
+		return damage
 
+	def start_of_combat(self, friendly_minions, game, i):
+
+		damage = self.add_damage_in_combat(friendly_minions)
+		attacked_minion = random.choice(game[i])
+		attacked_minion.take_damage(damage)
+
+		if attacked_minion.health < 1:
+			j = game[i].index(attacked_minion)
+			attacked_minion.die(game[i], j)
+
+		return game
 
 
 class RighteousProtector(Card):

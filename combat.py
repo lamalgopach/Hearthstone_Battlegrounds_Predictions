@@ -14,7 +14,6 @@ Player2 = Player("Bob", bobs_warband)
 
 battle = Battle(Player1, Player2)
 
-battle.print_state("START OF THE GAME: ")
 
 def attack_in_combat(minion1, minion2):
 
@@ -27,34 +26,16 @@ def attack_in_combat(minion1, minion2):
 
 
 p1, p2, game = battle.choose_first()
-print(game[0]==p1)
-print(game[1]==p1)
 
+battle.print_state("START OF THE GAME: ", p1, p2)
 
-def redwhelp_attack(redwhelp, game, attackers_minions, opponents_minions, i):
-
-	start_attack_value_rw = redwhelp.attack_value
-
-	redwhelp.add_damage(attackers_minions)
-	attacked_minion = random.choice(opponents_minions)
-	redwhelp, attacked_minion = attack_in_combat(redwhelp, attacked_minion)
-
-	redwhelp.attack_value = start_attack_value_rw
-
-	if attacked_minion.health < 1:
-		j = game[i].index(attacked_minion)
-		attacked_minion.die(game[i], j)
-
-	battle.print_state("WARBANDS AFTER RED WHELP's START OF COMBAT: ")
-
-	return game
 
 def count_taunts(px):
 	output = 0
 	taunted_minions = []
 
 	for p in px:
-		if p.is_taunted == True:
+		if p.taunt == True:
 			output += 1
 			taunted_minions.append(p)
 	return output, taunted_minions
@@ -62,17 +43,17 @@ def count_taunts(px):
 
 def combat(p1, p2, game):
 
-	# start of combat:
+	# start of combat --> red whelp:
 	i = 1
-	for attackers_minions in game:
-		opponents_minions = game[i]
-		for minion in attackers_minions:
+	for friendly_minions in game:
+		enemy_minions = game[i]
+		for minion in friendly_minions:
 			if isinstance(minion, RedWhelp):
-				redwhelp_attack(minion, game, attackers_minions, opponents_minions, i)
+				minion.start_of_combat(friendly_minions, game, i)
 		i = 0
 
 
-	battle.print_state("Warbands after start of combat: ")
+	battle.print_state("Warbands after start of combat: ", p1, p2)
 
 	# game indexes, change each turn:
 	# a - attacking
@@ -156,7 +137,7 @@ def combat(p1, p2, game):
 			defensive = 0
 
 		p = Player1.name if game[a] == p1 else Player2.name
-		battle.print_state(f'Warbands after {p}\'s attack: ')
+		# battle.print_state(f'Warbands after {p}\'s attack: ')
 
 		# end of turn, change the player:
 		if a == 0:
@@ -183,10 +164,7 @@ def combat(p1, p2, game):
 		print("NO WINNER")
 		damage = 0
 
-
 	else:
-		print("p1: ", p1)
-		print("p2: ", p2)
 		print()
 		winner = Player1.name if p1 else Player2.name 
 		loser = Player2 if p1 else Player1
@@ -199,5 +177,6 @@ def combat(p1, p2, game):
 		print(f'DAMAGE: {damage}')
 		print(Player1.life, "P1 life", Player1.name)
 		print(Player2.life, "P2 life", Player2.name)
+
 
 combat(p1, p2, game)
