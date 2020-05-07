@@ -5,6 +5,13 @@ class Player:
 		self.warband = warband
 		self.life = life
 
+	def count_final_damage(self, warband):
+		damage = 0
+
+		for minion in warband:
+			damage += minion.tier
+
+		return damage
 
 
 class Battle():
@@ -38,6 +45,8 @@ class Battle():
 		# if self.player.life < 0:
 
 		pass
+
+	# at the end of the game count damage:
 
 
 

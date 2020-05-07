@@ -14,8 +14,6 @@ Player2 = Player("Bob", bobs_warband)
 
 battle = Battle(Player1, Player2)
 
-
-
 def print_state():
 	print("Alices:")
 	for minion in alices_warband:
@@ -38,13 +36,7 @@ def attack_in_combat(minion1, minion2):
 
 	return minion1, minion2
 
-def count_damage(warband):
-	damage = 0
 
-	for minion in warband:
-		damage += minion.tier
-
-	return damage
 
 def game_order():
 
@@ -65,6 +57,12 @@ def game_order():
 		game = [p1, p2]
 	else:
 		game = [p2, p1]
+
+	print()
+	print(game)
+	print()
+	print_state()
+	print()
 
 	return p1, p2, game
 
@@ -233,17 +231,23 @@ def combat(p1, p2, game):
 
 
 	else:
+		print("p1: ", p1)
+		print("p2: ", p2)
+		print()
 		winner = Player1.name if p1 else Player2.name 
 		loser = Player2 if p1 else Player1
 		print(f'{winner} WINNER')
 		print(f'{loser.name} LOSER')
-		
-		damage = count_damage(p1) if p1 else count_damage(p2)
+
+		damage = Player1.count_final_damage(p1) if p1 else Player2.count_final_damage(p2)
+
+
 		loser.life -= damage
+		print(f'DAMAGE: {damage}')
 		print(Player1.life, "P1 life", Player1.name)
 		print(Player2.life, "P2 life", Player2.name)
 
-		print(f'DAMAGE: {damage}')
+
 
 
 
