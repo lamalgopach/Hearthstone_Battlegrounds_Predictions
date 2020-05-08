@@ -3,21 +3,25 @@ import random
 
 class Player:
 
-	def __init__(self, name, warband, tier=1, life=40):
+	def __init__(self, name, warband, level=1, life=40):
 		self.name = name
 		self.warband = warband
-		self.tier = tier
+		self.level = level
 		self.life = life
 
 	# at the end of the battle count damage:
 	def count_final_damage(self, alive_minions):
-		damage = self.tier
+		damage = self.level
 		for minion in alive_minions:
 			damage += minion.tier
 		return damage
 
+	def summon_minion(self, class_type):
+		minion = class_type
+		return minion
 
-class Battle():
+
+class Battle:
 
 	def __init__(self, player1, player2):
 		self.player1 = player1
@@ -35,12 +39,6 @@ class Battle():
 	def choose_first(self):
 
 		order = True
-
-		# p1 = self.player1.warband
-		# p2 = self.player2.warband
-
-		# self.player1.warband = copy.deepcopy(p1)
-		# self.player2.warband = copy.deepcopy(p2)
 
 		p1 = copy.deepcopy(self.player1.warband)
 		p2 = copy.deepcopy(self.player2.warband)		
@@ -75,12 +73,51 @@ class Battle():
 		print(statement)
 		print()
 
+		print(self.player1.name)
 		for minion in p1:
 			print(minion.name, minion.attack_value, minion.health, minion.has_ds)
 		print()
 
+		print(self.player2.name)
 		for minion in p2:
 			print(minion.name, minion.attack_value, minion.health, minion.has_ds)
 		print()
+
+
+class GameState:
+
+	def __init__(self, player1, player2, attacker, attacked):
+		self.player1 = player1
+		self.player2 = player2
+		self.attacker = attacker
+		self.attacked = attacked
+
+	def next_turn(self):
+		if self.attacker == self.player1:
+			self.attacker = self.player2
+			self.attacked = self.player1
+		else:
+			self.attacker = self.player1
+			self.attacked = self.player2
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
