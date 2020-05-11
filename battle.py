@@ -86,22 +86,46 @@ class Battle:
 
 class GameState:
 
-	def __init__(self, player1, player2, attacking, attacked, attacking_warband, 
-				attacked_warband):
+	def __init__(self, player1, player2, warband1, warband2, attacking_player, 
+		attacked_player, attacking_warband, attacked_warband, attack1=0, attack2=0, 
+		attack_i=0, attacked_i=0):
 		self.player1 = player1
 		self.player2 = player2
-		self.attacking = attacking
-		self.attacked = attacked
+		self.warband1 = warband1
+		self.warband2 = warband2
+		self.attacking_player = attacking_player
+		self.attacked_player = attacked_player
 		self.attacking_warband = attacking_warband
 		self.attacked_warband = attacked_warband
+		self.attack1 = attack1
+		self.attack2 = attack2
+		self.attack_i = attack_i
+		self.attacked_i = attacked_i
 
 	def next_turn(self):
-		if self.attacking == self.player1:
-			self.attacking = self.player2
-			self.attacked = self.player1
+		if self.attacking_player == self.player1:
+			self.attacking_player = self.player2
+			self.attacked_player = self.player1
+			self.attacking_warband = self.warband2
+			self.attacked_warband = self.warband1
+
+			self.attack1 = self.attack_i
+			self.attack2 = self.attacked_i
+
+			self.attack_i = self.attack2
+			self.attacked_i = self.attack1
+
 		else:
-			self.attacking = self.player1
-			self.attacked = self.player2
+			self.attacking_player = self.player1
+			self.attacked_player = self.player2
+			self.attacking_warband = self.warband1
+			self.attacked_warband = self.warband2
+
+			self.attack2 = self.attack_i
+			self.attack1 = self.attacked_i
+
+			self.attack_i = self.attack1
+			self.attacked_i = self.attack2
 
 
 

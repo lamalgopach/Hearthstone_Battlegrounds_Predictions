@@ -15,7 +15,6 @@ Player2 = Player("Bob", bobs_warband)
 battle = Battle(Player1, Player2)
 
 
-
 def attack_in_combat(minion1, minion2):
 
 	minion1.attack()
@@ -26,18 +25,18 @@ def attack_in_combat(minion1, minion2):
 	return minion1, minion2
 
 
-p1, p2, game = battle.choose_first()
+w1, w2, game = battle.choose_first()
 
-battle.print_state("START OF THE GAME: ", p1, p2)
+battle.print_state("START OF THE GAME: ", w1, w2)
 
-attacker = Player1 if game[0] == p1 else Player2
-attacked = Player2 if game[1] == p2 else Player1
+attacking_player = Player1 if game[0] == w1 else Player2
+attacked_player = Player2 if game[1] == w2 else Player1
 
-attacking_warband = p1 if game[0] == p1 else p2
-attacked_warband = p2 if game[1] == p2 else p1
+attacking_warband = w1 if game[0] == w1 else w2
+attacked_warband = w2 if game[1] == w2 else w1
 
-game_state = GameState(Player1, Player2, attacker, attacked, attacking_warband, 
-						attacked_warband)
+game_state = GameState(Player1, Player2, w1, w2, attacking_player, attacked_player, 
+						attacking_warband, attacked_warband)
 
 
 def count_taunts(px):
@@ -48,10 +47,11 @@ def count_taunts(px):
 		if p.taunt == True:
 			output += 1
 			taunted_minions.append(p)
+	print(output, taunted_minions)
 	return output, taunted_minions
 
 
-def combat(p1, p2, game):
+def combat(w1, w2, game):
 	# start of combat --> red whelp:
 	i = 1
 	for friendly_minions in game:
@@ -61,7 +61,7 @@ def combat(p1, p2, game):
 				minion.start_of_combat(friendly_minions, game, i)
 		i = 0
 
-	# battle.print_state("Warbands after start of combat: ", p1, p2)
+	# battle.print_state("Warbands after start of combat: ", w1, w2)
 
 	# game indexes, change each turn:
 	# a - attacking
@@ -84,77 +84,91 @@ def combat(p1, p2, game):
 
 	# class_trial:
 
-	while p1 and p2:
+	while w1 and w2:
 		# assign attacked minion:
 		attacked_minion = None
 		# count dead minions:
 		dead_attacking_minion = 0
 		dead_attacked_minion = 0
+		
 
-
-		if count_taunts(game[b])[0] > 0:
-			taunts = count_taunts(game[b])[1]
+		if count_taunts(game_state.attacked_warband)[0] > 0:
+			taunts = count_taunts(game_state.attacked_warband)[1]
 			r = random.randint(0, len(taunts) - 1)
 			minion = taunts[r]
 
-			for i in range(len(game[b])):
-				if game[b][i].name == minion.name:
+			for i in range(len(game_state.attacked_warband)):
+				if game_state.attacked_warband[i].name == minion.name:
 					attacked_minion = i
 					break
-		# otherwise attaked minion is chosen randomly:
+
+
+			print("twoj szczesliwy numerek", attacked_minion)	
+		# otherwise attacked minion is chosen randomly:
 		else:
-			attacked_minion = random.randint(0, len(game[b]) - 1)	
+			attacked_minion = random.randint(0, len(attacked_warband) - 1)
+
 
 		# create minions in game:
-		minion1 = game[a][offensive]
-		minion2 = game[b][attacked_minion]
+		minion1 = game_state.attacking_warband[game_state.attack_i]
+		minion2 = game_state.attacked_warband[attacked_minion]
 			
-		# print("attacker", minion1.name, minion1.attack_value, minion1.health)
-		# print("attacked", minion2.name, minion2.attack_value, minion2.health)
+		print("attacker", minion1.name, minion1.attack_value, minion1.health)
+		print("attacked", minion2.name, minion2.attack_value, minion2.health)
 
 		# attack phase:
 		minion1, minion2 = attack_in_combat(minion1, minion2)
+		# print("after attack:")
+		# print("attacker", minion1.name, minion1.attack_value, minion1.health)
+		# print("attacked", minion2.name, minion2.attack_value, minion2.health)
 
 		if minion1.health < 1:
 			# player = create link to player
 			# minion1.die(game[a], offensive, player)
-			minion1.die(game[a], offensive)
+			minion1.die(attacking_warband, game_state.attack_i)
 			dead_attacking_minion = 1
 
 		if minion2.health < 1:
 			# minion2.die(game[b], attacked_minion, player)
-			minion2.die(game[b], attacked_minion)
+			minion2.die(attacked_warband, attacked_minion)
 			dead_attacked_minion += 1
 
 
-# next minion:
-		offensive += 1
-		# if attacker is dead we shoul keep track it:
-		offensive = offensive - dead_attacking_minion
+		# next minion:
+		# (if attacker is dead we should keep track it)
+		game_state.attack_i += 1 - dead_attacking_minion
 
-		# if offensive was the last minion in the warband start once again:
-		if offensive > len(game[a]) - 1:
-			offensive = 0
+
+		# if the last minion in the warband was attacking start once again:
+		if game_state.attack_i > len(attacking_warband) - 1:
+			game_state.attack_i = 0
 
 		if dead_attacked_minion == 1:
-			if defensive > attacked_minion:
-				defensive -= 1
+			if game_state.attacked_i > attacked_minion:
+				game_state.attacked_i -= 1
 
 		# if attacked player has attacking his last minion in the warband 
 		# start again:
-		if defensive > len(game[b]) - 1:
-			defensive = 0
+		if game_state.attacked_i > len(attacked_warband) - 1:
+			game_state.attacked_i = 0
 
-		p = Player1.name if game[a] == p1 else Player2.name
-		# battle.print_state(f'Warbands after {p}\'s attack: ', p1, p2)
+		# print()	
+		# print("previous turn indexes:")
+		# print(game_state.attack_i)
+		# print(game_state.attacked_i)
+		# battle.print_state(f'Warbands after {game_state.attacking_player.name}\'s attack: ', w1, w2)
 
 		# end of turn, change the player:
 
 		game_state.next_turn()
+		# print("next turn indexes:")
+		# print(game_state.attack_i)
+		# print(game_state.attacked_i)
+		# print()
 
 
 ####################################################################
-	# while p1 and p2:
+	# while w1 and w2:
 	# 	# assign attacked minion:
 	# 	attacked_minion = None
 	# 	# count dead minions:
@@ -171,7 +185,7 @@ def combat(p1, p2, game):
 	# 			if game[b][i].name == minion.name:
 	# 				attacked_minion = i
 	# 				break
-	# 	# otherwise attaked minion is chosen randomly:
+	# 	# otherwise attacked minion is chosen randomly:
 	# 	else:
 	# 		attacked_minion = random.randint(0, len(game[b]) - 1)
 
@@ -221,8 +235,8 @@ def combat(p1, p2, game):
 	# 	if defensive > len(game[b]) - 1:
 	# 		defensive = 0
 
-	# 	p = Player1.name if game[a] == p1 else Player2.name
-	# 	# battle.print_state(f'Warbands after {p}\'s attack: ', p1, p2)
+	# 	p = Player1.name if game[a] == w1 else Player2.name
+	# 	# battle.print_state(f'Warbands after {p}\'s attack: ', w1, w2)
 
 	# 	# end of turn, change the player:
 	# 	if a == 0:
@@ -245,23 +259,23 @@ def combat(p1, p2, game):
 	# 		offensive = first_player_minion_attacker
 	# 		defensive = second_player_minion_attacker
 
-	if not p1 and not p2:
+	if not w1 and not w2:
 		print("NO WINNER")
 		damage = 0
 
 	else:
 		print()
-		winner = Player1.name if p1 else Player2.name 
-		loser = Player2 if p1 else Player1
+		winner = Player1.name if w1 else Player2.name 
+		loser = Player2 if w1 else Player1
 		print(f'{winner} WINNER')
 		print(f'{loser.name} LOSER')
 
-		damage = Player1.count_final_damage(p1) if p1 else Player2.count_final_damage(p2)
+		damage = Player1.count_final_damage(w1) if w1 else Player2.count_final_damage(w2)
 
 		loser.life -= damage
 		print(f'DAMAGE: {damage}')
-		print(Player1.life, "P1 life", Player1.name)
-		print(Player2.life, "P2 life", Player2.name)
+		print(Player1.life, "w1 life", Player1.name)
+		print(Player2.life, "w2 life", Player2.name)
 
 
-combat(p1, p2, game)
+combat(w1, w2, game)
