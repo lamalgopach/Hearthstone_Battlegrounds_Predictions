@@ -69,18 +69,25 @@ class Battle:
 
 	def print_state(self, statement, p1, p2):
 		print()
-		print()
 		print(statement)
 		print()
 
-		print(self.player1.name)
-		for minion in p1:
-			print(minion.name, minion.attack_value, minion.health, minion.has_ds)
+		print(f'{self.player1.name}:')
+		if p1:
+			for minion in p1:
+				print(minion.name, minion.attack_value, minion.health, minion.has_ds)
+		else:
+			print("Warband empty")	
 		print()
 
-		print(self.player2.name)
-		for minion in p2:
-			print(minion.name, minion.attack_value, minion.health, minion.has_ds)
+		print(f'{self.player2.name}:')
+		if p2:
+			for minion in p2:
+				print(minion.name, minion.attack_value, minion.health, minion.has_ds)
+		else:
+			print("Warband empty")	
+		print()
+		print()
 		print()
 
 

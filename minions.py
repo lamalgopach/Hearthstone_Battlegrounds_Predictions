@@ -40,11 +40,14 @@ class Card:
 	def remove_ds(self):
 		self.has_ds = False
 
+	# def die(self, friendly_minions, j, player):
 	def die(self, friendly_minions, j):
 		del friendly_minions[j]
 		if self.has_deathrattle:
+			# self.deathrattle(friendly_minions, j, player)
 			self.deathrattle(friendly_minions, j)
 		return friendly_minions
+
 
 
 class DragonspawnLieutenant(Card):
@@ -67,16 +70,24 @@ class InfestedWolf(Card):
 	def __init__(self):
 		super().__init__(name="Infested Wolf", attack_value=3, health=3, tier=3, 
 			m_type=MinionType.MINION, has_deathrattle=True)
+
+	# def deathrattle(self, friendly_minions, j, player):
 	def deathrattle(self, friendly_minions, j):
 		spider = Spider()
-		#are you sure?
+		# are you sure?
+		# spider.summon_minion(Spider())
 		friendly_minions.insert(j, spider)
 
-		if len(friendly_minions) < 6:
-			spider_2 = copy.copy(spider)
-			# shouldnt copy rather create another spider
+		if len(friendly_minions) < 7:
+			spider_2 = Spider()
+			# spider_2.summon(Spider())
 			# summon minion method in Player class
-			friendly_minions.insert(j + 1, spider)
+			friendly_minions.insert(j + 1, spider_2)
+
+
+		# next:
+		# player.summon_minion(Spider())
+
 
 		return friendly_minions
 
@@ -104,10 +115,11 @@ class RedWhelp(Card):
 		damage = self.add_damage_in_combat(friendly_minions)
 		attacked_minion = random.choice(game[i])
 		attacked_minion.take_damage(damage)
-
+		
 		if attacked_minion.health < 1:
 			j = game[i].index(attacked_minion)
 			attacked_minion.die(game[i], j)
+			print(attacked_minion)
 
 		return game
 
@@ -128,7 +140,8 @@ class SelflessHero(Card):
 	def __init__(self):
 		super().__init__(name="Selfless Hero", attack_value=2, health=1, tier=1, 
 						m_type=MinionType.MINION, has_deathrattle=True)
-	def deathrattle(self, friendly_minions, j):
+	# def deathrattle(self, friendly_minions, j, player):
+	def deathrattle(self, friendly_minions, j):		
 		if not friendly_minions:
 			return
 
@@ -140,6 +153,7 @@ class SpawnOfnZoth(Card):
 	def __init__(self):
 		super().__init__(name="Spawn Of n'Zoth", attack_value=2, health=2, tier=2, 
 						m_type=MinionType.MINION, has_deathrattle=True)
+	# def deathrattle(self, friendly_minions, j, player):
 	def deathrattle(self, friendly_minions, j):
 		if friendly_minions:
 			for minion in friendly_minions:
