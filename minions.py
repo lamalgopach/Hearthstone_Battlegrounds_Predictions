@@ -110,17 +110,15 @@ class RedWhelp(Card):
 				damage += 1
 		return damage
 
-	def start_of_combat(self, friendly_minions, game, i):
+	def attack_in_start_of_combat(self, friendly_minions, game, i):
 
 		damage = self.add_damage_in_combat(friendly_minions)
-		attacked_minion = random.choice(game[i])
+		attacked_minion = random.choice(game[i].warband)
 		attacked_minion.take_damage(damage)
-		
 		if attacked_minion.health < 1:
-			j = game[i].index(attacked_minion)
-			attacked_minion.die(game[i], j)
-			print(attacked_minion)
 
+			j = game[i].warband.index(attacked_minion)
+			attacked_minion.die(game[i].warband, j)
 		return game
 
 
