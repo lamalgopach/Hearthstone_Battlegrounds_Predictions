@@ -67,22 +67,22 @@ class Battle:
 
 		pass
 
-	def print_state(self, statement, p1, p2):
+	def print_state(self, statement, w1, w2):
 		print()
 		print(statement)
 		print()
 
 		print(f'{self.player1.name}:')
-		if p1:
-			for minion in p1:
+		if w1:
+			for minion in w1:
 				print(minion.name, minion.attack_value, minion.health, minion.has_ds)
 		else:
 			print("Warband empty")	
 		print()
 
 		print(f'{self.player2.name}:')
-		if p2:
-			for minion in p2:
+		if w2:
+			for minion in w2:
 				print(minion.name, minion.attack_value, minion.health, minion.has_ds)
 		else:
 			print("Warband empty")	
@@ -133,6 +133,16 @@ class GameState:
 
 			self.attack_i = self.attack1
 			self.attacked_i = self.attack2
+
+	def count_taunts(self):
+		output = 0
+		taunted_minions = []
+		for minion in self.attacked_warband:
+			if minion.taunt == True:
+				output += 1
+				taunted_minions.append(minion)
+
+		return output, taunted_minions
 
 
 

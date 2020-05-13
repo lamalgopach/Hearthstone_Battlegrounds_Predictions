@@ -39,20 +39,14 @@ game_state = GameState(Player1, Player2, w1, w2, attacking_player, attacked_play
 						attacking_warband, attacked_warband)
 
 
-def count_taunts(px):
-	output = 0
-	taunted_minions = []
-
-	for p in px:
-		if p.taunt == True:
-			output += 1
-			taunted_minions.append(p)
-
-	return output, taunted_minions
-
-
 def combat(w1, w2, game):
 	# start of combat --> red whelp:
+	# put into game state/ battle as method
+	# randomly choose player
+	# check if any red whelp
+	# use start of combat
+	# repeat
+
 	i = 1
 	for friendly_minions in game:
 		enemy_minions = game[i]
@@ -64,7 +58,7 @@ def combat(w1, w2, game):
 	# battle.print_state("Warbands after start of combat: ", w1, w2)
 
 
-	# class_trial:
+	# using class a bit:
 
 	while w1 and w2:
 		# assign attacked minion:
@@ -73,8 +67,8 @@ def combat(w1, w2, game):
 		dead_attacking_minion = 0
 		dead_attacked_minion = 0
 
-		if count_taunts(game_state.attacked_warband)[0] > 0:
-			taunts = count_taunts(game_state.attacked_warband)[1]
+		if game_state.count_taunts()[0] > 0:
+			taunts = game_state.count_taunts()[1]
 			r = random.randint(0, len(taunts) - 1)
 			minion = taunts[r]
 
@@ -130,10 +124,12 @@ def combat(w1, w2, game):
 			game_state.attacked_i = 0
 
 
-		battle.print_state(f'Warbands after {game_state.attacking_player.name}\'s attack: ', w1, w2)
+		statement = f'Warbands after {game_state.attacking_player.name}\'s attack:'
+		battle.print_state(statement, w1, w2)
 
 		# end of turn, change the player:
 		game_state.next_turn()
+
 
 
 	if not w1 and not w2:
