@@ -1,6 +1,8 @@
 import copy
 import random
 
+
+
 class Player:
 
 	def __init__(self, name, warband, level=1, life=40):
@@ -21,6 +23,12 @@ class Player:
 		return minion
 
 
+class Warband:
+	def __init__(self, player, warband):
+		self.player = player
+		self.warband = warband
+
+
 class Battle:
 
 	def __init__(self, player1, player2):
@@ -36,12 +44,16 @@ class Battle:
 		# red whelp attack(no damage)
 		pass
 
-	def choose_first(self):
+	def choose_first(self, Player1, Player2):
 
 		order = True
 
 		p1 = copy.deepcopy(self.player1.warband)
-		p2 = copy.deepcopy(self.player2.warband)		
+		p2 = copy.deepcopy(self.player2.warband)	
+
+		w1 = Warband(Player1, p1)
+		w2 = Warband(Player2, p2)
+
 
 		if len(self.player1.warband) < len(self.player2.warband):
 			order = False
@@ -49,11 +61,11 @@ class Battle:
 			order = random.choice([True, False])
 
 		if order == True:
-			game = [p1, p2]
+			game = [w1, w2]
 		else:
-			game = [p2, p1]
+			game = [w2, w1]
 
-		return p1, p2, game
+		return w1, w2, game
 
 	def play():
 		# first player attack
@@ -73,16 +85,16 @@ class Battle:
 		print()
 
 		print(f'{self.player1.name}:')
-		if w1:
-			for minion in w1:
+		if w1.warband:
+			for minion in w1.warband:
 				print(minion.name, minion.attack_value, minion.health, minion.has_ds)
 		else:
 			print("Warband empty")	
 		print()
 
 		print(f'{self.player2.name}:')
-		if w2:
-			for minion in w2:
+		if w2.warband:
+			for minion in w2.warband:
 				print(minion.name, minion.attack_value, minion.health, minion.has_ds)
 		else:
 			print("Warband empty")	
@@ -137,12 +149,19 @@ class GameState:
 	def count_taunts(self):
 		output = 0
 		taunted_minions = []
-		for minion in self.attacked_warband:
+		for minion in self.attacked_warband.warband:
 			if minion.taunt == True:
 				output += 1
 				taunted_minions.append(minion)
 
 		return output, taunted_minions
+
+
+	def start_of_combat(self):
+		for minion in friendly_minions:
+			if isinstance(minion, RedWhelp):
+				minion.attack_in_start_of_combat(friendly_minions, game, i)
+
 
 
 
