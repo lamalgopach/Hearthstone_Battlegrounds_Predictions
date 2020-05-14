@@ -31,41 +31,30 @@ game_state = GameState(Player1, Player2, w1, w2, attacking_player, attacked_play
 
 def combat(w1, w2, game):
 	# start of combat --> red whelp:
-	# put into game state/ battle as method
-	# randomly choose player done
-	# check if any red whelp
-	# use start of combat
-	# repeat
 
-	i = 1 
+	# create list of red whelps:
+	red_whelp_lst = []
+	red_whelp_d = {}
+	i = 1
 	for friendly_warband in game:
-		enemy_minions = game[i]
+		#not sure if needed:
+		enemy_warband = game[i]
 		for minion in friendly_warband.warband:
 			if isinstance(minion, RedWhelp):
-				minion.attack_in_start_of_combat(friendly_warband.warband, game, i)
-		i = 0 
+				red_whelp_lst.append(minion)
+				red_whelp_d[minion] = (friendly_warband, enemy_warband)
+		i = 0
 
+	# randomly choose attacking red whelp
+	while red_whelp_lst:
+		random_rw = random.choice(red_whelp_lst)
+		if random_rw:
+			friendly_warband = red_whelp_d[random_rw][0]
+			enemy_warband = red_whelp_d[random_rw][1]
+			random_rw.attack_in_start_of_combat(friendly_warband, enemy_warband)
+		red_whelp_lst.remove(random_rw)
+	battle.print_state("after start of combat:", w1, w2)
 
-
-	#toberepaired:
-	# whelp_lst = []
-	# for warband in game:
-	# 	for minion in warband:
-	# 		if isinstance(minion, RedWhelp):
-	# 			whelp = (warband, index)
-	# 			whelp_lst.append(whelp)
-
-
-
-	# x = random.choice([0, 1])
-	# i = 1 if x == 0 else 0
-	# i = 0 if x == 0 else 1
-	# if i == 0:
-	# 	attacking_warband.start_of_combat()
-	# else:
-	# 	attacked_warband.start_of_combat()
-
-	# battle.print_state("Warbands after start of combat: ", w1, w2)
 
 	# using class a bit:
 	while w1.warband and w2.warband:
@@ -82,7 +71,6 @@ def combat(w1, w2, game):
 			minion = taunts[r]
 
 
-
 			for i in range(len(game_state.attacked_warband.warband)):
 				if game_state.attacked_warband.warband[i].name == minion.name:
 					attacked_minion = i
@@ -96,19 +84,19 @@ def combat(w1, w2, game):
 		minion1 = game_state.attacking_warband.warband[game_state.attack_i]
 		minion2 = game_state.attacked_warband.warband[attacked_minion]
 			
-		print("attacker", minion1.name, minion1.attack_value, minion1.health)
-		print("attacked", minion2.name, minion2.attack_value, minion2.health)
-		print()
+		# print("attacker", minion1.name, minion1.attack_value, minion1.health)
+		# print("attacked", minion2.name, minion2.attack_value, minion2.health)
+		# print()
 
 		# # attack phase:
 		minion1.attack()
 		minion1.take_damage(minion2.attack_value)
 		minion2.take_damage(minion1.attack_value)
 
-		print("after attack:")
-		print("attacker", minion1.name, minion1.attack_value, minion1.health)
-		print("attacked", minion2.name, minion2.attack_value, minion2.health)
-		print()
+		# print("after attack:")
+		# print("attacker", minion1.name, minion1.attack_value, minion1.health)
+		# print("attacked", minion2.name, minion2.attack_value, minion2.health)
+		# print()
 
 		if minion1.health < 1:
 			minion1.die(game_state.attacking_warband.warband, game_state.attack_i)
@@ -138,7 +126,7 @@ def combat(w1, w2, game):
 
 
 		statement = f'Warbands after {game_state.attacking_player.name}\'s attack:'
-		battle.print_state(statement, w1, w2)
+		# battle.print_state(statement, w1, w2)
 
 		# end of turn, change the player:
 		game_state.next_turn()
@@ -160,8 +148,9 @@ def combat(w1, w2, game):
 
 		loser.life -= damage
 		print(f'DAMAGE: {damage}')
-		print(Player1.life, "w1 life", Player1.name)
-		print(Player2.life, "w2 life", Player2.name)
+
+	print(Player1.life, "Player1 life", Player1.name)
+	print(Player2.life, "Player2 life", Player2.name)
 
 
 combat(w1, w2, game)
