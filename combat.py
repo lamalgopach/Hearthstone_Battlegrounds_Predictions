@@ -48,10 +48,10 @@ def combat(w1, w2, game):
 	# randomly choose attacking red whelp
 	while red_whelp_lst:
 		random_rw = random.choice(red_whelp_lst)
-		if random_rw:
-			friendly_warband = red_whelp_d[random_rw][0]
-			enemy_warband = red_whelp_d[random_rw][1]
-			random_rw.attack_in_start_of_combat(friendly_warband, enemy_warband)
+		# if random_rw:
+		friendly_warband = red_whelp_d[random_rw][0]
+		enemy_warband = red_whelp_d[random_rw][1]
+		random_rw.attack_in_start_of_combat(friendly_warband, enemy_warband)
 		red_whelp_lst.remove(random_rw)
 	battle.print_state("after start of combat:", w1, w2)
 
