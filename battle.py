@@ -1,10 +1,10 @@
 import copy
 import random
+from minions import RedWhelp
 
 
 
 class Player:
-
 	def __init__(self, name, warband, level=1, life=40):
 		self.name = name
 		self.warband = warband
@@ -30,11 +30,9 @@ class Warband:
 
 
 class Battle:
-
 	def __init__(self, player1, player2):
 		self.player1 = player1
 		self.player2 = player2
-
 
 	def start_of_combat():
 		# check if any red whelp
@@ -163,24 +161,21 @@ class GameState:
 				minion.attack_in_start_of_combat(friendly_minions, game, i)
 
 
+	def create_rw_list_and_dict(self,red_whelp_lst, red_whelp_d, friendly_warband, enemy_warband):
 
+		for minion in friendly_warband.warband:
+			if isinstance(minion, RedWhelp):
+				red_whelp_lst.append(minion)
+				red_whelp_d[minion] = (friendly_warband, enemy_warband)
 
+		return red_whelp_lst, red_whelp_d		
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+	
+	# # randomly choose attacking red whelp
+	# while red_whelp_lst:
+	# 	random_rw = random.choice(red_whelp_lst)
+	# 	# if random_rw:
+	# 	friendly_warband = red_whelp_d[random_rw][0]
+	# 	enemy_warband = red_whelp_d[random_rw][1]
+	# 	random_rw.attack_in_start_of_combat(friendly_warband, enemy_warband)
+	# 	red_whelp_lst.remove(random_rw)
