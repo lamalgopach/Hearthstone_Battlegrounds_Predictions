@@ -28,21 +28,8 @@ game_state = GameState(Player1, Player2, w1, w2, attacking_player, attacked_play
 						attacking_warband, attacked_warband)
 
 def combat(w1, w2, game):
-	# start of combat --> red whelp:
-	# create list of red whelps:
-	red_whelp_lst = []
-	red_whelp_d = {}
-	game_state.create_rw_list_and_dict(red_whelp_lst, red_whelp_d, w1, w2)
-	game_state.create_rw_list_and_dict(red_whelp_lst, red_whelp_d, w2, w1)
 
-	# randomly choose attacking red whelp
-	while red_whelp_lst:
-		random_rw = random.choice(red_whelp_lst)
-		friendly_warband = red_whelp_d[random_rw][0]
-		enemy_warband = red_whelp_d[random_rw][1]
-		random_rw.attack_in_start_of_combat(friendly_warband, enemy_warband)
-		red_whelp_lst.remove(random_rw)
-
+	game_state.start_of_combat()
 	battle.print_state("after start of combat:", w1, w2)
 
 	# attack till at least one player has no minions:
@@ -72,19 +59,19 @@ def combat(w1, w2, game):
 		minion1 = game_state.attacking_warband.warband[game_state.attack_i]
 		minion2 = game_state.attacked_warband.warband[attacked_minion]
 			
-		print("attacker", minion1.name, minion1.attack_value, minion1.health)
-		print("attacked", minion2.name, minion2.attack_value, minion2.health)
-		print()
+		# print("attacker", minion1.name, minion1.attack_value, minion1.health)
+		# print("attacked", minion2.name, minion2.attack_value, minion2.health)
+		# print()
 
 		# attack phase:
 		minion1.attack()
 		minion1.take_damage(minion2.attack_value)
 		minion2.take_damage(minion1.attack_value)
 
-		print("after attack:")
-		print("attacker", minion1.name, minion1.attack_value, minion1.health)
-		print("attacked", minion2.name, minion2.attack_value, minion2.health)
-		print()
+		# print("after attack:")
+		# print("attacker", minion1.name, minion1.attack_value, minion1.health)
+		# print("attacked", minion2.name, minion2.attack_value, minion2.health)
+		# print()
 
 		if minion1.health < 1:
 			minion1.die(game_state.attacking_warband.warband, game_state.attack_i)
@@ -111,8 +98,8 @@ def combat(w1, w2, game):
 		if game_state.attacked_i > len(game_state.attacked_warband.warband) - 1:
 			game_state.attacked_i = 0
 
-		statement = f'Warbands after {game_state.attacking_player.name}\'s attack:'
-		battle.print_state(statement, w1, w2)
+		# statement = f'Warbands after {game_state.attacking_player.name}\'s attack:'
+		# battle.print_state(statement, w1, w2)
 
 		# end of turn, change the player:
 		game_state.next_turn()
