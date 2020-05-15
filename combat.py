@@ -41,7 +41,6 @@ def combat(w1, w2, game):
 		friendly_warband = red_whelp_d[random_rw][0]
 		enemy_warband = red_whelp_d[random_rw][1]
 		random_rw.attack_in_start_of_combat(friendly_warband, enemy_warband)
-		# random_rw.attack_in_start_of_combat(red_whelp_d[random_rw][0], red_whelp_d[random_rw][1])
 		red_whelp_lst.remove(random_rw)
 
 	battle.print_state("after start of combat:", w1, w2)
@@ -73,19 +72,19 @@ def combat(w1, w2, game):
 		minion1 = game_state.attacking_warband.warband[game_state.attack_i]
 		minion2 = game_state.attacked_warband.warband[attacked_minion]
 			
-		# print("attacker", minion1.name, minion1.attack_value, minion1.health)
-		# print("attacked", minion2.name, minion2.attack_value, minion2.health)
-		# print()
+		print("attacker", minion1.name, minion1.attack_value, minion1.health)
+		print("attacked", minion2.name, minion2.attack_value, minion2.health)
+		print()
 
 		# attack phase:
 		minion1.attack()
 		minion1.take_damage(minion2.attack_value)
 		minion2.take_damage(minion1.attack_value)
 
-		# print("after attack:")
-		# print("attacker", minion1.name, minion1.attack_value, minion1.health)
-		# print("attacked", minion2.name, minion2.attack_value, minion2.health)
-		# print()
+		print("after attack:")
+		print("attacker", minion1.name, minion1.attack_value, minion1.health)
+		print("attacked", minion2.name, minion2.attack_value, minion2.health)
+		print()
 
 		if minion1.health < 1:
 			minion1.die(game_state.attacking_warband.warband, game_state.attack_i)
@@ -113,7 +112,7 @@ def combat(w1, w2, game):
 			game_state.attacked_i = 0
 
 		statement = f'Warbands after {game_state.attacking_player.name}\'s attack:'
-		# battle.print_state(statement, w1, w2)
+		battle.print_state(statement, w1, w2)
 
 		# end of turn, change the player:
 		game_state.next_turn()

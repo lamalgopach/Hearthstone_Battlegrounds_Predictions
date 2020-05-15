@@ -131,19 +131,21 @@ class RockpoolHunter(Card):
 		super().__init__(name="Rockpool Hunter", attack_value=2, health=3, tier=1, 
 						m_type=MinionType.MURLOC)
 
-
 class SelflessHero(Card):
 	def __init__(self):
 		super().__init__(name="Selfless Hero", attack_value=2, health=1, tier=1, 
 						m_type=MinionType.MINION, has_deathrattle=True)
-	# def deathrattle(self, friendly_minions, j, player):
 	def deathrattle(self, friendly_minions, j):		
 		if not friendly_minions:
 			return
 
-		minion = random.choice(friendly_minions)
+		minions_no_ds = [minion for minion in friendly_minions if not minion.has_ds]
+		
+		if not minions_no_ds:
+			return
+
+		minion = random.choice(minions_no_ds)
 		minion.has_ds = True
-		return minion
 
 class SpawnOfnZoth(Card):
 	def __init__(self):
@@ -185,8 +187,6 @@ class Spider(Card):
 # 	def attack(*args, **kwargs):
 # 		self.attack_value *= 2
 # 		super().attack(*args, **kwargs)
-
-
 
 
 

@@ -65,7 +65,7 @@ class Battle:
 
 		return w1, w2, game
 
-	def play():
+	def play(self):
 		# first player attack
 		# next player attack
 		# 
@@ -74,7 +74,6 @@ class Battle:
 
 	def player_die(self):
 		# if self.player.life < 0:
-
 		pass
 
 	def print_state(self, statement, w1, w2):
@@ -110,10 +109,12 @@ class GameState:
 		self.player2 = player2
 		self.warband1 = warband1
 		self.warband2 = warband2
+
 		self.attacking_player = attacking_player
 		self.attacked_player = attacked_player
 		self.attacking_warband = attacking_warband
 		self.attacked_warband = attacked_warband
+		
 		self.attack1 = attack1
 		self.attack2 = attack2
 		self.attack_i = attack_i
@@ -128,7 +129,6 @@ class GameState:
 
 			self.attack1 = self.attack_i
 			self.attack2 = self.attacked_i
-
 			self.attack_i = self.attack2
 			self.attacked_i = self.attack1
 
@@ -140,7 +140,6 @@ class GameState:
 
 			self.attack2 = self.attack_i
 			self.attack1 = self.attacked_i
-
 			self.attack_i = self.attack1
 			self.attacked_i = self.attack2
 
@@ -151,31 +150,16 @@ class GameState:
 			if minion.taunt == True:
 				output += 1
 				taunted_minions.append(minion)
-
 		return output, taunted_minions
-
 
 	def start_of_combat(self):
 		for minion in friendly_minions:
 			if isinstance(minion, RedWhelp):
 				minion.attack_in_start_of_combat(friendly_minions, game, i)
 
-
 	def create_rw_list_and_dict(self,red_whelp_lst, red_whelp_d, friendly_warband, enemy_warband):
-
 		for minion in friendly_warband.warband:
 			if isinstance(minion, RedWhelp):
 				red_whelp_lst.append(minion)
 				red_whelp_d[minion] = (friendly_warband, enemy_warband)
-
-		return red_whelp_lst, red_whelp_d		
-
-	
-	# # randomly choose attacking red whelp
-	# while red_whelp_lst:
-	# 	random_rw = random.choice(red_whelp_lst)
-	# 	# if random_rw:
-	# 	friendly_warband = red_whelp_d[random_rw][0]
-	# 	enemy_warband = red_whelp_d[random_rw][1]
-	# 	random_rw.attack_in_start_of_combat(friendly_warband, enemy_warband)
-	# 	red_whelp_lst.remove(random_rw)
+		return red_whelp_lst, red_whelp_d
