@@ -23,6 +23,7 @@ class Player:
 		pass
 
 
+
 class Warband:
 	def __init__(self, player, warband):
 		self.player = player
@@ -30,40 +31,28 @@ class Warband:
 
 
 
-
 class BattleState:
-	def __init__ (self, attacking_player, attacked_player):
+	def __init__ (self, attacking_player, attacked_player, attacking_warband, attacked_warband, attack_i=0, attacked_i=0):
 		self.attacking_player = attacking_player
 		self.attacked_player = attacked_player
+		self.attacking_warband = attacking_warband
+		self.attacked_warband = attacked_warband
+		self.attack_i = attack_i
+		self.attacked_i = attacked_i
 
+	def play_next(self):
+		temp_player = self.attacking_player
+		self.attacking_player = self.attacked_player
+		self.attacked_player = temp_player
 
-		
+		temp_warband = self.attacking_warband
+		self.attacking_warband = self.attacked_warband
+		self.attacked_warband = temp_warband
 
-class Battle:
-	def __init__(self, player1, player2):
-		self.player1 = player1
-		self.player2 = player2
+		temp_i = self.attack_i
+		self.attack_i = self.attacked_i
+		self.attacked_i - temp_i
 
-	def choose_first(self, Player1, Player2):
-		order = True
-
-		p1 = copy.deepcopy(self.player1.warband)
-		p2 = copy.deepcopy(self.player2.warband)	
-
-		w1 = Warband(Player1, p1)
-		w2 = Warband(Player2, p2)
-
-		if len(self.player1.warband) < len(self.player2.warband):
-			order = False
-		elif len(self.player1.warband) == len(self.player2.warband):
-			order = random.choice([True, False])
-
-		if order == True:
-			game = [w1, w2]
-		else:
-			game = [w2, w1]
-
-		return w1, w2, game
 
 	def play(self):
 		# first player attack
@@ -72,64 +61,25 @@ class Battle:
 		pass
 
 
-	def print_state(self, statement, w1, w2):
+	def print_state(self, statement):
 		print()
 		print(statement)
 		print()
-		print(f'{self.player1.name}:')
-		if w1.warband:
-			for minion in w1.warband:
+		print(f'{self.attacking_player.name}:')
+		if self.attacking_warband.warband:
+			for minion in self.attacking_warband.warband:
 				print(minion.name, minion.attack_value, minion.health, minion.has_ds)
 		else:
 			print("Warband empty")	
 		print()
-		print(f'{self.player2.name}:')
-		if w2.warband:
-			for minion in w2.warband:
+		print(f'{self.attacked_player.name}:')
+		if self.attacked_warband.warband:
+			for minion in self.attacked_warband.warband:
 				print(minion.name, minion.attack_value, minion.health, minion.has_ds)
 		else:
 			print("Warband empty")	
 		print()
 		print()
-		print()
-
-
-class GameState:
-	def __init__(self, player1, player2, warband1, warband2, attacking_player, 
-		attacked_player, attacking_warband, attacked_warband, attack1=0, attack2=0, 
-		attack_i=0, attacked_i=0):
-		self.player1 = player1
-		self.player2 = player2
-		self.warband1 = warband1
-		self.warband2 = warband2
-		self.attacking_player = attacking_player
-		self.attacked_player = attacked_player
-		self.attacking_warband = attacking_warband
-		self.attacked_warband = attacked_warband
-		self.attack1 = attack1
-		self.attack2 = attack2
-		self.attack_i = attack_i
-		self.attacked_i = attacked_i
-
-	def next_turn(self):
-		if self.attacking_player == self.player1:
-			self.attacking_player = self.player2
-			self.attacked_player = self.player1
-			self.attacking_warband = self.warband2
-			self.attacked_warband = self.warband1
-			self.attack1 = self.attack_i
-			self.attack2 = self.attacked_i
-			self.attack_i = self.attack2
-			self.attacked_i = self.attack1
-		else:
-			self.attacking_player = self.player1
-			self.attacked_player = self.player2
-			self.attacking_warband = self.warband1
-			self.attacked_warband = self.warband2
-			self.attack2 = self.attack_i
-			self.attack1 = self.attacked_i
-			self.attack_i = self.attack1
-			self.attacked_i = self.attack2
 
 	def count_taunts(self):
 		output = 0

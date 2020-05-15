@@ -1,9 +1,33 @@
 import random
 from random import choice
 import copy
-from battle import Player, Warband, Battle, GameState
+# from battle import Player, Warband, Battle, GameState
+from battle import Player, Warband, BattleState
 from minions import RedWhelp
 from creating_minions_in_warbands import create_warband
+
+
+def choose_first(player1, player2):
+	order = True
+
+	p1 = copy.deepcopy(player1.warband)
+	p2 = copy.deepcopy(player2.warband)	
+
+	w1 = Warband(Player1, p1)
+	w2 = Warband(Player2, p2)
+
+	if len(player1.warband) < len(player2.warband):
+		order = False
+	elif len(player1.warband) == len(player2.warband):
+		order = random.choice([True, False])
+
+	if order == True:
+		game = [w1, w2]
+	else:
+		game = [w2, w1]
+
+	return w1, w2, game
+
 
 alices_warband = create_warband()
 bobs_warband = create_warband()
@@ -12,11 +36,7 @@ Player1 = Player("Alice", alices_warband)
 Player2 = Player("Bob", bobs_warband)
 #what are players names? into console
 
-battle = Battle(Player1, Player2)
-
-w1, w2, game = battle.choose_first(Player1, Player2)
-
-battle.print_state("START OF THE GAME: ", w1, w2)
+w1, w2, game = choose_first(Player1, Player2)
 
 attacking_player = Player1 if game[0] == w1 else Player2
 attacked_player = Player2 if game[1] == w2 else Player1
@@ -24,16 +44,16 @@ attacked_player = Player2 if game[1] == w2 else Player1
 attacking_warband = w1 if game[0] == w1 else w2
 attacked_warband = w2 if game[1] == w2 else w1
 
-game_state = GameState(Player1, Player2, w1, w2, attacking_player, attacked_player, 
-						attacking_warband, attacked_warband)
+battle_state = BattleState(attacking_player, attacked_player, attacking_warband, attacked_warband)
+battle_state.print_state("START OF THE GAME: ")
 
-def combat(w1, w2, game):
+def combat(w1, w2):
 
-	game_state.start_of_combat()
-	battle.print_state("after start of combat:", w1, w2)
+	battle_state.start_of_combat()
+	battle_state.print_state("after start of combat:")
 
 	# attack till at least one player has no minions:
-	while w1.warband and w2.warband:
+	while attacking_warband.warband and attacked_warband.warband:
 
 		# assign attacked minion:
 		attacked_minion = None
@@ -41,68 +61,70 @@ def combat(w1, w2, game):
 		dead_attacking_minion = 0
 		dead_attacked_minion = 0
 
-		if game_state.count_taunts()[0] > 0:
-			taunts = game_state.count_taunts()[1]
+		if battle_state.count_taunts()[0] > 0:
+			taunts = battle_state.count_taunts()[1]
 			r = random.randint(0, len(taunts) - 1)
 			minion = taunts[r]
 
-			for i in range(len(game_state.attacked_warband.warband)):
-				if game_state.attacked_warband.warband[i].name == minion.name:
+			for i in range(len(battle_state.attacked_warband.warband)):
+				if battle_state.attacked_warband.warband[i].name == minion.name:
 					attacked_minion = i
 					break
 
 		# otherwise attacked minion is chosen randomly:
 		else:
-			attacked_minion = random.randint(0, len(game_state.attacked_warband.warband) - 1)
+			attacked_minion = random.randint(0, len(battle_state.attacked_warband.warband) - 1)	
 
 		# create minions in game:
-		minion1 = game_state.attacking_warband.warband[game_state.attack_i]
-		minion2 = game_state.attacked_warband.warband[attacked_minion]
+		print(battle_state.attack_i, "dziendobry")
+		minion1 = battle_state.attacking_warband.warband[battle_state.attack_i]
+		minion2 = battle_state.attacked_warband.warband[attacked_minion]
 			
-		# print("attacker", minion1.name, minion1.attack_value, minion1.health)
-		# print("attacked", minion2.name, minion2.attack_value, minion2.health)
-		# print()
+		print("attacker", minion1.name, minion1.attack_value, minion1.health)
+		print("attacked", minion2.name, minion2.attack_value, minion2.health)
+		print()
 
 		# attack phase:
 		minion1.attack()
 		minion1.take_damage(minion2.attack_value)
 		minion2.take_damage(minion1.attack_value)
 
-		# print("after attack:")
-		# print("attacker", minion1.name, minion1.attack_value, minion1.health)
-		# print("attacked", minion2.name, minion2.attack_value, minion2.health)
-		# print()
+
+		# print(f'after {battle_state.attacking_warband.name}\'s attack')
+		print("attacker", minion1.name, minion1.attack_value, minion1.health)
+		print("attacked", minion2.name, minion2.attack_value, minion2.health)
+		print()
 
 		if minion1.health < 1:
-			minion1.die(game_state.attacking_warband.warband, game_state.attack_i)
+			minion1.die(battle_state.attacking_warband.warband, battle_state.attack_i)
 			dead_attacking_minion = 1
 
 		if minion2.health < 1:
-			minion2.die(game_state.attacked_warband.warband, attacked_minion)
+			minion2.die(battle_state.attacked_warband.warband, attacked_minion)
 			dead_attacked_minion += 1
 
 		# next minion:
 		# (if attacker is dead we should keep track it)
-		game_state.attack_i += 1 - dead_attacking_minion
+		battle_state.attack_i += 1 - dead_attacking_minion
 
 		# if the last minion in the warband was attacking start once again:
-		if game_state.attack_i > len(game_state.attacking_warband.warband) - 1:
-			game_state.attack_i = 0
+		if battle_state.attack_i > len(battle_state.attacking_warband.warband) - 1:
+			battle_state.attack_i = 0
 
 		if dead_attacked_minion == 1:
-			if game_state.attacked_i > attacked_minion:
-				game_state.attacked_i -= 1
+			if battle_state.attacked_i > attacked_minion:
+				battle_state.attacked_i -= 1
 
 		# if attacked player has attacking his last minion in the warband 
 		# start again:
-		if game_state.attacked_i > len(game_state.attacked_warband.warband) - 1:
-			game_state.attacked_i = 0
+		if battle_state.attacked_i > len(battle_state.attacked_warband.warband) - 1:
+			battle_state.attacked_i = 0
 
-		# statement = f'Warbands after {game_state.attacking_player.name}\'s attack:'
-		# battle.print_state(statement, w1, w2)
+		statement = f'Warbands after {battle_state.attacking_player.name}\'s attack:'
+		battle_state.print_state(statement)
 
 		# end of turn, change the player:
-		game_state.next_turn()
+		battle_state.play_next()
 
 	if not w1.warband and not w2.warband:
 		print("NO WINNER")
@@ -121,6 +143,6 @@ def combat(w1, w2, game):
 	print(Player1.life, "Player1 life", Player1.name)
 	print(Player2.life, "Player2 life", Player2.name)
 
-combat(w1, w2, game)
+combat(w1, w2)
 
 # May 14th: 137 lines of code
