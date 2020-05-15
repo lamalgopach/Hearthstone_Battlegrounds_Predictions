@@ -47,6 +47,14 @@ class Card:
 			# self.deathrattle(friendly_minions, j, player)
 			self.deathrattle(friendly_minions, j)
 
+	def summon(self, n, minion_class):
+		# n - number of summoned minions
+		# just one type of minion
+		summoned_minions = []
+		for i in range(n):
+			minion = minion_class()
+			summoned_minions.append(minion)
+		return summoned_minions
 
 
 class DragonspawnLieutenant(Card):
@@ -60,9 +68,7 @@ class GlyphGuardian(Card):
 		super().__init__(name="Glyph Guardian", attack_value=2, health=4, tier=2, 
 			m_type=MinionType.DRAGON)
 	def attack(self):
-		#change it
 		self.attack_value = 2 * self.attack_value
-
 
 
 class InfestedWolf(Card):
@@ -72,18 +78,13 @@ class InfestedWolf(Card):
 
 	# def deathrattle(self, friendly_minions, j, player):
 	def deathrattle(self, friendly_minions, j):
-		spider = Spider()
-		# are you sure?
-		# spider.summon_minion(Spider())
-		friendly_minions.insert(j, spider)
+		spiders_lst = self.summon(2, Spider)
+		i = 0
+		while len(friendly_minions) <= 7 and i != 2:
+			spider = spiders_lst[i]
+			friendly_minions.insert(j, spider)
+			i += 1
 
-		if len(friendly_minions) < 7:
-			spider_2 = Spider()
-			# spider_2.summon(Spider())
-			# summon minion method in Player class
-			friendly_minions.insert(j + 1, spider_2)
-		# next:
-		# player.summon_minion(Spider())
 
 class MurlocWarleader(Card):
 	def __init__(self):
