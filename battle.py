@@ -29,18 +29,20 @@ class Warband:
 		self.warband = warband
 
 
+
+
+class BattleState:
+	def __init__ (self, attacking_player, attacked_player):
+		self.attacking_player = attacking_player
+		self.attacked_player = attacked_player
+
+
+		
+
 class Battle:
 	def __init__(self, player1, player2):
 		self.player1 = player1
 		self.player2 = player2
-
-	def start_of_combat():
-		# check if any red whelp
-		# check how many
-		# randomly choose player
-		# count dragons in warband
-		# red whelp attack(no damage)
-		pass
 
 	def choose_first(self, Player1, Player2):
 		order = True
@@ -139,15 +141,25 @@ class GameState:
 		return output, taunted_minions
 
 	def start_of_combat(self):
-		for minion in friendly_minions:
-			if isinstance(minion, RedWhelp):
-				minion.attack_in_start_of_combat(friendly_minions, game, i)
+		red_whelp_list, red_whelp_dict = self.create_rw_list_and_dict(self.attacking_warband, self.attacked_warband)
+		red_whelp_list2, red_whelp_dict2 = self.create_rw_list_and_dict(self.attacked_warband, self.attacking_warband)
+		red_whelp_dict.update(red_whelp_dict2)
+		red_whelp_list.extend(red_whelp_list2)
+		# randomly choose attacking red whelp
+		while red_whelp_list:
+			random_rw = random.choice(red_whelp_list)
+			friendly_warband = red_whelp_dict[random_rw][0]
+			enemy_warband = red_whelp_dict[random_rw][1]
+			random_rw.attack_in_start_of_combat(friendly_warband, enemy_warband)
+			red_whelp_list.remove(random_rw)
 
-	def create_rw_list_and_dict(self,red_whelp_lst, red_whelp_d, friendly_warband, enemy_warband):
+	def create_rw_list_and_dict(self, friendly_warband, enemy_warband):
+		red_whelp_list = []
+		red_whelp_dict = {}
 		for minion in friendly_warband.warband:
 			if isinstance(minion, RedWhelp):
-				red_whelp_lst.append(minion)
-				red_whelp_d[minion] = (friendly_warband, enemy_warband)
-		return red_whelp_lst, red_whelp_d
+				red_whelp_list.append(minion)
+				red_whelp_dict[minion] = (friendly_warband, enemy_warband)
+		return red_whelp_list, red_whelp_dict
 
-# May 14th: 154 lines of code
+# May 14th: 159 lines of code
