@@ -46,7 +46,6 @@ class Card:
 		if self.has_deathrattle:
 			# self.deathrattle(friendly_minions, j, player)
 			self.deathrattle(friendly_minions, j)
-		return friendly_minions
 
 
 
@@ -83,13 +82,8 @@ class InfestedWolf(Card):
 			# spider_2.summon(Spider())
 			# summon minion method in Player class
 			friendly_minions.insert(j + 1, spider_2)
-
-
 		# next:
 		# player.summon_minion(Spider())
-
-
-		return friendly_minions
 
 class MurlocWarleader(Card):
 	def __init__(self):
@@ -114,10 +108,10 @@ class RedWhelp(Card):
 		damage = self.add_damage_in_combat(friendly_minions.warband)
 		attacked_minion = random.choice(enemy_minions.warband)
 		attacked_minion.take_damage(damage)
+		print(attacked_minion.name, attacked_minion.health, friendly_minions.player.name, "minion attacked in combat")
 		if attacked_minion.health < 1:
 			j = enemy_minions.warband.index(attacked_minion)
 			attacked_minion.die(enemy_minions.warband, j)
-		return friendly_minions, enemy_minions
 
 
 class RighteousProtector(Card):
@@ -157,7 +151,6 @@ class SpawnOfnZoth(Card):
 			for minion in friendly_minions:
 				minion.attack_value += 1
 				minion.health += 1
-		return friendly_minions	
 
 
 # class not imported to create minions in warbands:
