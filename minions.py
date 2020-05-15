@@ -3,6 +3,7 @@ import copy
 from random import choice
 from enum import Enum
 
+
 class MinionType(Enum):
 	MINION = 0
 	MURLOC = 1
@@ -10,6 +11,7 @@ class MinionType(Enum):
 	BEAST = 3
 	MECH = 4
 	DEMON = 5
+
 
 class Card:
 	def __init__(self, *, name, attack_value, health, tier, m_type, taunt=False, 
@@ -22,11 +24,10 @@ class Card:
 		self.taunt = taunt
 		self.has_ds = has_ds
 		self.has_deathrattle = has_deathrattle
-	# deathrattle = None
 
 	def attack(self):
+		# used in Glyph Guardian
 		return
-
 
 	def take_damage(self, damage):
 		if damage == 0:
@@ -40,14 +41,12 @@ class Card:
 	def remove_ds(self):
 		self.has_ds = False
 
-	# def die(self, friendly_minions, j, player):
 	def die(self, friendly_minions, j):
 		del friendly_minions[j]
 		if self.has_deathrattle:
-			# self.deathrattle(friendly_minions, j, player)
 			self.deathrattle(friendly_minions, j)
 
-	def summon(self, n, minion_class):
+	def summon_minions(self, n, minion_class):
 		# n - number of summoned minions
 		# just one type of minion
 		summoned_minions = []
@@ -67,6 +66,7 @@ class GlyphGuardian(Card):
 	def __init__(self):
 		super().__init__(name="Glyph Guardian", attack_value=2, health=4, tier=2, 
 			m_type=MinionType.DRAGON)
+
 	def attack(self):
 		self.attack_value = 2 * self.attack_value
 
@@ -76,9 +76,8 @@ class InfestedWolf(Card):
 		super().__init__(name="Infested Wolf", attack_value=3, health=3, tier=3, 
 			m_type=MinionType.MINION, has_deathrattle=True)
 
-	# def deathrattle(self, friendly_minions, j, player):
 	def deathrattle(self, friendly_minions, j):
-		spiders_lst = self.summon(2, Spider)
+		spiders_lst = self.summon_minions(2, Spider)
 		i = 0
 		while len(friendly_minions) <= 7 and i != 2:
 			spider = spiders_lst[i]
@@ -90,7 +89,6 @@ class MurlocWarleader(Card):
 	def __init__(self):
 		super().__init__(name="Murloc Warleader", attack_value=3, health=3, tier=2, 
 			m_type=MinionType.MURLOC)
-
 
 
 class RedWhelp(Card):
@@ -109,7 +107,6 @@ class RedWhelp(Card):
 		damage = self.add_damage_in_combat(friendly_minions.warband)
 		attacked_minion = random.choice(enemy_minions.warband)
 		attacked_minion.take_damage(damage)
-		print(attacked_minion.name, attacked_minion.health, friendly_minions.player.name, "minion attacked in combat")
 		if attacked_minion.health < 1:
 			j = enemy_minions.warband.index(attacked_minion)
 			attacked_minion.die(enemy_minions.warband, j)
@@ -125,6 +122,7 @@ class RockpoolHunter(Card):
 	def __init__(self):
 		super().__init__(name="Rockpool Hunter", attack_value=2, health=3, tier=1, 
 						m_type=MinionType.MURLOC)
+
 
 class SelflessHero(Card):
 	def __init__(self):
@@ -142,11 +140,12 @@ class SelflessHero(Card):
 		minion = random.choice(minions_no_ds)
 		minion.has_ds = True
 
+
 class SpawnOfnZoth(Card):
 	def __init__(self):
 		super().__init__(name="Spawn Of n'Zoth", attack_value=2, health=2, tier=2, 
 						m_type=MinionType.MINION, has_deathrattle=True)
-	# def deathrattle(self, friendly_minions, j, player):
+
 	def deathrattle(self, friendly_minions, j):
 		if friendly_minions:
 			for minion in friendly_minions:
@@ -154,11 +153,13 @@ class SpawnOfnZoth(Card):
 				minion.health += 1
 
 
-# class not imported to create minions in warbands:
+# class(es) not imported to create minions in warbands:
 class Spider(Card):
 	def __init__(self):
 		super().__init__(name="Spider", attack_value=1, health=1, tier=1, 
 			m_type=MinionType.BEAST)
+
+# May 14th: 160 lines of code
 
 # Jakub:
 # minion = SpawnOfnZoth()
@@ -167,10 +168,7 @@ class Spider(Card):
 # 	minion.deathrattle(friendly_minions, j)
 
 
-# Jakub
-# class Minion:
-# 	def __init__(self, *, attack_value):
-# 		self.attack_value = attack_value
+
 
 # 	def attack(self, game_state, target):
 # 		target.health -= self.attack_value
@@ -185,6 +183,4 @@ class Spider(Card):
 
 
 #todo:
-# redwhelp: random player order, add pre combat, overcomplicated, 
 # think like effects(kabumbot, unstableghoul)
-# selfless hero: only minions without DS

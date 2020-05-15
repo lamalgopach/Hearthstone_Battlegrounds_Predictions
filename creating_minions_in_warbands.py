@@ -6,10 +6,10 @@ import copy
 
 
 def create_minion():
-	class_types = [DragonspawnLieutenant, GlyphGuardian, InfestedWolf, 
+	available_classes = [DragonspawnLieutenant, GlyphGuardian, InfestedWolf, 
 				MurlocWarleader, RedWhelp, RighteousProtector, RockpoolHunter, 
 				SpawnOfnZoth, SelflessHero]
-	return random.choice(class_types)()
+	return random.choice(available_classes)()
 
 def create_warband():
 	warband = []
@@ -17,3 +17,5 @@ def create_warband():
 		minion = create_minion()
 		warband.append(minion)
 	return warband
+
+# May 14th: 21 lines of code

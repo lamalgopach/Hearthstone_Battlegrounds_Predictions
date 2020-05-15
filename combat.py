@@ -10,6 +10,7 @@ bobs_warband = create_warband()
 
 Player1 = Player("Alice", alices_warband)
 Player2 = Player("Bob", bobs_warband)
+#what are players names? into console
 
 battle = Battle(Player1, Player2)
 
@@ -28,7 +29,6 @@ game_state = GameState(Player1, Player2, w1, w2, attacking_player, attacked_play
 
 def combat(w1, w2, game):
 	# start of combat --> red whelp:
-
 	# create list of red whelps:
 	red_whelp_lst = []
 	red_whelp_d = {}
@@ -135,3 +135,5 @@ def combat(w1, w2, game):
 	print(Player2.life, "Player2 life", Player2.name)
 
 combat(w1, w2, game)
+
+# May 14th: 137 lines of code
