@@ -1,7 +1,13 @@
 import copy
 import random
 from minions import RedWhelp
+from creating_minions_in_warbands import create_warband
 
+
+class Warband:
+	def __init__(self, player, warband):
+		self.player = player
+		self.warband = warband
 
 
 class Player:
@@ -23,14 +29,6 @@ class Player:
 		pass
 
 
-
-class Warband:
-	def __init__(self, player, warband):
-		self.player = player
-		self.warband = warband
-
-
-
 class BattleState:
 	def __init__ (self, attacking_player, attacked_player, attacking_warband, attacked_warband, attack_i=0, attacked_i=0):
 		self.attacking_player = attacking_player
@@ -39,6 +37,30 @@ class BattleState:
 		self.attacked_warband = attacked_warband
 		self.attack_i = attack_i
 		self.attacked_i = attacked_i
+
+
+	def count_taunts(self):
+		output = 0
+		taunted_minions = []
+		for minion in self.attacked_warband.warband:
+			if minion.taunt == True:
+				output += 1
+				taunted_minions.append(minion)
+		return output, taunted_minions
+
+	def choose_attacked_minion(self):
+		if self.count_taunts()[0] > 0:
+			taunts = self.count_taunts()[1]
+			r = random.randint(0, len(taunts) - 1)
+			minion = taunts[r]
+			for i in range(len(self.attacked_warband.warband)):
+				if self.attacked_warband.warband[i].name == minion.name:
+					attacked_minion = i
+					break
+		# otherwise attacked minion is chosen randomly:
+		else:
+			attacked_minion = random.randint(0, len(self.attacked_warband.warband) - 1)
+		return attacked_minion	
 
 	def play_next(self):
 		temp_player = self.attacking_player
@@ -49,9 +71,13 @@ class BattleState:
 		self.attacking_warband = self.attacked_warband
 		self.attacked_warband = temp_warband
 
+		print(self.attack_i, "attack_i inside")
 		temp_i = self.attack_i
+		print(temp_i, "temp_i")
 		self.attack_i = self.attacked_i
-		self.attacked_i - temp_i
+		print(self.attack_i, "new attack")
+		self.attacked_i = temp_i
+		print(self.attacked_i, "should be attack")
 
 
 	def play(self):
@@ -62,9 +88,7 @@ class BattleState:
 
 
 	def print_state(self, statement):
-		print()
 		print(statement)
-		print()
 		print(f'{self.attacking_player.name}:')
 		if self.attacking_warband.warband:
 			for minion in self.attacking_warband.warband:
@@ -81,14 +105,6 @@ class BattleState:
 		print()
 		print()
 
-	def count_taunts(self):
-		output = 0
-		taunted_minions = []
-		for minion in self.attacked_warband.warband:
-			if minion.taunt == True:
-				output += 1
-				taunted_minions.append(minion)
-		return output, taunted_minions
 
 	def start_of_combat(self):
 		red_whelp_list, red_whelp_dict = self.create_rw_list_and_dict(self.attacking_warband, self.attacked_warband)
