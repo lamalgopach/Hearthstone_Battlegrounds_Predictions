@@ -1,13 +1,28 @@
 import copy
 import random
-from minions import RedWhelp
-from creating_minions_in_warbands import create_warband
+from minions import DragonspawnLieutenant, GlyphGuardian, InfestedWolf, MurlocWarleader
+from minions import RedWhelp, RighteousProtector, RockpoolHunter, SpawnOfnZoth
+from minions import SelflessHero
+# from creating_minions_in_warbands import create_warband
 
 
 class Warband:
-	def __init__(self, player, warband):
+	def __init__(self, player, warband=[]):
 		self.player = player
 		self.warband = warband
+
+	def create_minion(self):
+		available_classes = [DragonspawnLieutenant, GlyphGuardian, InfestedWolf, 
+					MurlocWarleader, RedWhelp, RighteousProtector, RockpoolHunter, 
+					SpawnOfnZoth, SelflessHero]
+		return random.choice(available_classes)()
+
+	def create_warband(self, warband):
+		while len(warband) != 7:
+			minion = self.create_minion()
+			print(minion.name)
+			warband.append(minion)
+			self.warband = warband
 
 
 class Player:
@@ -71,14 +86,9 @@ class BattleState:
 		self.attacking_warband = self.attacked_warband
 		self.attacked_warband = temp_warband
 
-		print(self.attack_i, "attack_i inside")
 		temp_i = self.attack_i
-		print(temp_i, "temp_i")
 		self.attack_i = self.attacked_i
-		print(self.attack_i, "new attack")
 		self.attacked_i = temp_i
-		print(self.attacked_i, "should be attack")
-
 
 	def play(self):
 		# first player attack

@@ -5,17 +5,17 @@ from minions import RedWhelp, RighteousProtector, RockpoolHunter, SpawnOfnZoth, 
 import copy
 
 
-def create_minion():
-	available_classes = [DragonspawnLieutenant, GlyphGuardian, InfestedWolf, 
-				MurlocWarleader, RedWhelp, RighteousProtector, RockpoolHunter, 
-				SpawnOfnZoth, SelflessHero]
-	return random.choice(available_classes)()
+# def create_minion():
+# 	available_classes = [DragonspawnLieutenant, GlyphGuardian, InfestedWolf, 
+# 				MurlocWarleader, RedWhelp, RighteousProtector, RockpoolHunter, 
+# 				SpawnOfnZoth, SelflessHero]
+# 	return random.choice(available_classes)()
 
-def create_warband():
-	warband = []
-	while len(warband) != 7:
-		minion = create_minion()
-		warband.append(minion)
-	return warband
+# def create_warband():
+# 	warband = []
+# 	while len(warband) != 7:
+# 		minion = create_minion()
+# 		warband.append(minion)
+# 	return warband
 
-# May 14th: 21 lines of code
+# May 14th: 19 lines of code
