@@ -41,10 +41,10 @@ class Card:
 	def remove_ds(self):
 		self.has_ds = False
 
-	def die(self, friendly_minions, j):
+	def die(self, friendly_minions, enemy_minions, j):
 		del friendly_minions[j]
 		if self.has_deathrattle:
-			self.deathrattle(friendly_minions, j)
+			self.deathrattle(friendly_minions, enemy_minions, j)
 
 	def summon_minions(self, n, minion_class):
 		# n - number of summoned minions
@@ -74,16 +74,29 @@ class GlyphGuardian(Card):
 class InfestedWolf(Card):
 	def __init__(self):
 		super().__init__(name="Infested Wolf", attack_value=3, health=3, tier=3, 
-			m_type=MinionType.MINION, has_deathrattle=True)
+			m_type=MinionType.BEAST, has_deathrattle=True)
 
-	def deathrattle(self, friendly_minions, j):
+	def deathrattle(self, friendly_minions, enemy_minions, j):
 		spiders_lst = self.summon_minions(2, Spider)
 		i = 0
-		while len(friendly_minions) <= 7 and i != 2:
+		while len(friendly_minions) < 7 and i != 2:
 			spider = spiders_lst[i]
 			friendly_minions.insert(j, spider)
 			i += 1
 
+class KaboomBot(Card):
+	def __init__(self):
+		super().__init__(name="Kaboom Bot", attack_value=2, health=2, tier=2, 
+			m_type=MinionType.MECH, has_deathrattle=True)
+
+	def deathrattle(self, friendly_minions, enemy_minions, j):
+		enemy_random_minion = random.choice(enemy_minions)
+		enemy_random_minion.take_damage(4)
+		if enemy_random_minion.health < 0:
+			j = enemy_minions.index(enemy_random_minion)
+			enemy_random_minion.die(enemy_minions, friendly_minions, j)
+
+		
 
 class MurlocWarleader(Card):
 	def __init__(self):
@@ -109,7 +122,7 @@ class RedWhelp(Card):
 		attacked_minion.take_damage(damage)
 		if attacked_minion.health < 1:
 			j = enemy_minions.warband.index(attacked_minion)
-			attacked_minion.die(enemy_minions.warband, j)
+			attacked_minion.die(enemy_minions.warband, friendly_minions.warband, j)
 
 
 class RighteousProtector(Card):
@@ -128,7 +141,8 @@ class SelflessHero(Card):
 	def __init__(self):
 		super().__init__(name="Selfless Hero", attack_value=2, health=1, tier=1, 
 						m_type=MinionType.MINION, has_deathrattle=True)
-	def deathrattle(self, friendly_minions, j):		
+
+	def deathrattle(self, friendly_minions, enemy_minions, j):	
 		if not friendly_minions:
 			return
 
@@ -145,8 +159,8 @@ class SpawnOfnZoth(Card):
 	def __init__(self):
 		super().__init__(name="Spawn Of n'Zoth", attack_value=2, health=2, tier=2, 
 						m_type=MinionType.MINION, has_deathrattle=True)
-
-	def deathrattle(self, friendly_minions, j):
+	
+	def deathrattle(self, friendly_minions, enemy_minions, j):
 		if friendly_minions:
 			for minion in friendly_minions:
 				minion.attack_value += 1
@@ -158,6 +172,7 @@ class Spider(Card):
 	def __init__(self):
 		super().__init__(name="Spider", attack_value=1, health=1, tier=1, 
 			m_type=MinionType.BEAST)
+
 
 # May 14th: 160 lines of code
 
@@ -184,3 +199,4 @@ class Spider(Card):
 
 #todo:
 # think like effects(kabumbot, unstableghoul)
+# classes to do first: waxoggler, ratpack, mecharoo
