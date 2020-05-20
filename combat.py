@@ -4,6 +4,30 @@ import copy
 from battle import Player, Warband, BattleState
 # from minions import KaboomBot, MurlocWarleader
 
+print("100 simulations for those warbands:")
+print()
+print("Player1: Alice")	
+print("Minion's name, attack, health, Divine Shield:")	
+print("Rockpool Hunter 2 3 False")
+print("Infested Wolf 3 3 False")
+print("Red Whelp 1 2 False")
+print("Glyph Guardian 2 4 False")
+print("Spawn Of n'Zoth 2 2 False")
+print("Righteous Protector 1 1 True")
+print("Selfless Hero 2 1 False")
+print()
+
+print("Player2: Bob")
+print("Minion's name, attack, health, Divine Shield:")	
+print("Rockpool Hunter 2 3 False")
+print("Dragonspawn Lieutenant 2 3 False")
+print("Selfless Hero 2 1 False")
+print("Glyph Guardian 2 4 False")
+print("Red Whelp 1 2 False")
+print("Spawn Of n'Zoth 2 2 False")
+print("Infested Wolf 3 3 False")
+print()
+
 def choose_first(player1, player2):
 	order = True
 
@@ -172,23 +196,20 @@ i = 100
 z = 0
 alice_winner = 0
 bob_winner = 0
+no_winner = 0
 while i > 0:
 	w1, w2, battle_state, Player1, Player2 = start_of_game()
 	winner = combat(w1, w2)
 	if winner:
 		alice_winner += 1 if winner.name == "Alice" else 0
 		bob_winner += 1 if winner.name == "Bob" else 0
+	else:
+		no_winner += 1
 
 	i -= 1
 print(alice_winner, "Alice's winnings")
 print(alice_winner / 100, "Alice's probability of winw")
 print(bob_winner, "Bob's winnings")
 print(bob_winner / 100, "Bob's probability of win")
-
-
-
-
-
-
-
-
+print(no_winner / 100, "Probability of no-win")
+print(alice_winner + bob_winner + no_winner, "checkpoint")
