@@ -1,9 +1,8 @@
-import copy
 import random
-from minions import DragonspawnLieutenant, GlyphGuardian, InfestedWolf, MurlocWarleader
-from minions import RedWhelp, RighteousProtector, RockpoolHunter, SpawnOfnZoth
-from minions import SelflessHero
-# from creating_minions_in_warbands import create_warband
+from minions import DragonspawnLieutenant, GlyphGuardian, InfestedWolf 
+# from minions import KaboomBot, MurlocWarleader
+from minions import RedWhelp, RighteousProtector, RockpoolHunter
+from minions import SpawnOfnZoth, SelflessHero
 
 
 class Warband:
@@ -12,17 +11,28 @@ class Warband:
 		self.warband = warband
 
 	def create_minion(self):
-		available_classes = [DragonspawnLieutenant, GlyphGuardian, InfestedWolf, 
-					MurlocWarleader, RedWhelp, RighteousProtector, RockpoolHunter, 
+		available_classes = [DragonspawnLieutenant, GlyphGuardian, InfestedWolf,
+					RedWhelp, RighteousProtector, RockpoolHunter, 
 					SpawnOfnZoth, SelflessHero]
 		return random.choice(available_classes)()
 
-	def create_warband(self, warband):
-		while len(warband) != 7:
-			minion = self.create_minion()
-			print(minion.name)
-			warband.append(minion)
-			self.warband = warband
+	# def create_warband(self):
+	# 	warband = []
+	# 	while len(warband) != 7:
+	# 		minion = self.create_minion()
+	# 		warband.append(minion)
+	# 		self.warband = warband
+
+	def create_warband(self):
+		if self.player == "Alice":
+			self.warband = [RockpoolHunter(), InfestedWolf(), RedWhelp(), 
+							GlyphGuardian(), SpawnOfnZoth(), RighteousProtector(), 
+							SelflessHero()]
+
+		else:
+			self.warband = [RockpoolHunter(), DragonspawnLieutenant(), SelflessHero(), 
+							GlyphGuardian(), RedWhelp(), SpawnOfnZoth(), 
+							InfestedWolf()]
 
 
 class Player:

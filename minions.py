@@ -37,14 +37,15 @@ class Card:
 			self.has_ds = False
 		else:
 			self.health -= damage
+			# if self.health < 1:
+			# 	self.die(friendly_minions, enemy_minions, j)
 
 	def remove_ds(self):
 		self.has_ds = False
 
-	def die(self, friendly_minions, enemy_minions, j):
+	def die(self, friendly_minions, j):
 		del friendly_minions[j]
-		if self.has_deathrattle:
-			self.deathrattle(friendly_minions, enemy_minions, j)
+
 
 	def summon_minions(self, n, minion_class):
 		# n - number of summoned minions
@@ -84,24 +85,30 @@ class InfestedWolf(Card):
 			friendly_minions.insert(j, spider)
 			i += 1
 
-class KaboomBot(Card):
-	def __init__(self):
-		super().__init__(name="Kaboom Bot", attack_value=2, health=2, tier=2, 
-			m_type=MinionType.MECH, has_deathrattle=True)
+# class KaboomBot(Card):
+# 	def __init__(self):
+# 		super().__init__(name="Kaboom Bot", attack_value=2, health=2, tier=2, 
+# 			m_type=MinionType.MECH, has_deathrattle=True)
 
-	def deathrattle(self, friendly_minions, enemy_minions, j):
-		enemy_random_minion = random.choice(enemy_minions)
-		enemy_random_minion.take_damage(4)
-		if enemy_random_minion.health < 0:
-			j = enemy_minions.index(enemy_random_minion)
-			enemy_random_minion.die(enemy_minions, friendly_minions, j)
+# 	def deathrattle(self, friendly_minions, enemy_minions, j):
+# 		if enemy_minions:
+# 			enemy_random_minion = random.choice(enemy_minions)
+# 			i = enemy_minions.index(enemy_random_minion)
+# 			enemy_random_minion.take_damage(4)
+# 		# if enemy_random_minion.health < 0:
+# 		# 	j = enemy_minions.index(enemy_random_minion)
+# 			# 	enemy_random_minion.die(enemy_minions, friendly_minions, j)
+# 			if enemy_random_minion.has_deathrattle:
+# 				pass
+# 			# think more creatively
+# 			# attacked_minion.deathrattle(enemy_minions, friendly_minions, i)
 
 		
 
-class MurlocWarleader(Card):
-	def __init__(self):
-		super().__init__(name="Murloc Warleader", attack_value=3, health=3, tier=2, 
-			m_type=MinionType.MURLOC)
+# class MurlocWarleader(Card):
+# 	def __init__(self):
+# 		super().__init__(name="Murloc Warleader", attack_value=3, health=3, tier=2, 
+# 			m_type=MinionType.MURLOC)
 
 
 class RedWhelp(Card):
@@ -119,10 +126,11 @@ class RedWhelp(Card):
 	def attack_in_start_of_combat(self, friendly_minions, enemy_minions):
 		damage = self.add_damage_in_combat(friendly_minions.warband)
 		attacked_minion = random.choice(enemy_minions.warband)
+		i = enemy_minions.warband.index(attacked_minion)
 		attacked_minion.take_damage(damage)
-		if attacked_minion.health < 1:
-			j = enemy_minions.warband.index(attacked_minion)
-			attacked_minion.die(enemy_minions.warband, friendly_minions.warband, j)
+		# if attacked_minion.health < 1:
+		# 	j = enemy_minions.warband.index(attacked_minion)
+		# 	attacked_minion.die(enemy_minions.warband, friendly_minions.warband, j)
 
 
 class RighteousProtector(Card):
