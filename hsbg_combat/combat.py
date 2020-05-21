@@ -1,7 +1,7 @@
 import random
 from random import choice
 import copy
-from battle import Player, Warband, BattleState
+from .battle import Player, Warband, BattleState
 
 def choose_first(player1, player2):
 	order = True

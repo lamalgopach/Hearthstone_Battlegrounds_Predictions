@@ -1,8 +1,8 @@
 import random
-from minions import DragonspawnLieutenant, GlyphGuardian, InfestedWolf 
+from .minions import DragonspawnLieutenant, GlyphGuardian, InfestedWolf 
 # from minions import KaboomBot, MurlocWarleader
-from minions import RedWhelp, RighteousProtector, RockpoolHunter
-from minions import SpawnOfnZoth, SelflessHero
+from .minions import RedWhelp, RighteousProtector, RockpoolHunter
+from .minions import SpawnOfnZoth, SelflessHero
 
 
 class Warband:

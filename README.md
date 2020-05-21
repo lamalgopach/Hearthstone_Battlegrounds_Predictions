@@ -3,8 +3,8 @@
 This is a simple simulation of Hearthstone Battlegrounds combat phase. 
 
 ```python3
-from combat import simulate
-from minions import *
+from hsbg_combat.combat import simulate
+from hsbg_combat.minions import *
 
 warband1 = [RockpoolHunter(), InfestedWolf(), RedWhelp(), RedWhelp()]
 warband2 = [SpawnOfnZoth(), InfestedWolf(), SelflessHero(), GlyphGuardian()] 
