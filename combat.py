@@ -2,31 +2,6 @@ import random
 from random import choice
 import copy
 from battle import Player, Warband, BattleState
-# from minions import KaboomBot, MurlocWarleader
-
-print("100 simulations for those warbands:")
-print()
-print("Player1: Alice")	
-print("Minion's name, attack, health, Divine Shield:")	
-print("Rockpool Hunter 2 3 False")
-print("Infested Wolf 3 3 False")
-print("Red Whelp 1 2 False")
-print("Glyph Guardian 2 4 False")
-print("Spawn Of n'Zoth 2 2 False")
-print("Righteous Protector 1 1 True")
-print("Selfless Hero 2 1 False")
-print()
-
-print("Player2: Bob")
-print("Minion's name, attack, health, Divine Shield:")	
-print("Rockpool Hunter 2 3 False")
-print("Dragonspawn Lieutenant 2 3 False")
-print("Selfless Hero 2 1 False")
-print("Glyph Guardian 2 4 False")
-print("Red Whelp 1 2 False")
-print("Spawn Of n'Zoth 2 2 False")
-print("Infested Wolf 3 3 False")
-print()
 
 def choose_first(player1, player2):
 	order = True
@@ -46,13 +21,13 @@ def choose_first(player1, player2):
 
 	return w1, w2, game
 
-def start_of_game():
+def start_of_game(warband1, warband2):
 	# create Alices Warband as object of Warband class:
 	alices_warband = Warband("Alice")
 	bobs_warband = Warband("Bob")
 	# use warband method to create warband with minions:
-	alices_warband.create_warband()
-	bobs_warband.create_warband()
+	alices_warband.create_warband(warband1)
+	bobs_warband.create_warband(warband2)
 	# create object of Player class and link this warband to this Player:
 	Player1 = Player("Alice", alices_warband)
 	Player2 = Player("Bob", bobs_warband)
@@ -73,7 +48,7 @@ def start_of_game():
 
 	return w1, w2, battle_state, Player1, Player2
 
-def combat(w1, w2):
+def combat(w1, w2, battle_state, Player1, Player2):
 	winner = None
 
 	battle_state.start_of_combat()
@@ -191,25 +166,34 @@ def combat(w1, w2):
 	return winner
 
 
+def simulate(warband1, warband2, num_simulations=100):
+	alice_winner = 0
+	bob_winner = 0
+	no_winner = 0
+	for _ in range(num_simulations):
+		w1, w2, battle_state, Player1, Player2 = start_of_game(warband1, warband2)
+		winner = combat(w1, w2, battle_state, Player1, Player2)
+		if winner:
+			alice_winner += 1 if winner.name == "Alice" else 0
+			bob_winner += 1 if winner.name == "Bob" else 0
+		else:
+			no_winner += 1
 
-i = 100
-z = 0
-alice_winner = 0
-bob_winner = 0
-no_winner = 0
-while i > 0:
-	w1, w2, battle_state, Player1, Player2 = start_of_game()
-	winner = combat(w1, w2)
-	if winner:
-		alice_winner += 1 if winner.name == "Alice" else 0
-		bob_winner += 1 if winner.name == "Bob" else 0
-	else:
-		no_winner += 1
+	# print(alice_winner, "Alice's winnings")
+	# print(alice_winner / 100, "Alice's probability of winw")
+	# print(bob_winner, "Bob's winnings")
+	# print(bob_winner / 100, "Bob's probability of win")
+	# print(no_winner / 100, "Probability of no-win")
+	# print(alice_winner + bob_winner + no_winner, "checkpoint")
 
-	i -= 1
-print(alice_winner, "Alice's winnings")
-print(alice_winner / 100, "Alice's probability of winw")
-print(bob_winner, "Bob's winnings")
-print(bob_winner / 100, "Bob's probability of win")
-print(no_winner / 100, "Probability of no-win")
-print(alice_winner + bob_winner + no_winner, "checkpoint")
+	return {
+		"first_wins": alice_winner / num_simulations, 
+		"tie": no_winner / num_simulations, 
+		"second_wins": bob_winner / num_simulations,
+	}
+
+
+
+# RockpoolHunter(), InfestedWolf(), RedWhelp(), GlyphGuardian(), SpawnOfnZoth(), RighteousProtector(), SelflessHero()
+# RockpoolHunter(), DragonspawnLieutenant(), SelflessHero(), GlyphGuardian(), RedWhelp(), SpawnOfnZoth(), InfestedWolf()
+# win_prob(warband1, warband2)

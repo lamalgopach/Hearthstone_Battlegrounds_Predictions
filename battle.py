@@ -23,16 +23,17 @@ class Warband:
 	# 		warband.append(minion)
 	# 		self.warband = warband
 
-	def create_warband(self):
-		if self.player == "Alice":
-			self.warband = [RockpoolHunter(), InfestedWolf(), RedWhelp(), 
-							GlyphGuardian(), SpawnOfnZoth(), RighteousProtector(), 
-							SelflessHero()]
+	def create_warband(self, warband_x):
+		self.warband = warband_x
+		# if self.player == "Alice":
+		# 	self.warband = [RockpoolHunter(), InfestedWolf(), RedWhelp(), 
+		# 					GlyphGuardian(), SpawnOfnZoth(), RighteousProtector(), 
+		# 					SelflessHero()]
 
-		else:
-			self.warband = [RockpoolHunter(), DragonspawnLieutenant(), SelflessHero(), 
-							GlyphGuardian(), RedWhelp(), SpawnOfnZoth(), 
-							InfestedWolf()]
+		# else:
+		# 	self.warband = [RockpoolHunter(), DragonspawnLieutenant(), SelflessHero(), 
+		# 					GlyphGuardian(), RedWhelp(), SpawnOfnZoth(), 
+		# 					InfestedWolf()]
 
 
 class Player:
