@@ -226,6 +226,18 @@ class SpawnOfnZoth(Card):
 				minion.attack_value += 1
 				minion.health += 1
 
+class TheBeast(Card):
+	def __init__(self):
+		super().__init__(name="The Beast", attack_value=9, health=7, tier=3, 
+			m_type=MinionType.BEAST, has_deathrattle=True)
+
+	def deathrattle(self, friendly_minions, enemy_minions, j):
+		finkle_einhorn = self.summon_minions(1, FinkleEinhorn)
+		if len(enemy_minions) < 7:
+			last_place = len(enemy_minions)
+			enemy_minions.insert(last_place, finkle_einhorn[0])
+
+
 class UnstableGhoul(Card):
 	def __init__(self):
 		super().__init__(name="Unstable Ghoul", attack_value=1, health=3, tier=2, 
@@ -241,20 +253,28 @@ class UnstableGhoul(Card):
 
 
 # class(es) not imported to create minions in warbands:
-class Spider(Card):
+class FinkleEinhorn(Card):
 	def __init__(self):
-		super().__init__(name="Spider", attack_value=1, health=1, tier=1, 
-			m_type=MinionType.BEAST)
+		super().__init__(name="Finkle Einhorn", attack_value=3, health=3, tier=1, 
+			m_type=MinionType.MINION)
+
+class JoEBot(Card):
+	def __init__(self):
+		super().__init__(name="Jo-E Bot", attack_value=1, health=1, tier=1, 
+			m_type=MinionType.MECH)
 
 class Rat(Card):
 	def __init__(self):
 		super().__init__(name="Rat", attack_value=1, health=1, tier=1, 
 			m_type=MinionType.BEAST)
 
-class JoEBot(Card):
+class Spider(Card):
 	def __init__(self):
-		super().__init__(name="Jo-E Bot", attack_value=1, health=1, tier=1, 
-			m_type=MinionType.MECH)
+		super().__init__(name="Spider", attack_value=1, health=1, tier=1, 
+			m_type=MinionType.BEAST)
+
+		
+
 
 
 # Jakub:

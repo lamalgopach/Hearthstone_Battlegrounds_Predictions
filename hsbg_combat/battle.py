@@ -7,6 +7,7 @@ class Warband:
 		self.warband = warband
 
 	def create_minion(self):
+		# add the rest of classes 
 		available_classes = [
 			DragonspawnLieutenant, 
 			GlyphGuardian, 

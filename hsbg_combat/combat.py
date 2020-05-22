@@ -214,7 +214,7 @@ def simulate(warband1, warband2, num_simulations=100):
 	}
 
 warband1 = [
-	GoldrinnTheGreatWolf(), 
+	TheBeast(), 
 	InfestedWolf(), 
 	GlyphGuardian(), 
 	KaboomBot(), 
@@ -224,7 +224,7 @@ warband1 = [
 	]
 
 warband2 = [
-	KingBagurgle(), 
+	TheBeast(), 
 	RockpoolHunter(), 
 	UnstableGhoul(), 
 	RockpoolHunter(), 
