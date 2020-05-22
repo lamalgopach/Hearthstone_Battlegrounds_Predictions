@@ -107,6 +107,19 @@ class KaboomBot(Card):
 			i = enemy_minions.index(enemy_random_minion)
 			enemy_random_minion.take_damage(4)
 
+class KingBagurgle(Card):
+	# add the battlecry later
+	def __init__(self):
+		super().__init__(name="King Bagurgle", attack_value=6, health=3, tier=5, 
+						m_type=MinionType.MURLOC, has_deathrattle=True)
+	
+	def deathrattle(self, friendly_minions, enemy_minions, j):
+		if friendly_minions:
+			for minion in friendly_minions:
+				if minion.m_type == MinionType.MURLOC:
+					minion.attack_value += 2
+					minion.health += 2
+
 
 # class MurlocWarleader(Card):
 # 	def __init__(self):
