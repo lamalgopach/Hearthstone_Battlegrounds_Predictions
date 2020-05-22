@@ -115,7 +115,8 @@ def combat(w1, w2, battle_state, Player1, Player2):
 					if minion.has_deathrattle:
 						dthr1 = True
 						minion1t = minion
-					dead_attacking_minion += 1
+					if j1 <= battle_state.attack_i:
+						dead_attacking_minion += 1
 					break
 			else:
 				next_phase = False
@@ -127,7 +128,8 @@ def combat(w1, w2, battle_state, Player1, Player2):
 					if minion.has_deathrattle:
 						dthr2 = True
 						minion2t = minion
-					dead_attacked_minion += 1
+					if j2 <= battle_state.attacked_i :
+						dead_attacked_minion += 1
 					break
 			else:
 				next_phase = False
