@@ -60,6 +60,7 @@ def combat(w1, w2, battle_state, Player1, Player2):
 		# print(battle_state.attack_i)
 		# print(battle_state.attacking_warband.warband)
 		# assign attacked minion:
+		next_phase = False
 		attacked_minion = battle_state.choose_attacked_minion()
 
 		# create minions in game:
@@ -70,6 +71,27 @@ def combat(w1, w2, battle_state, Player1, Player2):
 		minion1.attack()
 		minion1.take_damage(minion2.attack_value)
 		minion2.take_damage(minion1.attack_value)
+		# triggered attack: Cave Hydra, Foe Reaper 4000
+		if minion1.has_triggered_attack:
+			if attacked_minion != 0 and attacked_minion + 1 < len(battle_state.attacked_warband.warband):
+				a = attacked_minion - 1
+				b = attacked_minion + 1
+				battle_state.attacked_warband.warband[b].take_damage(minion1.attack_value)
+				print(battle_state.attacked_warband.warband[b].name, battle_state.attacked_warband.warband[b].health)
+			elif attacked_minion == 0 and attacked_minion + 1 <= len(battle_state.attacked_warband.warband):
+				a = attacked_minion + 1
+			elif attacked_minion == len(battle_state.attacked_warband.warband) - 1:
+				a = attacked_minion - 1
+
+			battle_state.attacked_warband.warband[a].take_damage(minion1.attack_value)
+			print(battle_state.attacked_warband.warband[a].name,battle_state.attacked_warband.warband[a].health)
+
+
+
+
+			next_phase = True
+
+
 		print("Attacking: ", battle_state.attacking_player.name)
 		print(minion1.name, minion1.attack_value, minion1.health)
 		print("Attacked: ", battle_state.attacked_player.name)
@@ -79,7 +101,7 @@ def combat(w1, w2, battle_state, Player1, Player2):
 		dead_attacking_minion = 0
 		dead_attacked_minion = 0
 
-		next_phase = False
+		
 
 		if minion1.health < 1 or minion2.health < 1:
 			if minion1.health < 1:
@@ -216,7 +238,7 @@ def simulate(warband1, warband2, num_simulations=100):
 	}
 
 warband1 = [
-	TheBeast(), 
+	CaveHydra(), 
 	InfestedWolf(), 
 	GlyphGuardian(), 
 	KaboomBot(), 
@@ -226,7 +248,7 @@ warband1 = [
 	]
 
 warband2 = [
-	TheBeast(), 
+	CaveHydra(), 
 	RockpoolHunter(), 
 	UnstableGhoul(), 
 	RockpoolHunter(), 

@@ -15,7 +15,7 @@ class MinionType(Enum):
 
 class Card:
 	def __init__(self, *, name, attack_value, health, tier, m_type, taunt=False, 
-		has_ds=False, has_deathrattle=False):
+		has_ds=False, has_deathrattle=False, has_triggered_attack=False):
 		self.name = name
 		self.attack_value = attack_value
 		self.health = health
@@ -24,9 +24,11 @@ class Card:
 		self.taunt = taunt
 		self.has_ds = has_ds
 		self.has_deathrattle = has_deathrattle
+		self.has_triggered_attack = has_triggered_attack
 
 	def attack(self):
 		# used in Glyph Guardian
+
 		return
 
 	def take_damage(self, damage):
@@ -37,9 +39,6 @@ class Card:
 			self.has_ds = False
 		else:
 			self.health -= damage
-
-	def remove_ds(self):
-		self.has_ds = False
 
 	def die(self, friendly_minions, j):
 		del friendly_minions[j]
@@ -53,6 +52,12 @@ class Card:
 			minion = minion_class()
 			summoned_minions.append(minion)
 		return summoned_minions
+
+class CaveHydra(Card):
+	def __init__(self):
+		super().__init__(name="Cave Hydra", attack_value=2, health=4, tier=4, 
+			has_triggered_attack=True, m_type=MinionType.BEAST)
+
 
 
 class DragonspawnLieutenant(Card):
