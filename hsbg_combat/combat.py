@@ -72,25 +72,9 @@ def combat(w1, w2, battle_state, Player1, Player2):
 		minion1.take_damage(minion2.attack_value)
 		minion2.take_damage(minion1.attack_value)
 		# triggered attack: Cave Hydra, Foe Reaper 4000
-		if minion1.has_triggered_attack:
-			if attacked_minion != 0 and attacked_minion + 1 < len(battle_state.attacked_warband.warband):
-				a = attacked_minion - 1
-				b = attacked_minion + 1
-				battle_state.attacked_warband.warband[b].take_damage(minion1.attack_value)
-				print(battle_state.attacked_warband.warband[b].name, battle_state.attacked_warband.warband[b].health)
-			elif attacked_minion == 0 and attacked_minion + 1 <= len(battle_state.attacked_warband.warband):
-				a = attacked_minion + 1
-			elif attacked_minion == len(battle_state.attacked_warband.warband) - 1:
-				a = attacked_minion - 1
-
-			battle_state.attacked_warband.warband[a].take_damage(minion1.attack_value)
-			print(battle_state.attacked_warband.warband[a].name,battle_state.attacked_warband.warband[a].health)
-
-
-
-
+		if minion1.has_triggered_attack and len(battle_state.attacked_warband.warband) > 1:
+			minion1.triggered_attack(battle_state.attacked_warband.warband, attacked_minion)
 			next_phase = True
-
 
 		print("Attacking: ", battle_state.attacking_player.name)
 		print(minion1.name, minion1.attack_value, minion1.health)
@@ -100,8 +84,6 @@ def combat(w1, w2, battle_state, Player1, Player2):
 		# count dead minions:
 		dead_attacking_minion = 0
 		dead_attacked_minion = 0
-
-		
 
 		if minion1.health < 1 or minion2.health < 1:
 			if minion1.health < 1:

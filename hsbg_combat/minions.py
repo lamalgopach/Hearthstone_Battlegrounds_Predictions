@@ -58,6 +58,16 @@ class CaveHydra(Card):
 		super().__init__(name="Cave Hydra", attack_value=2, health=4, tier=4, 
 			has_triggered_attack=True, m_type=MinionType.BEAST)
 
+	def triggered_attack(self, enemy_minions, j):
+		if j != 0 and j + 1 < len(enemy_minions):
+			a = j - 1
+			b = j + 1	
+			enemy_minions[b].take_damage(self.attack_value)
+		elif j == 0 and j + 1 <= len(enemy_minions):
+			a = j + 1
+		elif j == len(enemy_minions) - 1:
+			a = j - 1
+		enemy_minions[a].take_damage(self.attack_value)
 
 
 class DragonspawnLieutenant(Card):
