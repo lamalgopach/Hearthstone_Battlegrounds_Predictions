@@ -100,6 +100,17 @@ class KaboomBot(Card):
 # 			m_type=MinionType.MURLOC)
 
 
+class Mecharoo(Card):
+	def __init__(self):
+		super().__init__(name="Mecharoo", attack_value=1, health=1, tier=1, 
+			m_type=MinionType.MECH, has_deathrattle=True)
+
+	def deathrattle(self, friendly_minions, enemy_minions, j):
+		joebot = self.summon_minions(1, JoEBot)
+		friendly_minions.insert(j, joebot[0])
+
+
+
 class RedWhelp(Card):
 	def __init__(self):
 		super().__init__(name="Red Whelp", attack_value=1, health=2, tier=1, 
@@ -191,6 +202,11 @@ class Rat(Card):
 		super().__init__(name="Rat", attack_value=1, health=1, tier=1, 
 			m_type=MinionType.BEAST)
 
+class JoEBot(Card):
+	def __init__(self):
+		super().__init__(name="Jo-E Bot", attack_value=1, health=1, tier=1, 
+			m_type=MinionType.MECH)
+
 
 # Jakub:
 # minion = SpawnOfnZoth()
@@ -211,5 +227,5 @@ class Rat(Card):
 
 
 #todo:
-# think like effects(kabumbot, unstableghoul)
-# classes to do first: waxoggler, mecharoo
+# think like effects(unstableghoul)
+# classes to do first: waxoggler
