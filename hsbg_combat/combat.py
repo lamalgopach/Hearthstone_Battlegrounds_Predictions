@@ -224,9 +224,9 @@ warband1 = [
 
 warband2 = [
 	SpawnOfnZoth(), 
-	RockpoolHunter(), 
-	Mecharoo(), 
 	SelflessHero(), 
+	UnstableGhoul(), 
+	Mecharoo(), 
 	GlyphGuardian(),
 	RedWhelp(), 
 	RatPack(),

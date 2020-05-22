@@ -199,6 +199,19 @@ class SpawnOfnZoth(Card):
 				minion.attack_value += 1
 				minion.health += 1
 
+class UnstableGhoul(Card):
+	def __init__(self):
+		super().__init__(name="Unstable Ghoul", attack_value=1, health=3, tier=2, 
+						m_type=MinionType.MINION, has_deathrattle=True)
+	
+	def deathrattle(self, friendly_minions, enemy_minions, j):
+		if friendly_minions:
+			for minion in friendly_minions:
+				minion.health -= 1
+		if enemy_minions:
+			for minion in enemy_minions:
+				minion.health -= 1
+
 
 # class(es) not imported to create minions in warbands:
 class Spider(Card):
