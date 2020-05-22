@@ -213,9 +213,9 @@ def simulate(warband1, warband2, num_simulations=100):
 	}
 
 warband1 = [
-	RatPack(), 
+	NadinaTheRed(), 
 	InfestedWolf(), 
-	SelflessHero(), 
+	GlyphGuardian(), 
 	KaboomBot(), 
 	RedWhelp(), 
 	DragonspawnLieutenant(),

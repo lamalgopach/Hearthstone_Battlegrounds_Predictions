@@ -109,7 +109,16 @@ class Mecharoo(Card):
 		joebot = self.summon_minions(1, JoEBot)
 		friendly_minions.insert(j, joebot[0])
 
-
+class NadinaTheRed(Card):
+	def __init__(self):
+		super().__init__(name="Nadina The Red", attack_value=7, health=4, tier=6, 
+						m_type=MinionType.MINION, has_deathrattle=True)
+	
+	def deathrattle(self, friendly_minions, enemy_minions, j):
+		if friendly_minions:
+			for minion in friendly_minions:
+				if minion.m_type == MinionType.DRAGON:
+					minion.has_ds = True
 
 class RedWhelp(Card):
 	def __init__(self):
