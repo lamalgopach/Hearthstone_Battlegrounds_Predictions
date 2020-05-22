@@ -83,25 +83,16 @@ class InfestedWolf(Card):
 			friendly_minions.insert(j, spider)
 			i += 1
 
-# class KaboomBot(Card):
-# 	def __init__(self):
-# 		super().__init__(name="Kaboom Bot", attack_value=2, health=2, tier=2, 
-# 			m_type=MinionType.MECH, has_deathrattle=True)
+class KaboomBot(Card):
+	def __init__(self):
+		super().__init__(name="Kaboom Bot", attack_value=2, health=2, tier=2, 
+			m_type=MinionType.MECH, has_deathrattle=True)
 
-# 	def deathrattle(self, friendly_minions, enemy_minions, j):
-# 		if enemy_minions:
-# 			enemy_random_minion = random.choice(enemy_minions)
-# 			i = enemy_minions.index(enemy_random_minion)
-# 			enemy_random_minion.take_damage(4)
-# 		# if enemy_random_minion.health < 0:
-# 		# 	j = enemy_minions.index(enemy_random_minion)
-# 			# 	enemy_random_minion.die(enemy_minions, friendly_minions, j)
-# 			if enemy_random_minion.has_deathrattle:
-# 				pass
-# 			# think more creatively
-# 			# attacked_minion.deathrattle(enemy_minions, friendly_minions, i)
-
-		
+	def deathrattle(self, friendly_minions, enemy_minions, j):
+		if enemy_minions:
+			enemy_random_minion = random.choice(enemy_minions)
+			i = enemy_minions.index(enemy_random_minion)
+			enemy_random_minion.take_damage(4)
 
 # class MurlocWarleader(Card):
 # 	def __init__(self):
@@ -201,8 +192,6 @@ class Rat(Card):
 			m_type=MinionType.BEAST)
 
 
-# May 14th: 160 lines of code
-
 # Jakub:
 # minion = SpawnOfnZoth()
 # if minion.deathrattle is not None:
@@ -223,4 +212,4 @@ class Rat(Card):
 
 #todo:
 # think like effects(kabumbot, unstableghoul)
-# classes to do first: waxoggler, ratpack, mecharoo
+# classes to do first: waxoggler, mecharoo

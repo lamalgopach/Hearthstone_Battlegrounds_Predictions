@@ -1,9 +1,5 @@
 import random
-from minions import DragonspawnLieutenant, GlyphGuardian, InfestedWolf 
-# from minions import KaboomBot, MurlocWarleader
-from minions import RedWhelp, RighteousProtector, RockpoolHunter
-from minions import SpawnOfnZoth, SelflessHero
-
+from minions import *
 
 class Warband:
 	def __init__(self, player, warband=[]):
@@ -15,15 +11,18 @@ class Warband:
 			DragonspawnLieutenant, 
 			GlyphGuardian, 
 			InfestedWolf,
+			KaboomBot, 
 			RatPack,
 			RedWhelp, 
 			RighteousProtector, 
 			RockpoolHunter, 
 			SpawnOfnZoth, 
-			SelflessHero]
+			SelflessHero,
+			]
 		return random.choice(available_classes)()
 
 	# def create_warband(self):
+	# random created warband
 	# 	warband = []
 	# 	while len(warband) != 7:
 	# 		minion = self.create_minion()
@@ -31,6 +30,7 @@ class Warband:
 	# 		self.warband = warband
 
 	def create_warband(self, warband_x):
+		# Create given warband
 		self.warband = warband_x
 		# if self.player == "Alice":
 		# 	self.warband = [RockpoolHunter(), InfestedWolf(), RedWhelp(), 
@@ -41,7 +41,6 @@ class Warband:
 		# 	self.warband = [RockpoolHunter(), DragonspawnLieutenant(), SelflessHero(), 
 		# 					GlyphGuardian(), RedWhelp(), SpawnOfnZoth(), 
 		# 					InfestedWolf()]
-
 
 class Player:
 	def __init__(self, name, warband, level=1, life=40):
@@ -155,5 +154,3 @@ class BattleState:
 				red_whelp_list.append(minion)
 				red_whelp_dict[minion] = (friendly_warband, enemy_warband)
 		return red_whelp_list, red_whelp_dict
-
-# May 14th: 159 lines of code

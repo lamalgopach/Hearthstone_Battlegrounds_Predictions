@@ -69,17 +69,16 @@ def combat(w1, w2, battle_state, Player1, Player2):
 		minion1.attack()
 		minion1.take_damage(minion2.attack_value)
 		minion2.take_damage(minion1.attack_value)
-		# print("Attacking: ", battle_state.attacking_player.name)
-		# print(minion1.name, minion1.attack_value, minion1.health)
-		# print("Attacked: ", battle_state.attacked_player.name)
-		# print(minion2.name, minion2.attack_value, minion2.health)
-		# print()
+		print("Attacking: ", battle_state.attacking_player.name)
+		print(minion1.name, minion1.attack_value, minion1.health)
+		print("Attacked: ", battle_state.attacked_player.name)
+		print(minion2.name, minion2.attack_value, minion2.health)
+		print()
 		# count dead minions:
 		dead_attacking_minion = 0
 		dead_attacked_minion = 0
 
-		# while ?
-		# iterating in minions list?
+		next_phase = False
 
 		if minion1.health < 1 or minion2.health < 1:
 			if minion1.health < 1:
@@ -93,33 +92,53 @@ def combat(w1, w2, battle_state, Player1, Player2):
 			if dead_attacking_minion == 1:
 				if minion1.has_deathrattle:
 					minion1.deathrattle(battle_state.attacking_warband.warband, battle_state.attacked_warband.warband, battle_state.attack_i)
-			
+					next_phase = True
+
 			if dead_attacked_minion == 1:
 				if minion2.has_deathrattle:
 					minion2.deathrattle(battle_state.attacked_warband.warband, battle_state.attacking_warband.warband, attacked_minion)
+					next_phase = True
 
-			# attacking_warband_deathrattle = False
-			# attacked_warband_deathrattle = False
+		while next_phase:
+			dthr1 = False
+			dthr2 = False
+			minion1t = None
+			minion2t = None
+			j1 = 0
+			j2 = 0
 
-			# for minion in battle_state.attacking_warband.warband:
-			# 	if minion.health < 1:
-			# 		i = battle_state.attacking_warband.warband.index(minion)
-			# 		minion.die(battle_state.attacking_warband.warband, i)
-			# 		dead_attacking_minion += 1
-			# 		if minion.has_deathrattle:
-			# 			attacking_warband_deathrattle = True
+			for minion in battle_state.attacking_warband.warband:
+				if minion.health < 1:
+					j1 = battle_state.attacking_warband.warband.index(minion)
+					minion.die(battle_state.attacking_warband.warband, j1)
+					if minion.has_deathrattle:
+						dthr1 = True
+						minion1t = minion
+					dead_attacking_minion += 1
+					break
+			else:
+				next_phase = False
+
+			for minion in battle_state.attacked_warband.warband:
+				if minion.health < 1:
+					j2 = battle_state.attacked_warband.warband.index(minion)
+					minion.die(battle_state.attacked_warband.warband, j2)
+					if minion.has_deathrattle:
+						dthr2 = True
+						minion2t = minion
+					dead_attacked_minion += 1
+					break
+			else:
+				next_phase = False
 
 
-			# for minion in battle_state.attacked_warband.warband:
-			# 	if minion.health < 1:
-			# 		i = battle_state.attacked_warband.warband.index(minion)
-			# 		minion.die(battle_state.attacked_warband.warband, i)
-			# 		dead_attacked_minion += 1	
-			# 		if minion.has_deathrattle:
-			# 			attacked_warband_deathrattle = True	
+			if dthr1:
+				minion1t.deathrattle(battle_state.attacking_warband.warband, battle_state.attacked_warband.warband, j1)
+				next_phase = True
 
-			# if attacking_warband_deathrattle:
-			# 	pass
+			if dthr2:
+				minion2t.deathrattle(battle_state.attacked_warband.warband, battle_state.attacking_warband.warband, j2)
+				next_phase = True
 
 		# next minion:
 		# (if attacker is dead we should keep track it)
@@ -197,7 +216,7 @@ warband1 = [
 	RatPack(), 
 	InfestedWolf(), 
 	SelflessHero(), 
-	GlyphGuardian(), 
+	KaboomBot(), 
 	RedWhelp(), 
 	DragonspawnLieutenant(),
 	SpawnOfnZoth(),
