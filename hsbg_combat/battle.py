@@ -1,8 +1,8 @@
 import random
-from .minions import DragonspawnLieutenant, GlyphGuardian, InfestedWolf 
+from minions import DragonspawnLieutenant, GlyphGuardian, InfestedWolf 
 # from minions import KaboomBot, MurlocWarleader
-from .minions import RedWhelp, RighteousProtector, RockpoolHunter
-from .minions import SpawnOfnZoth, SelflessHero
+from minions import RedWhelp, RighteousProtector, RockpoolHunter
+from minions import SpawnOfnZoth, SelflessHero
 
 
 class Warband:
@@ -11,9 +11,16 @@ class Warband:
 		self.warband = warband
 
 	def create_minion(self):
-		available_classes = [DragonspawnLieutenant, GlyphGuardian, InfestedWolf,
-					RedWhelp, RighteousProtector, RockpoolHunter, 
-					SpawnOfnZoth, SelflessHero]
+		available_classes = [
+			DragonspawnLieutenant, 
+			GlyphGuardian, 
+			InfestedWolf,
+			RatPack,
+			RedWhelp, 
+			RighteousProtector, 
+			RockpoolHunter, 
+			SpawnOfnZoth, 
+			SelflessHero]
 		return random.choice(available_classes)()
 
 	# def create_warband(self):
@@ -64,7 +71,6 @@ class BattleState:
 		self.attack_i = attack_i
 		self.attacked_i = attacked_i
 
-
 	def count_taunts(self):
 		output = 0
 		taunted_minions = []
@@ -107,7 +113,6 @@ class BattleState:
 		# 
 		pass
 
-
 	def print_state(self, statement):
 		print(statement)
 		print(f'{self.attacking_player.name}:')
@@ -126,10 +131,12 @@ class BattleState:
 		print()
 		print()
 
-
 	def start_of_combat(self):
+		# create list and dictionary of red whelp 
+		# both in attacked and attacking warband
 		red_whelp_list, red_whelp_dict = self.create_rw_list_and_dict(self.attacking_warband, self.attacked_warband)
 		red_whelp_list2, red_whelp_dict2 = self.create_rw_list_and_dict(self.attacked_warband, self.attacking_warband)
+		# merge those lists and dicts
 		red_whelp_dict.update(red_whelp_dict2)
 		red_whelp_list.extend(red_whelp_list2)
 		# randomly choose attacking red whelp

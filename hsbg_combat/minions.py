@@ -37,8 +37,6 @@ class Card:
 			self.has_ds = False
 		else:
 			self.health -= damage
-			# if self.health < 1:
-			# 	self.die(friendly_minions, enemy_minions, j)
 
 	def remove_ds(self):
 		self.has_ds = False
@@ -126,11 +124,27 @@ class RedWhelp(Card):
 	def attack_in_start_of_combat(self, friendly_minions, enemy_minions):
 		damage = self.add_damage_in_combat(friendly_minions.warband)
 		attacked_minion = random.choice(enemy_minions.warband)
-		i = enemy_minions.warband.index(attacked_minion)
+		j = enemy_minions.warband.index(attacked_minion)
 		attacked_minion.take_damage(damage)
-		# if attacked_minion.health < 1:
-		# 	j = enemy_minions.warband.index(attacked_minion)
-		# 	attacked_minion.die(enemy_minions.warband, friendly_minions.warband, j)
+		if attacked_minion.health < 1:
+			attacked_minion.die(enemy_minions.warband, j)
+			if attacked_minion.has_deathrattle:
+				attacked_minion.deathrattle(enemy_minions.warband, friendly_minions.warband, j)
+
+
+class RatPack(Card):
+	def __init__(self):
+		super().__init__(name="Rat Pack", attack_value=2, health=2, tier=2, 
+						m_type=MinionType.BEAST, has_deathrattle=True)
+
+	def deathrattle(self, friendly_minions, enemy_minions, j):
+		x = self.attack_value
+		rats = self.summon_minions(x, Rat)
+		i = 0
+		while len(friendly_minions) < 7 and i != x:
+			rat = rats[i]
+			friendly_minions.insert(j, rat)
+			i += 1
 
 
 class RighteousProtector(Card):
@@ -181,6 +195,11 @@ class Spider(Card):
 		super().__init__(name="Spider", attack_value=1, health=1, tier=1, 
 			m_type=MinionType.BEAST)
 
+class Rat(Card):
+	def __init__(self):
+		super().__init__(name="Rat", attack_value=1, health=1, tier=1, 
+			m_type=MinionType.BEAST)
+
 
 # May 14th: 160 lines of code
 
@@ -189,9 +208,6 @@ class Spider(Card):
 # if minion.deathrattle is not None:
 # # if hasattr(minion, "deathrattle"):
 # 	minion.deathrattle(friendly_minions, j)
-
-
-
 
 # 	def attack(self, game_state, target):
 # 		target.health -= self.attack_value

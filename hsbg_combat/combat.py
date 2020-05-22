@@ -1,7 +1,8 @@
 import random
 from random import choice
 import copy
-from .battle import Player, Warband, BattleState
+from battle import Player, Warband, BattleState
+from minions import *
 
 def choose_first(player1, player2):
 	order = True
@@ -44,7 +45,7 @@ def start_of_game(warband1, warband2):
 	attacked_warband = w2 if game[1] == w2 else w1
 
 	battle_state = BattleState(attacking_player, attacked_player, attacking_warband, attacked_warband)
-	# battle_state.print_state("START OF THE GAME: ")
+	battle_state.print_state("START OF THE GAME: ")
 
 	return w1, w2, battle_state, Player1, Player2
 
@@ -52,7 +53,7 @@ def combat(w1, w2, battle_state, Player1, Player2):
 	winner = None
 
 	battle_state.start_of_combat()
-	# battle_state.print_state("after start of combat:")
+	battle_state.print_state("after start of combat:")
 
 	# attack till at least one player has no minions:
 	while battle_state.attacking_warband.warband and battle_state.attacked_warband.warband:
@@ -137,8 +138,8 @@ def combat(w1, w2, battle_state, Player1, Player2):
 		if battle_state.attacked_i > len(battle_state.attacked_warband.warband) - 1:
 			battle_state.attacked_i = 0
 
-		# statement = f'Warbands after {battle_state.attacking_player.name}\'s attack:'
-		# battle_state.print_state(statement)
+		statement = f'Warbands after {battle_state.attacking_player.name}\'s attack:'
+		battle_state.print_state(statement)
 		# end of turn, change the player:
 		battle_state.play_next()
 
@@ -192,6 +193,29 @@ def simulate(warband1, warband2, num_simulations=100):
 		"second_wins": bob_winner / num_simulations,
 	}
 
+warband1 = [
+	RatPack(), 
+	InfestedWolf(), 
+	SelflessHero(), 
+	GlyphGuardian(), 
+	RedWhelp(), 
+	DragonspawnLieutenant(),
+	SpawnOfnZoth(),
+	]
+
+warband2 = [
+	SpawnOfnZoth(), 
+	RockpoolHunter(), 
+	InfestedWolf(), 
+	SelflessHero(), 
+	GlyphGuardian(),
+	RedWhelp(), 
+	RatPack(),
+	]
+
+
+w1, w2, battle_state, Player1, Player2 = start_of_game(warband1, warband2)
+print(combat(w1, w2, battle_state, Player1, Player2).name)
 
 
 # RockpoolHunter(), InfestedWolf(), RedWhelp(), GlyphGuardian(), SpawnOfnZoth(), RighteousProtector(), SelflessHero()
