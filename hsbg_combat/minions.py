@@ -43,6 +43,16 @@ class Card:
 	def die(self, friendly_minions, j):
 		del friendly_minions[j]
 
+	def triggered_attack(self, enemy_minions, j):
+		if j != 0 and j + 1 < len(enemy_minions):
+			a = j - 1
+			b = j + 1	
+			enemy_minions[b].take_damage(self.attack_value)
+		elif j == 0 and j + 1 <= len(enemy_minions):
+			a = j + 1
+		elif j == len(enemy_minions) - 1:
+			a = j - 1
+		enemy_minions[a].take_damage(self.attack_value)
 
 	def summon_minions(self, n, minion_class):
 		# n - number of summoned minions
@@ -58,22 +68,20 @@ class CaveHydra(Card):
 		super().__init__(name="Cave Hydra", attack_value=2, health=4, tier=4, 
 			has_triggered_attack=True, m_type=MinionType.BEAST)
 
-	def triggered_attack(self, enemy_minions, j):
-		if j != 0 and j + 1 < len(enemy_minions):
-			a = j - 1
-			b = j + 1	
-			enemy_minions[b].take_damage(self.attack_value)
-		elif j == 0 and j + 1 <= len(enemy_minions):
-			a = j + 1
-		elif j == len(enemy_minions) - 1:
-			a = j - 1
-		enemy_minions[a].take_damage(self.attack_value)
 
 
 class DragonspawnLieutenant(Card):
 	def __init__(self):
 		super().__init__(name="Dragonspawn Lieutenant", attack_value=2, health=3, tier=1, 
 			m_type=MinionType.DRAGON, taunt=True)
+
+
+class FoeReaper4000(Card):
+	def __init__(self):
+		super().__init__(name="Foe Reaper 4000", attack_value=6, health=9, tier=6, 
+			has_triggered_attack=True, m_type=MinionType.MECH)
+
+
 
 
 class GlyphGuardian(Card):
@@ -177,13 +185,21 @@ class RedWhelp(Card):
 	def attack_in_start_of_combat(self, friendly_minions, enemy_minions):
 		damage = self.add_damage_in_combat(friendly_minions.warband)
 		attacked_minion = random.choice(enemy_minions.warband)
+		print()
+		print(attacked_minion.name)
 		j = enemy_minions.warband.index(attacked_minion)
 		attacked_minion.take_damage(damage)
+
 		if attacked_minion.health < 1:
+			print(attacked_minion.name)
+			print(attacked_minion.health)
 			attacked_minion.die(enemy_minions.warband, j)
+
 			if attacked_minion.has_deathrattle:
 				attacked_minion.deathrattle(enemy_minions.warband, friendly_minions.warband, j)
-
+				for minion in enemy_minions.warband:
+					print(minion.name, minion.health)
+				print()
 
 class RatPack(Card):
 	def __init__(self):

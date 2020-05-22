@@ -220,23 +220,23 @@ def simulate(warband1, warband2, num_simulations=100):
 	}
 
 warband1 = [
-	CaveHydra(), 
-	InfestedWolf(), 
+	RedWhelp(), 
 	GlyphGuardian(), 
-	KaboomBot(), 
-	RatPack(), 
+	GlyphGuardian(), 
+	UnstableGhoul(), 
+	RedWhelp(), 
 	DragonspawnLieutenant(),
-	SpawnOfnZoth(),
+	RighteousProtector(),
 	]
 
 warband2 = [
-	CaveHydra(), 
+	FoeReaper4000(), 
 	RockpoolHunter(), 
 	UnstableGhoul(), 
-	RockpoolHunter(), 
+	RighteousProtector(), 
 	GlyphGuardian(),
 	RedWhelp(), 
-	RatPack(),
+	DragonspawnLieutenant(),
 	]
 
 
@@ -244,6 +244,4 @@ w1, w2, battle_state, Player1, Player2 = start_of_game(warband1, warband2)
 combat(w1, w2, battle_state, Player1, Player2)
 
 
-# RockpoolHunter(), InfestedWolf(), RedWhelp(), GlyphGuardian(), SpawnOfnZoth(), RighteousProtector(), SelflessHero()
-# RockpoolHunter(), DragonspawnLieutenant(), SelflessHero(), GlyphGuardian(), RedWhelp(), SpawnOfnZoth(), InfestedWolf()
 # win_prob(warband1, warband2)
