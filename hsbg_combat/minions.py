@@ -70,6 +70,19 @@ class GlyphGuardian(Card):
 		self.attack_value = 2 * self.attack_value
 
 
+class GoldrinnTheGreatWolf(Card):
+	def __init__(self):
+		super().__init__(name="Goldrinn The Great Wolf", attack_value=4, health=4, tier=5, 
+						m_type=MinionType.BEAST, has_deathrattle=True)
+	
+	def deathrattle(self, friendly_minions, enemy_minions, j):
+		if friendly_minions:
+			for minion in friendly_minions:
+				if minion.m_type == MinionType.BEAST:
+					minion.attack_value += 4
+					minion.health += 4
+
+
 class InfestedWolf(Card):
 	def __init__(self):
 		super().__init__(name="Infested Wolf", attack_value=3, health=3, tier=3, 
@@ -93,6 +106,7 @@ class KaboomBot(Card):
 			enemy_random_minion = random.choice(enemy_minions)
 			i = enemy_minions.index(enemy_random_minion)
 			enemy_random_minion.take_damage(4)
+
 
 # class MurlocWarleader(Card):
 # 	def __init__(self):

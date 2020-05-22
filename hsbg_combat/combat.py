@@ -57,7 +57,8 @@ def combat(w1, w2, battle_state, Player1, Player2):
 
 	# attack till at least one player has no minions:
 	while battle_state.attacking_warband.warband and battle_state.attacked_warband.warband:
-
+		print(battle_state.attack_i)
+		print(battle_state.attacking_warband.warband)
 		# assign attacked minion:
 		attacked_minion = battle_state.choose_attacked_minion()
 
@@ -213,11 +214,11 @@ def simulate(warband1, warband2, num_simulations=100):
 	}
 
 warband1 = [
-	NadinaTheRed(), 
+	GoldrinnTheGreatWolf(), 
 	InfestedWolf(), 
 	GlyphGuardian(), 
 	KaboomBot(), 
-	RedWhelp(), 
+	RatPack(), 
 	DragonspawnLieutenant(),
 	SpawnOfnZoth(),
 	]
@@ -234,7 +235,7 @@ warband2 = [
 
 
 w1, w2, battle_state, Player1, Player2 = start_of_game(warband1, warband2)
-print(combat(w1, w2, battle_state, Player1, Player2).name)
+combat(w1, w2, battle_state, Player1, Player2)
 
 
 # RockpoolHunter(), InfestedWolf(), RedWhelp(), GlyphGuardian(), SpawnOfnZoth(), RighteousProtector(), SelflessHero()
