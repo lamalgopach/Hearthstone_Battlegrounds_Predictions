@@ -144,7 +144,8 @@ class BattleState:
 			random_rw = random.choice(red_whelp_list)
 			friendly_warband = red_whelp_dict[random_rw][0]
 			enemy_warband = red_whelp_dict[random_rw][1]
-			random_rw.attack_in_start_of_combat(friendly_warband, enemy_warband)
+			if random_rw.attack_in_start_of_combat(friendly_warband, enemy_warband):
+				self.solve_next_phase(True, 0, 0)
 			red_whelp_list.remove(random_rw)
 
 	def create_rw_list_and_dict(self, friendly_warband, enemy_warband):
@@ -155,3 +156,70 @@ class BattleState:
 				red_whelp_list.append(minion)
 				red_whelp_dict[minion] = (friendly_warband, enemy_warband)
 		return red_whelp_list, red_whelp_dict
+
+	def both_minions_die(self, minion1, minion2, i, dead_attacking_minion, dead_attacked_minion, next_phase):
+
+		if minion1.health < 1:
+				minion1.die(self.attacking_warband.warband, self.attack_i)
+				dead_attacking_minion += 1
+
+		if minion2.health < 1:
+			minion2.die(self.attacked_warband.warband, i)
+			dead_attacked_minion += 1
+
+		if dead_attacking_minion == 1 and minion1.has_deathrattle:
+			minion1.deathrattle(self.attacking_warband.warband, self.attacked_warband.warband, self.attack_i)
+			next_phase = True
+
+		if dead_attacked_minion == 1 and minion2.has_deathrattle:
+			minion2.deathrattle(self.attacked_warband.warband, self.attacking_warband.warband, i)
+			next_phase = True
+
+	def solve_next_phase(self, next_phase, dead_attacking_minion, dead_attacked_minion):
+
+		while next_phase:
+			dthr1 = False
+			dthr2 = False
+			minion1t = None
+			minion2t = None
+			j1 = 0
+			j2 = 0
+
+			for minion in self.attacking_warband.warband:
+				if minion.health < 1:
+					j1 = self.attacking_warband.warband.index(minion)
+					minion.die(self.attacking_warband.warband, j1)
+					if minion.has_deathrattle:
+						dthr1 = True
+						minion1t = minion
+					if j1 <= self.attack_i:
+						dead_attacking_minion += 1
+					break
+			else:
+				next_phase = False
+
+			for minion in self.attacked_warband.warband:
+				if minion.health < 1:
+					j2 = self.attacked_warband.warband.index(minion)
+					minion.die(self.attacked_warband.warband, j2)
+					if minion.has_deathrattle:
+						dthr2 = True
+						minion2t = minion
+					if j2 <= self.attacked_i:
+						dead_attacked_minion += 1
+					break
+			else:
+				next_phase = False
+
+
+			if dthr1:
+				minion1t.deathrattle(self.attacking_warband.warband, self.attacked_warband.warband, j1)
+				next_phase = True
+
+			if dthr2:
+				minion2t.deathrattle(self.attacked_warband.warband, self.attacking_warband.warband, j2)
+				next_phase = True
+
+		return dead_attacking_minion, dead_attacked_minion
+
+

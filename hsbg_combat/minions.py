@@ -197,9 +197,9 @@ class RedWhelp(Card):
 
 			if attacked_minion.has_deathrattle:
 				attacked_minion.deathrattle(enemy_minions.warband, friendly_minions.warband, j)
-				for minion in enemy_minions.warband:
-					print(minion.name, minion.health)
-				print()
+				if isinstance(attacked_minion, KaboomBot) or isinstance(attacked_minion, UnstableGhoul):
+					return True
+
 
 class RatPack(Card):
 	def __init__(self):
