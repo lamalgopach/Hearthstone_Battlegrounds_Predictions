@@ -57,7 +57,6 @@ def combat(w1, w2, battle_state, Player1, Player2):
 
 	# attack till at least one player has no minions:
 	while battle_state.attacking_warband.warband and battle_state.attacked_warband.warband:
-		# print(battle_state.attacking_warband.warband)
 		# assign attacked minion:
 		next_phase = False
 		attacked_minion = battle_state.choose_attacked_minion()
@@ -70,6 +69,7 @@ def combat(w1, w2, battle_state, Player1, Player2):
 		minion1.attack()
 		minion1.take_damage(minion2.attack_value)
 		minion2.take_damage(minion1.attack_value)
+
 		# triggered attack: Cave Hydra, Foe Reaper 4000
 		if minion1.has_triggered_attack and len(battle_state.attacked_warband.warband) > 1:
 			minion1.triggered_attack(battle_state.attacked_warband.warband, attacked_minion)
@@ -85,26 +85,13 @@ def combat(w1, w2, battle_state, Player1, Player2):
 		dead_attacked_minion = 0
 
 		if minion1.health < 1 and minion2.health < 1:
-			battle_state.both_minions_die(minion1, minion2, attacked_minion, dead_attacking_minion, dead_attacked_minion, next_phase)
+			dead_attacking_minion, dead_attacked_minion, next_phase = battle_state.both_minions_die(minion1, minion2, dead_attacking_minion, dead_attacked_minion, next_phase, attacked_minion)
 
 		elif minion1.health < 1:
-			# put it into method:
-			minion1.die(battle_state.attacking_warband.warband, battle_state.attack_i)
-			dead_attacking_minion = 1
-
-			if dead_attacking_minion == 1 and minion1.has_deathrattle:
-				minion1.deathrattle(battle_state.attacking_warband.warband, battle_state.attacked_warband.warband, battle_state.attack_i)
-				if isinstance(minion1, KaboomBot) or isinstance(minion1, UnstableGhoul):
-					next_phase = True
+			dead_attacking_minion, next_phase = battle_state.one_minion_dies(minion1, dead_attacking_minion, next_phase, battle_state.attacking_warband.warband, battle_state.attacked_warband.warband, battle_state.attack_i)
 
 		elif minion2.health < 1:
-			minion2.die(battle_state.attacked_warband.warband, attacked_minion)
-			dead_attacked_minion = 1
-
-			if dead_attacked_minion == 1 and minion2.has_deathrattle:
-				minion2.deathrattle(battle_state.attacked_warband.warband, battle_state.attacking_warband.warband, attacked_minion)
-				if isinstance(minion2, KaboomBot) or isinstance(minion2, UnstableGhoul):
-					next_phase = True
+			dead_attacked_minion, next_phase = battle_state.one_minion_dies(minion2, dead_attacked_minion, next_phase, battle_state.attacked_warband.warband, battle_state.attacking_warband.warband, attacked_minion)
 
 		if next_phase:
 			dead_attacking_minion, dead_attacked_minion = battle_state.solve_next_phase(next_phase, dead_attacking_minion, dead_attacked_minion)
@@ -124,8 +111,8 @@ def combat(w1, w2, battle_state, Player1, Player2):
 		if battle_state.attacked_i > len(battle_state.attacked_warband.warband) - 1:
 			battle_state.attacked_i = 0
 
-		# statement = f'Warbands after {battle_state.attacking_player.name}\'s attack:'
-		# battle_state.print_state(statement)
+		statement = f'Warbands after {battle_state.attacking_player.name}\'s attack:'
+		battle_state.print_state(statement)
 		# end of turn, change the player:
 		battle_state.play_next()
 
@@ -190,7 +177,7 @@ warband1 = [
 	]
 
 warband2 = [
-	FoeReaper4000(), 
+	# FoeReaper4000(), 
 	RockpoolHunter(), 
 	UnstableGhoul(), 
 	RighteousProtector(), 
@@ -199,9 +186,7 @@ warband2 = [
 	DragonspawnLieutenant(),
 	]
 
-
 w1, w2, battle_state, Player1, Player2 = start_of_game(warband1, warband2)
 combat(w1, w2, battle_state, Player1, Player2)
-
 
 # win_prob(warband1, warband2)

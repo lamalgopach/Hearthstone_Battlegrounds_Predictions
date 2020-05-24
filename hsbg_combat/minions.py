@@ -48,11 +48,13 @@ class Card:
 			a = j - 1
 			b = j + 1	
 			enemy_minions[b].take_damage(self.attack_value)
+			print(enemy_minions[b].health, "triggered_attack")
 		elif j == 0 and j + 1 <= len(enemy_minions):
 			a = j + 1
 		elif j == len(enemy_minions) - 1:
 			a = j - 1
 		enemy_minions[a].take_damage(self.attack_value)
+		print(enemy_minions[a].health, "triggered_attack")
 
 	def summon_minions(self, n, minion_class):
 		# n - number of summoned minions
@@ -80,7 +82,6 @@ class FoeReaper4000(Card):
 	def __init__(self):
 		super().__init__(name="Foe Reaper 4000", attack_value=6, health=9, tier=6, 
 			has_triggered_attack=True, m_type=MinionType.MECH)
-
 
 
 
@@ -185,16 +186,11 @@ class RedWhelp(Card):
 	def attack_in_start_of_combat(self, friendly_minions, enemy_minions):
 		damage = self.add_damage_in_combat(friendly_minions.warband)
 		attacked_minion = random.choice(enemy_minions.warband)
-		print()
-		print(attacked_minion.name)
 		j = enemy_minions.warband.index(attacked_minion)
 		attacked_minion.take_damage(damage)
 
 		if attacked_minion.health < 1:
-			print(attacked_minion.name)
-			print(attacked_minion.health)
 			attacked_minion.die(enemy_minions.warband, j)
-
 			if attacked_minion.has_deathrattle:
 				attacked_minion.deathrattle(enemy_minions.warband, friendly_minions.warband, j)
 				if isinstance(attacked_minion, KaboomBot) or isinstance(attacked_minion, UnstableGhoul):
@@ -277,11 +273,10 @@ class UnstableGhoul(Card):
 	def deathrattle(self, friendly_minions, enemy_minions, j):
 		if friendly_minions:
 			for minion in friendly_minions:
-				minion.health -= 1
+				minion.take_damage(1)
 		if enemy_minions:
 			for minion in enemy_minions:
-				minion.health -= 1
-
+				minion.take_damage(1)
 
 # class(es) not imported to create minions in warbands:
 class FinkleEinhorn(Card):
