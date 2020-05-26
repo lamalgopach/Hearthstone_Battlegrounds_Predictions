@@ -125,6 +125,15 @@ class HarvestGolem(Card):
 		golem = self.summon_minions(1, DamagedGolem)
 		friendly_minions.insert(j, golem[0])
 
+class Imprisoner(Card):
+	def __init__(self):
+		super().__init__(name="Imprisoner", attack_value=3, health=3, tier=2, 
+			m_type=MinionType.DEMON, has_deathrattle=True)
+
+	def deathrattle(self, friendly_minions, enemy_minions, j):
+		imp = self.summon_minions(1, Imp)
+		friendly_minions.insert(j, imp[0])
+
 
 class InfestedWolf(Card):
 	def __init__(self):
@@ -307,6 +316,12 @@ class FinkleEinhorn(Card):
 	def __init__(self):
 		super().__init__(name="Finkle Einhorn", attack_value=3, health=3, tier=1, 
 			m_type=MinionType.MINION)
+
+class Imp(Card):
+	def __init__(self):
+		super().__init__(name="Imp", attack_value=1, health=1, tier=1, 
+			m_type=MinionType.DEMON)
+
 
 class JoEBot(Card):
 	def __init__(self):
