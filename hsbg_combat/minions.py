@@ -77,6 +77,16 @@ class DragonspawnLieutenant(Card):
 		super().__init__(name="Dragonspawn Lieutenant", attack_value=2, health=3, tier=1, 
 			m_type=MinionType.DRAGON, taunt=True)
 
+class FiendishServant(Card):
+	def __init__(self):
+		super().__init__(name="Fiendish Servant", attack_value=2, health=1, tier=1, 
+						m_type=MinionType.DEMON, has_deathrattle=True)
+	
+	def deathrattle(self, friendly_minions, enemy_minions, j):
+		friendly_random_minion = random.choice(friendly_minions)
+		friendly_random_minion.attack_value += self.attack_value
+
+
 
 class FoeReaper4000(Card):
 	def __init__(self):
