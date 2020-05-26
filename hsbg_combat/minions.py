@@ -116,6 +116,15 @@ class GoldrinnTheGreatWolf(Card):
 					minion.attack_value += 4
 					minion.health += 4
 
+class HarvestGolem(Card):
+	def __init__(self):
+		super().__init__(name="Harvest Golem", attack_value=2, health=3, tier=2, 
+			m_type=MinionType.MECH, has_deathrattle=True)
+
+	def deathrattle(self, friendly_minions, enemy_minions, j):
+		golem = self.summon_minions(1, DamagedGolem)
+		friendly_minions.insert(j, golem[0])
+
 
 class InfestedWolf(Card):
 	def __init__(self):
@@ -289,6 +298,11 @@ class UnstableGhoul(Card):
 				minion.take_damage(1)
 
 # class(es) not imported to create minions in warbands:
+class DamagedGolem(Card):
+	def __init__(self):
+		super().__init__(name="Damaged Golem", attack_value=2, health=1, tier=1, 
+			m_type=MinionType.MECH)
+
 class FinkleEinhorn(Card):
 	def __init__(self):
 		super().__init__(name="Finkle Einhorn", attack_value=3, health=3, tier=1, 
