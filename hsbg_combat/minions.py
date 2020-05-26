@@ -159,6 +159,17 @@ class KaboomBot(Card):
 			i = enemy_minions.index(enemy_random_minion)
 			enemy_random_minion.take_damage(4)
 
+
+class KindlyGrandmother(Card):
+	def __init__(self):
+		super().__init__(name="Kindly Grandmother", attack_value=1, health=1, tier=2, 
+			m_type=MinionType.BEAST, has_deathrattle=True)
+
+	def deathrattle(self, friendly_minions, enemy_minions, j):
+		wolf = self.summon_minions(1, BigBadWolf)
+		friendly_minions.insert(j, wolf[0])
+
+
 class KingBagurgle(Card):
 	# add the battlecry later
 	def __init__(self):
@@ -307,6 +318,11 @@ class UnstableGhoul(Card):
 				minion.take_damage(1)
 
 # class(es) not imported to create minions in warbands:
+class BigBadWolf(Card):
+	def __init__(self):
+		super().__init__(name="Big Bad Wolf", attack_value=3, health=2, tier=1, 
+			m_type=MinionType.BEAST)
+
 class DamagedGolem(Card):
 	def __init__(self):
 		super().__init__(name="Damaged Golem", attack_value=2, health=1, tier=1, 
