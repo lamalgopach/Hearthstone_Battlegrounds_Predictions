@@ -189,6 +189,15 @@ class KingBagurgle(Card):
 # 			m_type=MinionType.MURLOC)
 
 
+class MechanoEgg(Card):
+	def __init__(self):
+		super().__init__(name="Mechano-Egg", attack_value=0, health=5, tier=4, 
+			m_type=MinionType.MECH, has_deathrattle=True)
+
+	def deathrattle(self, friendly_minions, enemy_minions, j):
+		robosaur = self.summon_minions(1, Robosaur)
+		friendly_minions.insert(j, robosaur[0])
+
 class Mecharoo(Card):
 	def __init__(self):
 		super().__init__(name="Mecharoo", attack_value=1, health=1, tier=1, 
@@ -364,6 +373,11 @@ class Rat(Card):
 	def __init__(self):
 		super().__init__(name="Rat", attack_value=1, health=1, tier=1, 
 			m_type=MinionType.BEAST)
+
+class Robosaur(Card):
+	def __init__(self):
+		super().__init__(name="Robosaur", attack_value=8, health=8, tier=1, 
+			m_type=MinionType.MECH)
 
 class Spider(Card):
 	def __init__(self):
