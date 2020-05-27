@@ -65,17 +65,18 @@ class Card:
 			summoned_minions.append(minion)
 		return summoned_minions
 
+
 class CaveHydra(Card):
 	def __init__(self):
 		super().__init__(name="Cave Hydra", attack_value=2, health=4, tier=4, 
 			has_triggered_attack=True, m_type=MinionType.BEAST)
 
 
-
 class DragonspawnLieutenant(Card):
 	def __init__(self):
 		super().__init__(name="Dragonspawn Lieutenant", attack_value=2, health=3, tier=1, 
 			m_type=MinionType.DRAGON, taunt=True)
+
 
 class FiendishServant(Card):
 	def __init__(self):
@@ -87,12 +88,10 @@ class FiendishServant(Card):
 		friendly_random_minion.attack_value += self.attack_value
 
 
-
 class FoeReaper4000(Card):
 	def __init__(self):
 		super().__init__(name="Foe Reaper 4000", attack_value=6, health=9, tier=6, 
 			has_triggered_attack=True, m_type=MinionType.MECH)
-
 
 
 class GlyphGuardian(Card):
@@ -116,6 +115,7 @@ class GoldrinnTheGreatWolf(Card):
 					minion.attack_value += 4
 					minion.health += 4
 
+
 class HarvestGolem(Card):
 	def __init__(self):
 		super().__init__(name="Harvest Golem", attack_value=2, health=3, tier=2, 
@@ -124,6 +124,7 @@ class HarvestGolem(Card):
 	def deathrattle(self, friendly_minions, enemy_minions, j):
 		golem = self.summon_minions(1, DamagedGolem)
 		friendly_minions.insert(j, golem[0])
+
 
 class Imprisoner(Card):
 	def __init__(self):
@@ -146,6 +147,7 @@ class InfestedWolf(Card):
 		while len(friendly_minions) < 7 and i != 2:
 			friendly_minions.insert(j, spiders[i])
 			i += 1
+
 
 class KaboomBot(Card):
 	def __init__(self):
@@ -198,6 +200,7 @@ class MechanoEgg(Card):
 		robosaur = self.summon_minions(1, Robosaur)
 		friendly_minions.insert(j, robosaur[0])
 
+
 class Mecharoo(Card):
 	def __init__(self):
 		super().__init__(name="Mecharoo", attack_value=1, health=1, tier=1, 
@@ -206,6 +209,7 @@ class Mecharoo(Card):
 	def deathrattle(self, friendly_minions, enemy_minions, j):
 		joebot = self.summon_minions(1, JoEBot)
 		friendly_minions.insert(j, joebot[0])
+
 
 class NadinaTheRed(Card):
 	def __init__(self):
@@ -217,6 +221,7 @@ class NadinaTheRed(Card):
 			for minion in friendly_minions:
 				if minion.m_type == MinionType.DRAGON:
 					minion.has_ds = True
+
 
 class RedWhelp(Card):
 	def __init__(self):
@@ -270,6 +275,7 @@ class RockpoolHunter(Card):
 		super().__init__(name="Rockpool Hunter", attack_value=2, health=3, tier=1, 
 						m_type=MinionType.MURLOC)
 
+
 class SavannahHighmane(Card):
 	def __init__(self):
 		super().__init__(name="Savannah Highmane", attack_value=6, health=5, tier=2, 
@@ -281,7 +287,6 @@ class SavannahHighmane(Card):
 		while len(friendly_minions) < 7 and i != 2:
 			friendly_minions.insert(j, hyenas[i])
 			i += 1
-
 
 
 class SelflessHero(Card):
@@ -313,6 +318,7 @@ class SpawnOfnZoth(Card):
 				minion.attack_value += 1
 				minion.health += 1
 
+
 class TheBeast(Card):
 	def __init__(self):
 		super().__init__(name="The Beast", attack_value=9, health=7, tier=3, 
@@ -338,51 +344,78 @@ class UnstableGhoul(Card):
 			for minion in enemy_minions:
 				minion.take_damage(1)
 
+
+class Voidlord(Card):
+	def __init__(self):
+		super().__init__(name="Voidlord", attack_value=3, health=9, tier=5, 
+			m_type=MinionType.DEMON, taunt=True, has_deathrattle=True)
+
+	def deathrattle(self, friendly_minions, enemy_minions, j):
+		voidwalkers = self.summon_minions(3, Voidwalker)
+		i = 0
+		while len(friendly_minions) < 7 and i != 3:
+			friendly_minions.insert(j, voidwalkers[i])
+			i += 1
+
 # class(es) not imported to create minions in warbands:
 class BigBadWolf(Card):
 	def __init__(self):
 		super().__init__(name="Big Bad Wolf", attack_value=3, health=2, tier=1, 
 			m_type=MinionType.BEAST)
 
+
 class DamagedGolem(Card):
 	def __init__(self):
 		super().__init__(name="Damaged Golem", attack_value=2, health=1, tier=1, 
 			m_type=MinionType.MECH)
+
 
 class FinkleEinhorn(Card):
 	def __init__(self):
 		super().__init__(name="Finkle Einhorn", attack_value=3, health=3, tier=1, 
 			m_type=MinionType.MINION)
 
+
 class Hyena(Card):
 	def __init__(self):
 		super().__init__(name="Hyena", attack_value=2, health=2, tier=1, 
 			m_type=MinionType.BEAST)
+
 
 class Imp(Card):
 	def __init__(self):
 		super().__init__(name="Imp", attack_value=1, health=1, tier=1, 
 			m_type=MinionType.DEMON)
 
+
 class JoEBot(Card):
 	def __init__(self):
 		super().__init__(name="Jo-E Bot", attack_value=1, health=1, tier=1, 
 			m_type=MinionType.MECH)
+
 
 class Rat(Card):
 	def __init__(self):
 		super().__init__(name="Rat", attack_value=1, health=1, tier=1, 
 			m_type=MinionType.BEAST)
 
+
 class Robosaur(Card):
 	def __init__(self):
 		super().__init__(name="Robosaur", attack_value=8, health=8, tier=1, 
 			m_type=MinionType.MECH)
 
+
 class Spider(Card):
 	def __init__(self):
 		super().__init__(name="Spider", attack_value=1, health=1, tier=1, 
 			m_type=MinionType.BEAST)
+
+
+class Voidwalker(Card):
+	def __init__(self):
+		super().__init__(name="Voidwalker", attack_value=1, health=3, tier=1, 
+			m_type=MinionType.DEMON, taunt=True)
 
 		
 
