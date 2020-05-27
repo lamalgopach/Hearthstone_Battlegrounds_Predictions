@@ -141,11 +141,10 @@ class InfestedWolf(Card):
 			m_type=MinionType.BEAST, has_deathrattle=True)
 
 	def deathrattle(self, friendly_minions, enemy_minions, j):
-		spiders_lst = self.summon_minions(2, Spider)
+		spiders = self.summon_minions(2, Spider)
 		i = 0
 		while len(friendly_minions) < 7 and i != 2:
-			spider = spiders_lst[i]
-			friendly_minions.insert(j, spider)
+			friendly_minions.insert(j, spiders[i])
 			i += 1
 
 class KaboomBot(Card):
@@ -262,6 +261,19 @@ class RockpoolHunter(Card):
 		super().__init__(name="Rockpool Hunter", attack_value=2, health=3, tier=1, 
 						m_type=MinionType.MURLOC)
 
+class SavannahHighmane(Card):
+	def __init__(self):
+		super().__init__(name="Savannah Highmane", attack_value=6, health=5, tier=2, 
+			m_type=MinionType.BEAST, has_deathrattle=True)
+
+	def deathrattle(self, friendly_minions, enemy_minions, j):
+		hyenas = self.summon_minions(2, Hyena)
+		i = 0
+		while len(friendly_minions) < 7 and i != 2:
+			friendly_minions.insert(j, hyenas[i])
+			i += 1
+
+
 
 class SelflessHero(Card):
 	def __init__(self):
@@ -333,11 +345,15 @@ class FinkleEinhorn(Card):
 		super().__init__(name="Finkle Einhorn", attack_value=3, health=3, tier=1, 
 			m_type=MinionType.MINION)
 
+class Hyena(Card):
+	def __init__(self):
+		super().__init__(name="Hyena", attack_value=2, health=2, tier=1, 
+			m_type=MinionType.BEAST)
+
 class Imp(Card):
 	def __init__(self):
 		super().__init__(name="Imp", attack_value=1, health=1, tier=1, 
 			m_type=MinionType.DEMON)
-
 
 class JoEBot(Card):
 	def __init__(self):
