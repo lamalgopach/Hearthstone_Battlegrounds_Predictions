@@ -6,7 +6,6 @@ from minions import *
 
 def choose_first(player1, player2):
 	order = True
-
 	w1 = copy.deepcopy(player1.warband)
 	w2 = copy.deepcopy(player2.warband)
 
@@ -19,7 +18,6 @@ def choose_first(player1, player2):
 		game = [w1, w2]
 	else:
 		game = [w2, w1]
-
 	return w1, w2, game
 
 def start_of_game(warband1, warband2):
@@ -32,7 +30,6 @@ def start_of_game(warband1, warband2):
 	# create object of Player class and link this warband to this Player:
 	Player1 = Player("Alice", alices_warband)
 	Player2 = Player("Bob", bobs_warband)
-
 	#what are players names? into console
 
 	# CREATE THE ORDER OF ATTACK:
@@ -51,7 +48,6 @@ def start_of_game(warband1, warband2):
 
 def combat(w1, w2, battle_state, Player1, Player2):
 	winner = None
-
 	battle_state.start_of_combat()
 	battle_state.print_state("after start of combat:")
 
@@ -70,16 +66,16 @@ def combat(w1, w2, battle_state, Player1, Player2):
 		minion1.take_damage(minion2.attack_value)
 		minion2.take_damage(minion1.attack_value)
 
-		# triggered attack: Cave Hydra, Foe Reaper 4000
+
 		if minion1.has_triggered_attack and len(battle_state.attacked_warband.warband) > 1:
 			minion1.triggered_attack(battle_state.attacked_warband.warband, attacked_minion)
 			next_phase = True
 
-		# print("Attacking: ", battle_state.attacking_player.name)
-		# print(minion1.name, minion1.attack_value, minion1.health)
-		# print("Attacked: ", battle_state.attacked_player.name)
-		# print(minion2.name, minion2.attack_value, minion2.health)
-		# print()
+		print("Attacking: ", battle_state.attacking_player.name)
+		print(minion1.name, minion1.attack_value, minion1.health)
+		print("Attacked: ", battle_state.attacked_player.name)
+		print(minion2.name, minion2.attack_value, minion2.health)
+		print()
 		# count dead minions:
 		dead_attacking_minion = 0
 		dead_attacked_minion = 0
@@ -88,10 +84,10 @@ def combat(w1, w2, battle_state, Player1, Player2):
 			dead_attacking_minion, dead_attacked_minion, next_phase = battle_state.both_minions_die(minion1, minion2, dead_attacking_minion, dead_attacked_minion, next_phase, attacked_minion)
 
 		elif minion1.health < 1:
-			dead_attacking_minion, next_phase = battle_state.one_minion_dies(minion1, dead_attacking_minion, next_phase, battle_state.attacking_warband.warband, battle_state.attacked_warband.warband, battle_state.attack_i)
+			dead_attacking_minion, next_phase = battle_state.one_minion_dies(minion1, dead_attacking_minion, next_phase, battle_state.attacking_warband, battle_state.attacked_warband, battle_state.attack_i, battle_state.dead_attacking_minions)
 
 		elif minion2.health < 1:
-			dead_attacked_minion, next_phase = battle_state.one_minion_dies(minion2, dead_attacked_minion, next_phase, battle_state.attacked_warband.warband, battle_state.attacking_warband.warband, attacked_minion)
+			dead_attacked_minion, next_phase = battle_state.one_minion_dies(minion2, dead_attacked_minion, next_phase, battle_state.attacked_warband, battle_state.attacking_warband, attacked_minion, battle_state.dead_attacked_minions)
 
 		if next_phase:
 			dead_attacking_minion, dead_attacked_minion = battle_state.solve_next_phase(next_phase, dead_attacking_minion, dead_attacked_minion)
@@ -167,22 +163,22 @@ def simulate(warband1, warband2, num_simulations=100):
 	}
 
 warband1 = [
-	RedWhelp(), 
+	HarvestGolem(), 
+	SavannahHighmane(), 
 	GlyphGuardian(), 
-	GlyphGuardian(), 
-	UnstableGhoul(), 
-	RedWhelp(), 
-	DragonspawnLieutenant(),
+	MechanoEgg(), 
+	Voidlord(),
+	Voidlord(), 
 	RighteousProtector(),
 	]
 
 warband2 = [
-	# FoeReaper4000(), 
-	RockpoolHunter(), 
-	UnstableGhoul(), 
-	RighteousProtector(), 
-	GlyphGuardian(),
-	RedWhelp(), 
+	MechanoEgg(),
+	MechanoEgg(), 
+	GlyphGuardian(), 
+	KangorsApprentice(), 
+	Voidlord(),
+	Voidlord(), 
 	DragonspawnLieutenant(),
 	]
 

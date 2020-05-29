@@ -54,13 +54,18 @@ class Player:
 
 
 class BattleState:
-	def __init__ (self, attacking_player, attacked_player, attacking_warband, attacked_warband, attack_i=0, attacked_i=0):
+	def __init__ (self, attacking_player, attacked_player, attacking_warband, 
+		attacked_warband, attack_i=0, attacked_i=0, dead_attacking_minions=[],
+		dead_attacked_minions=[]):
 		self.attacking_player = attacking_player
 		self.attacked_player = attacked_player
 		self.attacking_warband = attacking_warband
 		self.attacked_warband = attacked_warband
 		self.attack_i = attack_i
 		self.attacked_i = attacked_i
+		self.dead_attacking_minions = dead_attacking_minions
+		self.dead_attacked_minions = dead_attacked_minions
+
 
 	def count_taunts(self):
 		output = 0
@@ -97,6 +102,10 @@ class BattleState:
 		temp_i = self.attack_i
 		self.attack_i = self.attacked_i
 		self.attacked_i = temp_i
+
+		temp_dead = self.dead_attacking_minions
+		self.dead_attacking_minions = self.dead_attacked_minions
+		self.dead_attacked_minions = temp_dead
 
 	def play(self):
 		# first player attack
@@ -136,7 +145,11 @@ class BattleState:
 			friendly_warband = red_whelp_dict[random_rw][0]
 			enemy_warband = red_whelp_dict[random_rw][1]
 			# if Unstable Ghoul or Kaboombot dead:
-			if random_rw.attack_in_start_of_combat(friendly_warband, enemy_warband):
+			if enemy_warband == self.attacking_warband:
+				dead_warband = self.dead_attacking_minions
+			else:
+				dead_warband = self.dead_attacked_minions
+			if random_rw.attack_in_start_of_combat(friendly_warband, enemy_warband, dead_warband, self):
 				self.solve_next_phase(True, 0, 0)
 			red_whelp_list.remove(random_rw)
 
@@ -150,37 +163,36 @@ class BattleState:
 		return red_whelp_list, red_whelp_dict
 
 
-	def one_minion_dies(self, minion, dead_minion, next_phase, friendly_minions, enemy_minions, j):
+	def one_minion_dies(self, minion, dead_minion, next_phase, friendly_minions, enemy_minions, j, dead_minions):
 
-		minion.die(friendly_minions, j)
+		minion.die(friendly_minions.warband, j, dead_minions)
 		dead_minion += 1
 
 		if dead_minion == 1 and minion.has_deathrattle:
-			minion.deathrattle(friendly_minions, enemy_minions, j)			
+			minion.deathrattle(self, friendly_minions, enemy_minions, j)			
 			if isinstance(minion, KaboomBot) or isinstance(minion, UnstableGhoul):
 				next_phase = True
 
 		return dead_minion, next_phase
 
-		# return next_phase
 
 	def both_minions_die(self, minion1, minion2, dead_attacking_minion, dead_attacked_minion, next_phase, i):
 
 		if minion1.health < 1:
-			minion1.die(self.attacking_warband.warband, self.attack_i)
+			minion1.die(self.attacking_warband.warband, self.attack_i, self.dead_attacking_minions)
 			dead_attacking_minion += 1
 
 		if minion2.health < 1:
-			minion2.die(self.attacked_warband.warband, i)
+			minion2.die(self.attacked_warband.warband, i, self.dead_attacking_minions)
 			dead_attacked_minion += 1
 
 		if dead_attacking_minion == 1 and minion1.has_deathrattle:
-			minion1.deathrattle(self.attacking_warband.warband, self.attacked_warband.warband, self.attack_i)
+			minion1.deathrattle(self, self.attacking_warband, self.attacked_warband, self.attack_i)
 			if isinstance(minion1, KaboomBot) or isinstance(minion1, UnstableGhoul):
 				next_phase = True
 
 		if dead_attacked_minion == 1 and minion2.has_deathrattle:
-			minion2.deathrattle(self.attacked_warband.warband, self.attacking_warband.warband, i)
+			minion2.deathrattle(self, self.attacked_warband, self.attacking_warband, i)
 			if isinstance(minion2, KaboomBot) or isinstance(minion2, UnstableGhoul):
 				next_phase = True
 		return dead_attacking_minion, dead_attacked_minion, next_phase
@@ -200,7 +212,7 @@ class BattleState:
 			for minion in self.attacking_warband.warband:
 				if minion.health < 1:
 					j1 = self.attacking_warband.warband.index(minion)
-					minion.die(self.attacking_warband.warband, j1)
+					minion.die(self.attacking_warband.warband, j1, self.dead_attacking_minions)
 					next_phase = True
 					if minion.has_deathrattle:
 						dthr1 = True
@@ -212,7 +224,7 @@ class BattleState:
 			for minion in self.attacked_warband.warband:
 				if minion.health < 1:
 					j2 = self.attacked_warband.warband.index(minion)
-					minion.die(self.attacked_warband.warband, j2)
+					minion.die(self.attacked_warband.warband, j2, self.dead_attacked_minions)
 					next_phase = True
 					if minion.has_deathrattle:
 						dthr2 = True
@@ -223,11 +235,11 @@ class BattleState:
 					break
 
 			if dthr1:
-				minion1t.deathrattle(self.attacking_warband.warband, self.attacked_warband.warband, j1)
+				minion1t.deathrattle(self, self.attacking_warband, self.attacked_warband, j1)
 				next_phase = True
 
 			if dthr2:
-				minion2t.deathrattle(self.attacked_warband.warband, self.attacking_warband.warband, j2)
+				minion2t.deathrattle(self, self.attacked_warband, self.attacking_warband, j2)
 				next_phase = True
 
 		return dead_attacking_minion, dead_attacked_minion
