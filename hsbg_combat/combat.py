@@ -163,23 +163,23 @@ def simulate(warband1, warband2, num_simulations=100):
 	}
 
 warband1 = [
-	HarvestGolem(), 
-	SavannahHighmane(), 
-	GlyphGuardian(), 
+	GoldrinnTheGreatWolf(),  
+	KindlyGrandmother(), 
 	MechanoEgg(), 
-	Voidlord(),
+	UnstableGhoul(),
+	SavannahHighmane(),
 	Voidlord(), 
-	RighteousProtector(),
+	RatPack(),
 	]
 
 warband2 = [
-	MechanoEgg(),
+	SelflessHero(),
+	Imprisoner(),
 	MechanoEgg(), 
-	GlyphGuardian(), 
 	KangorsApprentice(), 
-	Voidlord(),
-	Voidlord(), 
-	DragonspawnLieutenant(),
+	FiendishServant(),
+	InfestedWolf(),
+	HarvestGolem(), 
 	]
 
 w1, w2, battle_state, Player1, Player2 = start_of_game(warband1, warband2)

@@ -91,6 +91,8 @@ class BattleState:
 		return attacked_minion	
 
 	def play_next(self):
+		print(self.attack_i)
+		print(self.attacked_i)
 		temp_player = self.attacking_player
 		self.attacking_player = self.attacked_player
 		self.attacked_player = temp_player
@@ -106,6 +108,8 @@ class BattleState:
 		temp_dead = self.dead_attacking_minions
 		self.dead_attacking_minions = self.dead_attacked_minions
 		self.dead_attacked_minions = temp_dead
+		print(self.attack_i)
+		print(self.attacked_i)
 
 	def play(self):
 		# first player attack
@@ -217,7 +221,7 @@ class BattleState:
 					if minion.has_deathrattle:
 						dthr1 = True
 						minion1t = minion
-					if j1 <= self.attack_i:
+					if j1 < self.attack_i:
 						dead_attacking_minion += 1
 					break
 
@@ -230,7 +234,7 @@ class BattleState:
 						dthr2 = True
 						minion2t = minion
 
-					if j2 <= self.attacked_i:
+					if j2 < self.attacked_i:
 						dead_attacked_minion += 1
 					break
 
