@@ -469,5 +469,4 @@ class Voidwalker(Card):
 
 
 #todo:
-# think like effects(unstableghoul)
-# classes to do first: waxoggler
+# classes to do: waxtoggler

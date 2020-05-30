@@ -21,7 +21,7 @@ def choose_first(player1, player2):
 	return w1, w2, game
 
 def start_of_game(warband1, warband2):
-	# create Alices Warband as object of Warband class:
+	# create Alice's/Bob's Warband as object of Warband class:
 	alices_warband = Warband("Alice")
 	bobs_warband = Warband("Bob")
 	# use warband method to create warband with minions:
@@ -41,7 +41,8 @@ def start_of_game(warband1, warband2):
 	attacking_warband = w1 if game[0] == w1 else w2
 	attacked_warband = w2 if game[1] == w2 else w1
 
-	battle_state = BattleState(attacking_player, attacked_player, attacking_warband, attacked_warband)
+	battle_state = BattleState(attacking_player, attacked_player, 
+								attacking_warband, attacked_warband)
 	battle_state.print_state("START OF THE GAME: ")
 
 	return w1, w2, battle_state, Player1, Player2
@@ -80,36 +81,44 @@ def combat(w1, w2, battle_state, Player1, Player2):
 		dead_attacking_minion = 0
 		dead_attacked_minion = 0
 
+		# minions die, and deathrattle if has
 		if minion1.health < 1 and minion2.health < 1:
-			dead_attacking_minion, dead_attacked_minion, next_phase = battle_state.both_minions_die(minion1, minion2, dead_attacking_minion, dead_attacked_minion, next_phase, attacked_minion)
+			next_phase = battle_state.both_minions_die(minion1, minion2, next_phase, attacked_minion)
+			dead_attacking_minion += 1
+			if attacked_minion < battle_state.attacked_i:
+				dead_attacked_minion += 1
 
 		elif minion1.health < 1:
-			dead_attacking_minion, next_phase = battle_state.one_minion_dies(minion1, dead_attacking_minion, next_phase, battle_state.attacking_warband, battle_state.attacked_warband, battle_state.attack_i, battle_state.dead_attacking_minions)
+			next_phase = battle_state.one_minion_dies(minion1, next_phase, battle_state.attacking_warband, battle_state.attacked_warband, battle_state.attack_i, battle_state.dead_attacking_minions)
+			dead_attacking_minion += 1
 
 		elif minion2.health < 1:
-			dead_attacked_minion, next_phase = battle_state.one_minion_dies(minion2, dead_attacked_minion, next_phase, battle_state.attacked_warband, battle_state.attacking_warband, attacked_minion, battle_state.dead_attacked_minions)
+			next_phase = battle_state.one_minion_dies(minion2, next_phase, battle_state.attacked_warband, battle_state.attacking_warband, attacked_minion, battle_state.dead_attacked_minions)
+			if attacked_minion < battle_state.attacked_i:
+				dead_attacked_minion += 1
 
+		# if neverending stories with deathrattles: 
 		if next_phase:
 			dead_attacking_minion, dead_attacked_minion = battle_state.solve_next_phase(next_phase, dead_attacking_minion, dead_attacked_minion)
 		# next minion:
 		# (if attacker is dead we should keep track it)
 		battle_state.attack_i += 1 - dead_attacking_minion
 		# if the last minion in the warband was attacking start once again:
-		if battle_state.attack_i > len(battle_state.attacking_warband.warband) - 1:
+		if battle_state.attack_i > len(battle_state.attacking_warband.warband) - 1 or battle_state.attack_i < 0:
 			battle_state.attack_i = 0
 
-		if dead_attacked_minion == 1:
-			if battle_state.attacked_i > attacked_minion:
-				battle_state.attacked_i -= 1
+		if dead_attacked_minion >= 1:
+			battle_state.attacked_i -= dead_attacked_minion
 
 		# if attacked player has attacking his last minion in the warband 
 		# start again:
-		if battle_state.attacked_i > len(battle_state.attacked_warband.warband) - 1:
+		if battle_state.attacked_i > len(battle_state.attacked_warband.warband) - 1 or battle_state.attacked_i < 0:
 			battle_state.attacked_i = 0
 
 		statement = f'Warbands after {battle_state.attacking_player.name}\'s attack:'
 		battle_state.print_state(statement)
 		# end of turn, change the player:
+
 		battle_state.play_next()
 
 
@@ -165,7 +174,7 @@ def simulate(warband1, warband2, num_simulations=100):
 warband1 = [
 	GoldrinnTheGreatWolf(),  
 	KindlyGrandmother(), 
-	MechanoEgg(), 
+	Imprisoner(), 
 	UnstableGhoul(),
 	SavannahHighmane(),
 	Voidlord(), 
@@ -174,7 +183,7 @@ warband1 = [
 
 warband2 = [
 	SelflessHero(),
-	Imprisoner(),
+	RedWhelp(),
 	MechanoEgg(), 
 	KangorsApprentice(), 
 	FiendishServant(),
