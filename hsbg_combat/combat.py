@@ -87,6 +87,8 @@ def combat(w1, w2, battle_state, Player1, Player2):
 			dead_attacking_minion += 1
 			if attacked_minion < battle_state.attacked_i:
 				dead_attacked_minion += 1
+			if minion1.has_overkill:
+				minion1.overkill(battle_state, battle_state.attack_i - 1)
 
 		elif minion1.health < 1:
 			next_phase = battle_state.one_minion_dies(minion1, next_phase, battle_state.attacking_warband, battle_state.attacked_warband, battle_state.attack_i, battle_state.dead_attacking_minions)
@@ -96,6 +98,8 @@ def combat(w1, w2, battle_state, Player1, Player2):
 			next_phase = battle_state.one_minion_dies(minion2, next_phase, battle_state.attacked_warband, battle_state.attacking_warband, attacked_minion, battle_state.dead_attacked_minions)
 			if attacked_minion < battle_state.attacked_i:
 				dead_attacked_minion += 1
+			if minion1.has_overkill:
+				minion1.overkill(battle_state, battle_state.attack_i)
 
 		# if neverending stories with deathrattles: 
 		if next_phase:
@@ -171,11 +175,11 @@ def simulate(warband1, warband2, num_simulations=100):
 		"second_wins": bob_winner / num_simulations,
 	}
 
-warband1 = [
-	GoldrinnTheGreatWolf(),  
+warband1 = [ 
 	KindlyGrandmother(), 
 	Imprisoner(), 
 	UnstableGhoul(),
+	IronhideDirehorn(), 
 	SavannahHighmane(),
 	Voidlord(), 
 	RatPack(),

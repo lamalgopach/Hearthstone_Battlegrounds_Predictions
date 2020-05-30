@@ -15,7 +15,7 @@ class MinionType(Enum):
 
 class Card:
 	def __init__(self, *, name, attack_value, health, tier, m_type, taunt=False, 
-		has_ds=False, has_deathrattle=False, has_triggered_attack=False):
+		has_ds=False, has_deathrattle=False, has_triggered_attack=False, has_overkill=False):
 		self.name = name
 		self.attack_value = attack_value
 		self.health = health
@@ -25,6 +25,7 @@ class Card:
 		self.has_ds = has_ds
 		self.has_deathrattle = has_deathrattle
 		self.has_triggered_attack = has_triggered_attack
+		self.has_overkill = has_overkill
 
 	def attack(self):
 		# used in Glyph Guardian
@@ -124,6 +125,30 @@ class HarvestGolem(Card):
 		golem = self.summon_minions(1, DamagedGolem)
 		friendly_minions.warband.insert(j, golem[0])
 
+# class HeraldOfFlame(Card):
+# 	def __init__(self):
+# 		super().__init__(name="Herald Of Flame", attack_value=5, health=6, tier=4, 
+# 			m_type=MinionType.DRAGON, has_overkill=True)	
+
+# 	def overkill(self, enemy_minions):
+
+# 		while True:
+# 			most_left_minion = enemy_minions[0]
+# 			most_left_minion.take_damage(3)
+
+# 			if most_left_minion.health < 1:
+# 				most_left_minion.die()
+
+class IronhideDirehorn(Card):
+	def __init__(self):
+		super().__init__(name="Ironhide Direhorn", attack_value=7, health=7, tier=4, 
+			m_type=MinionType.BEAST, has_overkill=True)	
+
+	def overkill(self, battle, j):
+		ironhide_runt = self.summon_minions(1, IronhideRunt)
+		if len(battle.attacking_warband.warband) < 7:
+			battle.attacking_warband.warband.insert(j + 1, ironhide_runt[0])
+
 
 class Imprisoner(Card):
 	def __init__(self):
@@ -184,7 +209,6 @@ class KangorsApprentice(Card):
 				mechs = self.summon_minions(1, type(mech))
 				if len(friendly_minions.warband) < 7 and i < 2:
 					friendly_minions.warband.insert(j + i, mechs[0])
-					print(friendly_minions.warband)
 					i += 1
 				else:
 					break
@@ -416,12 +440,16 @@ class Imp(Card):
 		super().__init__(name="Imp", attack_value=1, health=1, tier=1, 
 						m_type=MinionType.DEMON)
 
+class IronhideRunt(Card):
+	def __init__(self):
+		super().__init__(name="Ironhide Runt", attack_value=7, health=7, tier=1, 
+						m_type=MinionType.BEAST)
+
 
 class JoEBot(Card):
 	def __init__(self):
 		super().__init__(name="Jo-E Bot", attack_value=1, health=1, tier=1, 
 						m_type=MinionType.MECH)
-
 
 class Rat(Card):
 	def __init__(self):
