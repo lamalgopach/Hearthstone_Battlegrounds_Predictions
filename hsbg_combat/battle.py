@@ -131,6 +131,25 @@ class BattleState:
 		print()
 		print()
 
+	def print_negative_health(self):
+		if self.attacking_warband.warband:
+			for minion in self.attacking_warband.warband:
+				if minion.health <= 0:
+					print(f'{self.attacking_player.name}:')
+					print(minion.name)
+					print("ERROR")
+		else:
+			print("Warband empty")	
+		if self.attacked_warband.warband:
+			for minion in self.attacked_warband.warband:
+				if minion.health <= 0:
+					print(f'{self.attacking_player.name}:')
+					print(minion.name)
+					print("ERROR")
+		else:
+			print("Warband empty")
+
+
 	def start_of_combat(self):
 		# create list and dictionary of red whelp 
 		# both in attacked and attacking warband
@@ -167,7 +186,6 @@ class BattleState:
 
 		minion.die(friendly_minions.warband, j, dead_warband)
 		
-
 		if minion.has_deathrattle:
 			minion.deathrattle(self, friendly_minions, enemy_minions, j)			
 			if isinstance(minion, KaboomBot) or isinstance(minion, UnstableGhoul):

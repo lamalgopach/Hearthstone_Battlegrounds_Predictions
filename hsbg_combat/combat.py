@@ -72,10 +72,10 @@ def combat(w1, w2, battle_state, Player1, Player2):
 			minion1.triggered_attack(battle_state.attacked_warband.warband, attacked_minion)
 			next_phase = True
 
-		print("Attacking: ", battle_state.attacking_player.name)
-		print(minion1.name, minion1.attack_value, minion1.health)
-		print("Attacked: ", battle_state.attacked_player.name)
-		print(minion2.name, minion2.attack_value, minion2.health)
+		print("								Attacking: ", battle_state.attacking_player.name)
+		print("								", minion1.name, minion1.attack_value, minion1.health)
+		print("								Attacked: ", battle_state.attacked_player.name)
+		print("								", minion2.name, minion2.attack_value, minion2.health)
 		print()
 		# count dead minions:
 		dead_attacking_minion = 0
@@ -83,23 +83,30 @@ def combat(w1, w2, battle_state, Player1, Player2):
 
 		# minions die, and deathrattle if has
 		if minion1.health < 1 and minion2.health < 1:
+			if minion1.has_overkill and minion2.health < 0 and len(battle_state.attacked_warband.warband) > 1:
+				print("overkill1")
+				if minion1.overkill(battle_state, battle_state.attack_i - 1, attacked_minion):
+					# not sure why here is -1??
+					next_phase = True
 			next_phase = battle_state.both_minions_die(minion1, minion2, next_phase, attacked_minion)
 			dead_attacking_minion += 1
 			if attacked_minion < battle_state.attacked_i:
 				dead_attacked_minion += 1
-			if minion1.has_overkill:
-				minion1.overkill(battle_state, battle_state.attack_i - 1)
+
 
 		elif minion1.health < 1:
 			next_phase = battle_state.one_minion_dies(minion1, next_phase, battle_state.attacking_warband, battle_state.attacked_warband, battle_state.attack_i, battle_state.dead_attacking_minions)
 			dead_attacking_minion += 1
 
 		elif minion2.health < 1:
+			if minion1.has_overkill and minion2.health < 0 and len(battle_state.attacked_warband.warband) > 1:
+				print("overkill2")
+				if minion1.overkill(battle_state, battle_state.attack_i, attacked_minion):
+					next_phase = True
 			next_phase = battle_state.one_minion_dies(minion2, next_phase, battle_state.attacked_warband, battle_state.attacking_warband, attacked_minion, battle_state.dead_attacked_minions)
 			if attacked_minion < battle_state.attacked_i:
 				dead_attacked_minion += 1
-			if minion1.has_overkill:
-				minion1.overkill(battle_state, battle_state.attack_i)
+
 
 		# if neverending stories with deathrattles: 
 		if next_phase:
@@ -122,6 +129,7 @@ def combat(w1, w2, battle_state, Player1, Player2):
 		statement = f'Warbands after {battle_state.attacking_player.name}\'s attack:'
 		battle_state.print_state(statement)
 		# end of turn, change the player:
+		# battle_state.print_negative_health()
 
 		battle_state.play_next()
 
@@ -176,23 +184,27 @@ def simulate(warband1, warband2, num_simulations=100):
 	}
 
 warband1 = [ 
-	KindlyGrandmother(), 
-	Imprisoner(), 
-	UnstableGhoul(),
-	IronhideDirehorn(), 
-	SavannahHighmane(),
-	Voidlord(), 
-	RatPack(),
+	HeraldOfFlame(),
+	HeraldOfFlame(), 
+	HeraldOfFlame(),
+	HeraldOfFlame(),
+	HeraldOfFlame(),
+	HeraldOfFlame(),
+	# CaveHydra(),
+	# KindlyGrandmother(), 
+	# Imprisoner(), 
+	# UnstableGhoul(), 
+	# SavannahHighmane(),
 	]
 
 warband2 = [
-	SelflessHero(),
-	RedWhelp(),
-	MechanoEgg(), 
-	KangorsApprentice(), 
-	FiendishServant(),
-	InfestedWolf(),
-	HarvestGolem(), 
+	IronhideDirehorn(),
+	SavannahHighmane(),
+	CaveHydra(),
+	KindlyGrandmother(), 
+	UnstableGhoul(), 
+	DragonspawnLieutenant(), 
+	RatPack(), 
 	]
 
 w1, w2, battle_state, Player1, Player2 = start_of_game(warband1, warband2)

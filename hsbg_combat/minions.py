@@ -125,35 +125,51 @@ class HarvestGolem(Card):
 		golem = self.summon_minions(1, DamagedGolem)
 		friendly_minions.warband.insert(j, golem[0])
 
-# class HeraldOfFlame(Card):
-# 	def __init__(self):
-# 		super().__init__(name="Herald Of Flame", attack_value=5, health=6, tier=4, 
-# 			m_type=MinionType.DRAGON, has_overkill=True)	
+class HeraldOfFlame(Card):
+# to be continued
+	def __init__(self):
+		super().__init__(name="Herald Of Flame", attack_value=5, health=20, tier=4, 
+			m_type=MinionType.DRAGON, has_overkill=True)	
 
-# 	def overkill(self, enemy_minions):
+	def overkill(self, battle, j, k):
 
-# 		while True:
-# 			most_left_minion = enemy_minions[0]
-# 			most_left_minion.take_damage(3)
+		any_died = False
 
-# 			if most_left_minion.health < 1:
-# 				most_left_minion.die()
+		for i in range(len(battle.attacked_warband.warband)):
+			if i == k:
+				continue
+			else:
+				leftmost_minion = battle.attacked_warband.warband[i]
+				leftmost_minion.take_damage(3)
+				
+				if leftmost_minion.health > 0:
+					break
+
+				elif leftmost_minion.health == 0:
+					any_died = True
+					break
+
+				elif leftmost_minion.health < 0:
+					any_died = True
+				
+		return any_died
 
 class IronhideDirehorn(Card):
 	def __init__(self):
 		super().__init__(name="Ironhide Direhorn", attack_value=7, health=7, tier=4, 
 			m_type=MinionType.BEAST, has_overkill=True)	
 
-	def overkill(self, battle, j):
+	def overkill(self, battle, j, k):
 		ironhide_runt = self.summon_minions(1, IronhideRunt)
 		if len(battle.attacking_warband.warband) < 7:
 			battle.attacking_warband.warband.insert(j + 1, ironhide_runt[0])
 
 
+
 class Imprisoner(Card):
 	def __init__(self):
 		super().__init__(name="Imprisoner", attack_value=3, health=3, tier=2, 
-			m_type=MinionType.DEMON, has_deathrattle=True)
+			m_type=MinionType.DEMON, taunt=True, has_deathrattle=True)
 
 	def deathrattle(self, battle, friendly_minions, enemy_minions, j):
 		imp = self.summon_minions(1, Imp)
