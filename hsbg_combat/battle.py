@@ -195,7 +195,6 @@ class BattleState:
 
 
 	def both_minions_die(self, minion1, minion2, next_phase, i):
-
 		if minion1.health < 1:
 			minion1.die(self.attacking_warband.warband, self.attack_i, self.dead_attacking_minions)
 
@@ -211,6 +210,7 @@ class BattleState:
 			minion2.deathrattle(self, self.attacked_warband, self.attacking_warband, i)
 			if isinstance(minion2, KaboomBot) or isinstance(minion2, UnstableGhoul):
 				next_phase = True
+
 		return next_phase
 
 	def solve_next_phase(self, next_phase, dead_attacking_minion, dead_attacked_minion):

@@ -74,14 +74,9 @@ class Card:
 			a = j - 1
 		enemy_minions[a].take_damage(self.attack_value, self.poisonous)
 
-	def summon_minions(self, n, minion_class):
-		# n - number of summoned minions
-		# just one type of minion
-		summoned_minions = []
-		for i in range(n):
-			minion = minion_class()
-			summoned_minions.append(minion)
-		return summoned_minions
+	def summon_minion(self, minion_class):
+		minion = minion_class()
+		return minion
 
 
 class CaveHydra(Card):
@@ -140,8 +135,8 @@ class HarvestGolem(Card):
 			m_type=MinionType.MECH, has_deathrattle=True)
 
 	def deathrattle(self, battle, friendly_minions, enemy_minions, j):
-		golem = self.summon_minions(1, DamagedGolem)
-		friendly_minions.warband.insert(j, golem[0])
+		golem = self.summon_minion(DamagedGolem)
+		friendly_minions.warband.insert(j, golem)
 
 class HeraldOfFlame(Card):
 # to be continued
@@ -178,9 +173,9 @@ class IronhideDirehorn(Card):
 			m_type=MinionType.BEAST, has_overkill=True)	
 
 	def overkill(self, battle, j, k):
-		ironhide_runt = self.summon_minions(1, IronhideRunt)
 		if len(battle.attacking_warband.warband) < 7:
-			battle.attacking_warband.warband.insert(j + 1, ironhide_runt[0])
+			ironhide_runt = self.summon_minion(IronhideRunt)
+			battle.attacking_warband.warband.insert(j + 1, ironhide_runt)
 
 
 class Imprisoner(Card):
@@ -189,8 +184,8 @@ class Imprisoner(Card):
 			m_type=MinionType.DEMON, taunt=True, has_deathrattle=True)
 
 	def deathrattle(self, battle, friendly_minions, enemy_minions, j):
-		imp = self.summon_minions(1, Imp)
-		friendly_minions.warband.insert(j, imp[0])
+		imp = self.summon_minion(Imp)
+		friendly_minions.warband.insert(j, imp)
 
 
 class InfestedWolf(Card):
@@ -199,10 +194,10 @@ class InfestedWolf(Card):
 			m_type=MinionType.BEAST, has_deathrattle=True)
 
 	def deathrattle(self, battle, friendly_minions, enemy_minions, j):
-		spiders = self.summon_minions(2, Spider)
 		i = 0
 		while len(friendly_minions.warband) < 7 and i != 2:
-			friendly_minions.warband.insert(j, spiders[i])
+			spider = self.summon_minion(Spider)
+			friendly_minions.warband.insert(j, spider)
 			i += 1
 
 
@@ -242,9 +237,19 @@ class KangorsApprentice(Card):
 			mechs = []
 			i = 0
 			for mech in mechs_to_summon:
-				mechs = self.summon_minions(1, type(mech))
 				if len(friendly_minions.warband) < 7 and i < 2:
-					friendly_minions.warband.insert(j + i, mechs[0])
+					summoned_mech = self.summon_minion(type(mech))
+
+					# summoned_mech.attack_value = mech.attack_value
+					# summoned_mech.health = mech.health
+					# summoned_mech.taunt = mech.taunt
+					# summoned_mech.has_ds = mech.has_ds
+					# summoned_mech.has_deathrattle = mech.has_deathrattle
+					# summoned_mech.has_triggered_attack = mech.has_triggered_attack
+					# summoned_mech.damage_effect = mech.damage_effect
+
+					friendly_minions.warband.insert(j + i, summoned_mech)
+					print(friendly_minions.warband)
 					i += 1
 				else:
 					break
@@ -255,8 +260,8 @@ class KindlyGrandmother(Card):
 			m_type=MinionType.BEAST, has_deathrattle=True)
 
 	def deathrattle(self, battle, friendly_minions, enemy_minions, j):
-		wolf = self.summon_minions(1, BigBadWolf)
-		friendly_minions.warband.insert(j, wolf[0])
+		wolf = self.summon_minion(BigBadWolf)
+		friendly_minions.warband.insert(j, wolf)
 
 
 class KingBagurgle(Card):
@@ -290,8 +295,8 @@ class MechanoEgg(Card):
 			m_type=MinionType.MECH, has_deathrattle=True)
 
 	def deathrattle(self, battle, friendly_minions, enemy_minions, j):
-		robosaur = self.summon_minions(1, Robosaur)
-		friendly_minions.warband.insert(j, robosaur[0])
+		robosaur = self.summon_minion(Robosaur)
+		friendly_minions.warband.insert(j, robosaur)
 
 
 class Mecharoo(Card):
@@ -300,8 +305,8 @@ class Mecharoo(Card):
 			m_type=MinionType.MECH, has_deathrattle=True)
 
 	def deathrattle(self, battle, friendly_minions, enemy_minions, j):
-		joebot = self.summon_minions(1, JoEBot)
-		friendly_minions.warband.insert(j, joebot[0])
+		joebot = self.summon_minion(JoEBot)
+		friendly_minions.warband.insert(j, joebot)
 
 
 class NadinaTheRed(Card):
@@ -349,13 +354,12 @@ class RatPack(Card):
 
 	def deathrattle(self, battle, friendly_minions, enemy_minions, j):
 		x = self.attack_value
-		rats = self.summon_minions(x, Rat)
 		i = 0
-		while len(friendly_minions.warband) < 7 and i != x:
-			rat = rats[i]
-			friendly_minions.warband.insert(j, rat)
-			i += 1
 
+		while len(friendly_minions.warband) < 7 and i != x:
+			rat = self.summon_minion(Rat)
+			friendly_minions.warband.insert(j + i, rat)
+			i += 1
 
 class RighteousProtector(Card):
 	def __init__(self):
@@ -375,10 +379,10 @@ class SavannahHighmane(Card):
 						m_type=MinionType.BEAST, has_deathrattle=True)
 
 	def deathrattle(self, battle, friendly_minions, enemy_minions, j):
-		hyenas = self.summon_minions(2, Hyena)
 		i = 0
 		while len(friendly_minions.warband) < 7 and i != 2:
-			friendly_minions.warband.insert(j, hyenas[i])
+			hyena = self.summon_minion(Hyena)
+			friendly_minions.warband.insert(j, hyena)
 			i += 1
 
 class SecurityRover(Card):
@@ -387,10 +391,10 @@ class SecurityRover(Card):
 						m_type=MinionType.MECH, damage_effect=True)
 
 	def act_after_damage(self, battle, friendly_minions, enemy_minions, j):
-		guard_bot = self.summon_minions(1, GuardBot)
 
 		if len(friendly_minions.warband) < 7:
-			friendly_minions.warband.insert(j + 1, guard_bot[0])
+			guard_bot = self.summon_minion(GuardBot)
+			friendly_minions.warband.insert(j + 1, guard_bot)
 
 
 class SelflessHero(Card):
@@ -429,10 +433,12 @@ class TheBeast(Card):
 			m_type=MinionType.BEAST, has_deathrattle=True)
 
 	def deathrattle(self, battle, friendly_minions, enemy_minions, j):
-		finkle_einhorn = self.summon_minions(1, FinkleEinhorn)
+
 		if len(enemy_minions.warband) < 7:
+			finkle_einhorn = self.summon_minion(FinkleEinhorn)
 			last_place = len(enemy_minions.warband)
-			enemy_minions.warband.insert(last_place, finkle_einhorn[0])
+			enemy_minions.warband.insert(last_place, finkle_einhorn)
+
 
 class UnstableGhoul(Card):
 	def __init__(self):
@@ -455,10 +461,10 @@ class Voidlord(Card):
 						m_type=MinionType.DEMON, taunt=True, has_deathrattle=True)
 
 	def deathrattle(self, battle, friendly_minions, enemy_minions, j):
-		voidwalkers = self.summon_minions(3, Voidwalker)
 		i = 0
 		while len(friendly_minions.warband) < 7 and i != 3:
-			friendly_minions.warband.insert(j, voidwalkers[i])
+			voidwalker = self.summon_minion(Voidwalker)
+			friendly_minions.warband.insert(j, voidwalker)
 			i += 1
 
 # class(es) not imported to create minions in warbands:

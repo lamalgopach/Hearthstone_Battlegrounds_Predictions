@@ -87,11 +87,9 @@ def combat(w1, w2, battle_state, Player1, Player2):
 		dead_attacking_minion = 0
 		dead_attacked_minion = 0
 
-		# minions die, and deathrattle if has
 		if minion1.health < 1 and minion2.health < 1:
 			if minion1.has_overkill and minion2.health < 0 and len(battle_state.attacked_warband.warband) > 1:
-				if minion1.overkill(battle_state, battle_state.attack_i - 1, attacked_minion):
-					# not sure why here is -1??
+				if minion1.overkill(battle_state, battle_state.attack_i, attacked_minion):
 					next_phase = True
 			next_phase = battle_state.both_minions_die(minion1, minion2, next_phase, attacked_minion)
 			dead_attacking_minion += 1
@@ -112,21 +110,22 @@ def combat(w1, w2, battle_state, Player1, Player2):
 				dead_attacked_minion += 1
 
 
-		# if neverending stories with deathrattles: 
+		# neverending stories with deathrattles: 
 		if next_phase:
 			dead_attacking_minion, dead_attacked_minion = battle_state.solve_next_phase(next_phase, dead_attacking_minion, dead_attacked_minion)
-		# next minion:
-		# (if attacker is dead we should keep track it)
+		
+		# (keep track it of dead minion (counted only if indexes < than ind tracked)
 		battle_state.attack_i += 1 - dead_attacking_minion
-		# if the last minion in the warband was attacking start once again:
+
+		# if the last minion in the warband was attacking this turn start once again:
 		if battle_state.attack_i > len(battle_state.attacking_warband.warband) - 1 or battle_state.attack_i < 0:
 			battle_state.attack_i = 0
 
 		if dead_attacked_minion >= 1:
 			battle_state.attacked_i -= dead_attacked_minion
 
-		# if attacked player has attacking his last minion in the warband 
-		# start again:
+		# if attacking/attacked was last minion -> 
+		# -> start again:
 		if battle_state.attacked_i > len(battle_state.attacked_warband.warband) - 1 or battle_state.attacked_i < 0:
 			battle_state.attacked_i = 0
 
@@ -188,23 +187,23 @@ def simulate(warband1, warband2, num_simulations=100):
 	}
 
 warband1 = [ 
-	UnstableGhoul(), 
-	SecurityRover(),
-	CaveHydra(),
-	Maexxna(), 
-	KindlyGrandmother(), 
-	UnstableGhoul(),
+	Voidlord(), 
+	InfestedWolf(),
+	HarvestGolem(), 
+	KindlyGrandmother(),
 	SavannahHighmane(),
+	MechanoEgg(),
+	Mecharoo(),
 	]
 
 warband2 = [
-	SavannahHighmane(),
-	Maexxna(),
-	KaboomBot(), 
-	Maexxna(), 
-	HeraldOfFlame(),
-	KaboomBot(),
+	SecurityRover(),
+	RatPack(),
+	IronhideDirehorn(),
+	TheBeast(), 
+
 	Imprisoner(),  
+	KangorsApprentice(),
 	]
 
 w1, w2, battle_state, Player1, Player2 = start_of_game(warband1, warband2)
