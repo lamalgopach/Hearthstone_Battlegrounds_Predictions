@@ -64,8 +64,8 @@ def combat(w1, w2, battle_state, Player1, Player2):
 
 		# attack phase:
 		minion1.attack()
-		minion1.take_damage(minion2.attack_value)
-		minion2.take_damage(minion1.attack_value)
+		minion1.take_damage(minion2.attack_value, minion2.poisonous)
+		minion2.take_damage(minion1.attack_value, minion1.poisonous)
 
 
 		if minion1.has_triggered_attack and len(battle_state.attacked_warband.warband) > 1:
@@ -184,27 +184,23 @@ def simulate(warband1, warband2, num_simulations=100):
 	}
 
 warband1 = [ 
-	HeraldOfFlame(),
-	HeraldOfFlame(), 
-	HeraldOfFlame(),
-	HeraldOfFlame(),
-	HeraldOfFlame(),
-	HeraldOfFlame(),
-	# CaveHydra(),
-	# KindlyGrandmother(), 
-	# Imprisoner(), 
-	# UnstableGhoul(), 
-	# SavannahHighmane(),
+	UnstableGhoul(), 
+	KaboomBot(),
+	CaveHydra(),
+	Maexxna(), 
+	KindlyGrandmother(), 
+	UnstableGhoul(),
+	SavannahHighmane(),
 	]
 
 warband2 = [
-	IronhideDirehorn(),
 	SavannahHighmane(),
-	CaveHydra(),
-	KindlyGrandmother(), 
-	UnstableGhoul(), 
-	DragonspawnLieutenant(), 
-	RatPack(), 
+	Maexxna(),
+	KaboomBot(), 
+	Maexxna(), 
+	HeraldOfFlame(),
+	KaboomBot(),
+	Imprisoner(),  
 	]
 
 w1, w2, battle_state, Player1, Player2 = start_of_game(warband1, warband2)

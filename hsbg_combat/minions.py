@@ -15,7 +15,9 @@ class MinionType(Enum):
 
 class Card:
 	def __init__(self, *, name, attack_value, health, tier, m_type, taunt=False, 
-		has_ds=False, has_deathrattle=False, has_triggered_attack=False, has_overkill=False):
+		has_ds=False, has_deathrattle=False, has_triggered_attack=False, 
+		has_overkill=False, poisonous=False):
+
 		self.name = name
 		self.attack_value = attack_value
 		self.health = health
@@ -26,20 +28,35 @@ class Card:
 		self.has_deathrattle = has_deathrattle
 		self.has_triggered_attack = has_triggered_attack
 		self.has_overkill = has_overkill
+		self.poisonous = poisonous
 
 	def attack(self):
 		# used in Glyph Guardian
 
 		return
 
-	def take_damage(self, damage):
+	def take_poison(self):
+		
+		if self.has_ds:
+			self.has_ds = False
+
+		else:
+			self.health = 0
+
+	def take_damage(self, damage, poisonous):
 		if damage == 0:
 			return
 
 		if self.has_ds:
 			self.has_ds = False
+		elif poisonous:
+			self.health = 0
 		else:
 			self.health -= damage
+		# if self.has_ds:
+		# 	self.has_ds = False
+		# else:
+		# 	self.health -= damage
 
 	def die(self, friendly_minions, j, dead_warband):
 		del friendly_minions[j]
@@ -49,12 +66,12 @@ class Card:
 		if j != 0 and j + 1 < len(enemy_minions):
 			a = j - 1
 			b = j + 1	
-			enemy_minions[b].take_damage(self.attack_value)
+			enemy_minions[b].take_damage(self.attack_value, self.poisonous)
 		elif j == 0 and j + 1 <= len(enemy_minions):
 			a = j + 1
 		elif j == len(enemy_minions) - 1:
 			a = j - 1
-		enemy_minions[a].take_damage(self.attack_value)
+		enemy_minions[a].take_damage(self.attack_value, self.poisonous)
 
 	def summon_minions(self, n, minion_class):
 		# n - number of summoned minions
@@ -128,7 +145,7 @@ class HarvestGolem(Card):
 class HeraldOfFlame(Card):
 # to be continued
 	def __init__(self):
-		super().__init__(name="Herald Of Flame", attack_value=5, health=20, tier=4, 
+		super().__init__(name="Herald Of Flame", attack_value=5, health=6, tier=4, 
 			m_type=MinionType.DRAGON, has_overkill=True)	
 
 	def overkill(self, battle, j, k):
@@ -140,7 +157,7 @@ class HeraldOfFlame(Card):
 				continue
 			else:
 				leftmost_minion = battle.attacked_warband.warband[i]
-				leftmost_minion.take_damage(3)
+				leftmost_minion.take_damage(3, self.poisonous)
 				
 				if leftmost_minion.health > 0:
 					break
@@ -163,7 +180,6 @@ class IronhideDirehorn(Card):
 		ironhide_runt = self.summon_minions(1, IronhideRunt)
 		if len(battle.attacking_warband.warband) < 7:
 			battle.attacking_warband.warband.insert(j + 1, ironhide_runt[0])
-
 
 
 class Imprisoner(Card):
@@ -198,7 +214,7 @@ class KaboomBot(Card):
 		if enemy_minions.warband:
 			enemy_random_minion = random.choice(enemy_minions.warband)
 			i = enemy_minions.warband.index(enemy_random_minion)
-			enemy_random_minion.take_damage(4)
+			enemy_random_minion.take_damage(4, self.poisonous)
 
 
 class KangorsApprentice(Card):
@@ -209,11 +225,14 @@ class KangorsApprentice(Card):
 
 	def deathrattle(self, battle, friendly_minions, enemy_minions, j):
 		warband = []
+
 		if friendly_minions == battle.attacking_warband:
 			warband = battle.dead_attacking_minions
 		else:
 			warband = battle.dead_attacked_minions
+
 		mechs_to_summon = []
+
 		for minion in warband:
 			if minion.m_type == MinionType.MECH:
 				mechs_to_summon.append(minion)
@@ -228,8 +247,6 @@ class KangorsApprentice(Card):
 					i += 1
 				else:
 					break
-
-
 
 class KindlyGrandmother(Card):
 	def __init__(self):
@@ -259,6 +276,11 @@ class KingBagurgle(Card):
 # 	def __init__(self):
 # 		super().__init__(name="Murloc Warleader", attack_value=3, health=3, tier=2, 
 # 			m_type=MinionType.MURLOC)
+
+class Maexxna(Card):
+	def __init__(self):
+		super().__init__(name="Maexxna", attack_value=2, health=8, tier=6, 
+			m_type=MinionType.BEAST, poisonous=True)
 
 
 class MechanoEgg(Card):
@@ -309,7 +331,7 @@ class RedWhelp(Card):
 		damage = self.add_damage_in_combat(friendly_minions.warband)
 		attacked_minion = random.choice(enemy_minions.warband)
 		j = enemy_minions.warband.index(attacked_minion)
-		attacked_minion.take_damage(damage)
+		attacked_minion.take_damage(damage, self.poisonous)
 
 		if attacked_minion.health < 1:
 			attacked_minion.die(enemy_minions.warband, j, dead_warband)
@@ -408,10 +430,11 @@ class UnstableGhoul(Card):
 	def deathrattle(self, battle, friendly_minions, enemy_minions, j):
 		if friendly_minions.warband:
 			for minion in friendly_minions.warband:
-				minion.take_damage(1)
+				minion.take_damage(1, self.poisonous)
+
 		if enemy_minions.warband:
 			for minion in enemy_minions.warband:
-				minion.take_damage(1)
+				minion.take_damage(1, self.poisonous)
 
 
 class Voidlord(Card):
