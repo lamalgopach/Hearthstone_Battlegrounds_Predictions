@@ -177,6 +177,17 @@ class IronhideDirehorn(Card):
 			ironhide_runt = self.summon_minion(IronhideRunt)
 			battle.attacking_warband.warband.insert(j + 1, ironhide_runt)
 
+class ImpGangBoss(Card):
+	def __init__(self):
+		super().__init__(name="Imp Gang Boss", attack_value=2, health=4, tier=3, 
+			m_type=MinionType.DEMON, damage_effect=True)	
+
+	def act_after_damage(self, battle, friendly_minions, enemy_minions, j):
+
+		if len(friendly_minions.warband) < 7:
+			imp = self.summon_minion(Imp)
+			friendly_minions.warband.insert(j + 1, imp)
+
 
 class Imprisoner(Card):
 	def __init__(self):

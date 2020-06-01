@@ -199,9 +199,9 @@ warband1 = [
 warband2 = [
 	SecurityRover(),
 	RatPack(),
+	ImpGangBoss(),
 	IronhideDirehorn(),
 	TheBeast(), 
-
 	Imprisoner(),  
 	KangorsApprentice(),
 	]
