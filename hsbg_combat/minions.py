@@ -16,7 +16,7 @@ class MinionType(Enum):
 class Card:
 	def __init__(self, *, name, attack_value, health, tier, m_type, taunt=False, 
 		has_ds=False, has_deathrattle=False, has_triggered_attack=False, 
-		has_overkill=False, poisonous=False):
+		has_overkill=False, poisonous=False, damage_effect=False):
 
 		self.name = name
 		self.attack_value = attack_value
@@ -29,6 +29,7 @@ class Card:
 		self.has_triggered_attack = has_triggered_attack
 		self.has_overkill = has_overkill
 		self.poisonous = poisonous
+		self.damage_effect = damage_effect
 
 	def attack(self):
 		# used in Glyph Guardian
@@ -380,6 +381,17 @@ class SavannahHighmane(Card):
 			friendly_minions.warband.insert(j, hyenas[i])
 			i += 1
 
+class SecurityRover(Card):
+	def __init__(self):
+		super().__init__(name="Security Rover", attack_value=2, health=6, tier=4, 
+						m_type=MinionType.MECH, damage_effect=True)
+
+	def act_after_damage(self, battle, friendly_minions, enemy_minions, j):
+		guard_bot = self.summon_minions(1, GuardBot)
+
+		if len(friendly_minions.warband) < 7:
+			friendly_minions.warband.insert(j + 1, guard_bot[0])
+
 
 class SelflessHero(Card):
 	def __init__(self):
@@ -466,6 +478,11 @@ class FinkleEinhorn(Card):
 	def __init__(self):
 		super().__init__(name="Finkle Einhorn", attack_value=3, health=3, tier=1, 
 						m_type=MinionType.MINION)
+
+class GuardBot(Card):
+	def __init__(self):
+		super().__init__(name="Guard Bot", attack_value=2, health=3, tier=1, 
+						m_type=MinionType.MECH, taunt=True)	
 
 
 class Hyena(Card):

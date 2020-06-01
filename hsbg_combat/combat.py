@@ -67,6 +67,12 @@ def combat(w1, w2, battle_state, Player1, Player2):
 		minion1.take_damage(minion2.attack_value, minion2.poisonous)
 		minion2.take_damage(minion1.attack_value, minion1.poisonous)
 
+		# check if both sit
+		if minion1.damage_effect and minion2.attack_value > 0:
+			minion1.act_after_damage(battle_state, battle_state.attacking_warband, battle_state.attacked_warband, battle_state.attack_i)
+
+		if minion2.damage_effect and minion1.attack_value > 0:
+			minion2.act_after_damage(battle_state, battle_state.attacked_warband, battle_state.attacking_warband, attacked_minion)
 
 		if minion1.has_triggered_attack and len(battle_state.attacked_warband.warband) > 1:
 			minion1.triggered_attack(battle_state.attacked_warband.warband, attacked_minion)
@@ -84,7 +90,6 @@ def combat(w1, w2, battle_state, Player1, Player2):
 		# minions die, and deathrattle if has
 		if minion1.health < 1 and minion2.health < 1:
 			if minion1.has_overkill and minion2.health < 0 and len(battle_state.attacked_warband.warband) > 1:
-				print("overkill1")
 				if minion1.overkill(battle_state, battle_state.attack_i - 1, attacked_minion):
 					# not sure why here is -1??
 					next_phase = True
@@ -100,7 +105,6 @@ def combat(w1, w2, battle_state, Player1, Player2):
 
 		elif minion2.health < 1:
 			if minion1.has_overkill and minion2.health < 0 and len(battle_state.attacked_warband.warband) > 1:
-				print("overkill2")
 				if minion1.overkill(battle_state, battle_state.attack_i, attacked_minion):
 					next_phase = True
 			next_phase = battle_state.one_minion_dies(minion2, next_phase, battle_state.attacked_warband, battle_state.attacking_warband, attacked_minion, battle_state.dead_attacked_minions)
@@ -185,7 +189,7 @@ def simulate(warband1, warband2, num_simulations=100):
 
 warband1 = [ 
 	UnstableGhoul(), 
-	KaboomBot(),
+	SecurityRover(),
 	CaveHydra(),
 	Maexxna(), 
 	KindlyGrandmother(), 
