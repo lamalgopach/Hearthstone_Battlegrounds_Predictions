@@ -14,7 +14,7 @@ class FiendishServant(Card):
 class ImpGangBoss(Card):
 	def __init__(self):
 		super().__init__(name="Imp Gang Boss", attack_value=2, health=4, tier=3, 
-			m_type=MinionType.DEMON, damage_effect=True)	
+						m_type=MinionType.DEMON, damage_effect=True)	
 
 	def act_after_damage(self, battle, friendly_minions, enemy_minions, j):
 
@@ -27,7 +27,7 @@ class ImpGangBoss(Card):
 class ImpMama(Card):
 	def __init__(self):
 		super().__init__(name="Imp Mama", attack_value=6, health=10, tier=6, 
-			m_type=MinionType.DEMON, damage_effect=True)	
+						m_type=MinionType.DEMON, damage_effect=True)	
 
 	def act_after_damage(self, battle, friendly_minions, enemy_minions, j):
 		demons = [
@@ -57,12 +57,18 @@ class ImpMama(Card):
 class Imprisoner(Card):
 	def __init__(self):
 		super().__init__(name="Imprisoner", attack_value=3, health=3, tier=2, 
-			m_type=MinionType.DEMON, taunt=True, has_deathrattle=True)
+						m_type=MinionType.DEMON, taunt=True, has_deathrattle=True)
 
 	def deathrattle(self, battle, friendly_minions, enemy_minions, j):
 		imp = self.summon_minion(Imp)
 		friendly_minions.warband.insert(j, imp)
 
+
+class NathrezimOverseer(Card):
+	#btlcry
+	def __init__(self):
+		super().__init__(name="Nathrezim Overseer", attack_value=2, health=3, tier=2, 
+						m_type=MinionType.DEMON)
 
 
 class Voidlord(Card):
