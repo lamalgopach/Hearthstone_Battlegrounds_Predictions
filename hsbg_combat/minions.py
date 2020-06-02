@@ -81,10 +81,6 @@ class Card:
 		return minion
 
 
-class CaveHydra(Card):
-	def __init__(self):
-		super().__init__(name="Cave Hydra", attack_value=2, health=4, tier=4, 
-						has_triggered_attack=True, m_type=MinionType.BEAST)
 
 
 class DragonspawnLieutenant(Card):
@@ -102,17 +98,7 @@ class GlyphGuardian(Card):
 		self.attack_value = 2 * self.attack_value
 
 
-class GoldrinnTheGreatWolf(Card):
-	def __init__(self):
-		super().__init__(name="Goldrinn The Great Wolf", attack_value=4, health=4, 
-						tier=5, m_type=MinionType.BEAST, has_deathrattle=True)
-	
-	def deathrattle(self, battle, friendly_minions, enemy_minions, j):
-		if friendly_minions.warband:
-			for minion in friendly_minions.warband:
-				if minion.m_type == MinionType.BEAST:
-					minion.attack_value += 4
-					minion.health += 4
+
 
 
 
@@ -144,36 +130,6 @@ class HeraldOfFlame(Card):
 					any_died = True
 				
 		return any_died
-
-class IronhideDirehorn(Card):
-	def __init__(self):
-		super().__init__(name="Ironhide Direhorn", attack_value=7, health=7, tier=4, 
-						m_type=MinionType.BEAST, has_overkill=True)	
-
-	def overkill(self, battle, j, k):
-		if len(battle.attacking_warband.warband) < 7:
-			ironhide_runt = self.summon_minion(IronhideRunt)
-			battle.attacking_warband.warband.insert(j + 1, ironhide_runt)
-
-
-
-
-
-
-class InfestedWolf(Card):
-	def __init__(self):
-		super().__init__(name="Infested Wolf", attack_value=3, health=3, tier=3, 
-						m_type=MinionType.BEAST, has_deathrattle=True)
-
-	def deathrattle(self, battle, friendly_minions, enemy_minions, j):
-		i = 0
-		while len(friendly_minions.warband) < 7 and i != 2:
-			spider = self.summon_minion(Spider)
-			friendly_minions.warband.insert(j, spider)
-			i += 1
-
-
-
 
 
 class KangorsApprentice(Card):
@@ -216,14 +172,7 @@ class KangorsApprentice(Card):
 				else:
 					break
 
-class KindlyGrandmother(Card):
-	def __init__(self):
-		super().__init__(name="Kindly Grandmother", attack_value=1, health=1, tier=2, 
-						m_type=MinionType.BEAST, has_deathrattle=True)
 
-	def deathrattle(self, battle, friendly_minions, enemy_minions, j):
-		wolf = self.summon_minion(BigBadWolf)
-		friendly_minions.warband.insert(j, wolf)
 
 
 class KingBagurgle(Card):
@@ -246,10 +195,6 @@ class KingBagurgle(Card):
 # 			m_type=MinionType.MURLOC)
 
 
-class Maexxna(Card):
-	def __init__(self):
-		super().__init__(name="Maexxna", attack_value=2, health=8, tier=6, 
-						m_type=MinionType.BEAST, poisonous=True)
 
 
 class NadinaTheRed(Card):
@@ -290,19 +235,7 @@ class RedWhelp(Card):
 					return True
 
 
-class RatPack(Card):
-	def __init__(self):
-		super().__init__(name="Rat Pack", attack_value=2, health=2, tier=2, 
-						m_type=MinionType.BEAST, has_deathrattle=True)
 
-	def deathrattle(self, battle, friendly_minions, enemy_minions, j):
-		x = self.attack_value
-		i = 0
-
-		while len(friendly_minions.warband) < 7 and i != x:
-			rat = self.summon_minion(Rat)
-			friendly_minions.warband.insert(j + i, rat)
-			i += 1
 
 
 
@@ -317,20 +250,6 @@ class RockpoolHunter(Card):
 	def __init__(self):
 		super().__init__(name="Rockpool Hunter", attack_value=2, health=3, tier=1, 
 						m_type=MinionType.MURLOC)
-
-
-
-class SavannahHighmane(Card):
-	def __init__(self):
-		super().__init__(name="Savannah Highmane", attack_value=6, health=5, tier=4, 
-						m_type=MinionType.BEAST, has_deathrattle=True)
-
-	def deathrattle(self, battle, friendly_minions, enemy_minions, j):
-		i = 0
-		while len(friendly_minions.warband) < 7 and i != 2:
-			hyena = self.summon_minion(Hyena)
-			friendly_minions.warband.insert(j, hyena)
-			i += 1
 
 
 
@@ -353,7 +272,6 @@ class SelflessHero(Card):
 		minion.has_ds = True
 
 
-
 class SpawnOfnZoth(Card):
 	def __init__(self):
 		super().__init__(name="Spawn Of n'Zoth", attack_value=2, health=2, tier=2, 
@@ -364,21 +282,6 @@ class SpawnOfnZoth(Card):
 			for minion in friendly_minions.warband:
 				minion.attack_value += 1
 				minion.health += 1
-
-
-
-class TheBeast(Card):
-	def __init__(self):
-		super().__init__(name="The Beast", attack_value=9, health=7, tier=3, 
-						m_type=MinionType.BEAST, has_deathrattle=True)
-
-	def deathrattle(self, battle, friendly_minions, enemy_minions, j):
-
-		if len(enemy_minions.warband) < 7:
-			finkle_einhorn = self.summon_minion(FinkleEinhorn)
-			last_place = len(enemy_minions.warband)
-			enemy_minions.warband.insert(last_place, finkle_einhorn)
-
 
 
 class UnstableGhoul(Card):
@@ -395,54 +298,17 @@ class UnstableGhoul(Card):
 			for minion in enemy_minions.warband:
 				minion.take_damage(1, self.poisonous)
 
-
-
-# class(es) not imported to create minions in warbands:
-class BigBadWolf(Card):
+class WrathWeaver(Card):
+	#btlcry damage
 	def __init__(self):
-		super().__init__(name="Big Bad Wolf", attack_value=3, health=2, tier=1, 
-						m_type=MinionType.BEAST)
+		super().__init__(name="Wrath Weaver", attack_value=1, health=1, tier=1, 
+						m_type=MinionType.MINION)
 
-
-
+# class(es) not imported to create minions in warbands
 class FinkleEinhorn(Card):
 	def __init__(self):
 		super().__init__(name="Finkle Einhorn", attack_value=3, health=3, tier=1, 
 						m_type=MinionType.MINION)
-
-
-
-
-
-class Hyena(Card):
-	def __init__(self):
-		super().__init__(name="Hyena", attack_value=2, health=2, tier=1, 
-						m_type=MinionType.BEAST)
-
-
-
-
-class IronhideRunt(Card):
-	def __init__(self):
-		super().__init__(name="Ironhide Runt", attack_value=7, health=7, tier=1, 
-						m_type=MinionType.BEAST)
-
-
-
-class Rat(Card):
-	def __init__(self):
-		super().__init__(name="Rat", attack_value=1, health=1, tier=1, 
-						m_type=MinionType.BEAST)
-
-
-
-
-
-class Spider(Card):
-	def __init__(self):
-		super().__init__(name="Spider", attack_value=1, health=1, tier=1, 
-						m_type=MinionType.BEAST)
-
 
 
 # Jakub:
@@ -460,7 +326,6 @@ class Spider(Card):
 # 	def attack(*args, **kwargs):
 # 		self.attack_value *= 2
 # 		super().attack(*args, **kwargs)
-
 
 
 #todo:
