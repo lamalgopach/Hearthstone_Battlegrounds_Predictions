@@ -58,6 +58,12 @@ class MetaltoothLeaper(Card):
 		super().__init__(name="Metaltooth Leaper", attack_value=3, health=3, tier=2, 
 						m_type=MinionType.MECH)
 
+class PogoHopper(Card):
+	# add the btlcry
+	def __init__(self):
+		super().__init__(name="Pogo-Hopper", attack_value=1, health=1, tier=2, 
+						m_type=MinionType.MECH)
+
 
 class SecurityRover(Card):
 	def __init__(self):
