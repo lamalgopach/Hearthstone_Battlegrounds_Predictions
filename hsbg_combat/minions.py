@@ -93,13 +93,6 @@ class DragonspawnLieutenant(Card):
 						tier=1, m_type=MinionType.DRAGON, taunt=True)
 
 
-
-class FoeReaper4000(Card):
-	def __init__(self):
-		super().__init__(name="Foe Reaper 4000", attack_value=6, health=9, tier=6, 
-						has_triggered_attack=True, m_type=MinionType.MECH)
-
-
 class GlyphGuardian(Card):
 	def __init__(self):
 		super().__init__(name="Glyph Guardian", attack_value=2, health=4, tier=2, 
@@ -122,20 +115,12 @@ class GoldrinnTheGreatWolf(Card):
 					minion.health += 4
 
 
-class HarvestGolem(Card):
-	def __init__(self):
-		super().__init__(name="Harvest Golem", attack_value=2, health=3, tier=2, 
-			m_type=MinionType.MECH, has_deathrattle=True)
-
-	def deathrattle(self, battle, friendly_minions, enemy_minions, j):
-		golem = self.summon_minion(DamagedGolem)
-		friendly_minions.warband.insert(j, golem)
 
 class HeraldOfFlame(Card):
 # to be continued
 	def __init__(self):
 		super().__init__(name="Herald Of Flame", attack_value=5, health=6, tier=4, 
-			m_type=MinionType.DRAGON, has_overkill=True)	
+						m_type=MinionType.DRAGON, has_overkill=True)	
 
 	def overkill(self, battle, j, k):
 
@@ -163,7 +148,7 @@ class HeraldOfFlame(Card):
 class IronhideDirehorn(Card):
 	def __init__(self):
 		super().__init__(name="Ironhide Direhorn", attack_value=7, health=7, tier=4, 
-			m_type=MinionType.BEAST, has_overkill=True)	
+						m_type=MinionType.BEAST, has_overkill=True)	
 
 	def overkill(self, battle, j, k):
 		if len(battle.attacking_warband.warband) < 7:
@@ -178,7 +163,7 @@ class IronhideDirehorn(Card):
 class InfestedWolf(Card):
 	def __init__(self):
 		super().__init__(name="Infested Wolf", attack_value=3, health=3, tier=3, 
-			m_type=MinionType.BEAST, has_deathrattle=True)
+						m_type=MinionType.BEAST, has_deathrattle=True)
 
 	def deathrattle(self, battle, friendly_minions, enemy_minions, j):
 		i = 0
@@ -188,22 +173,13 @@ class InfestedWolf(Card):
 			i += 1
 
 
-class KaboomBot(Card):
-	def __init__(self):
-		super().__init__(name="Kaboom Bot", attack_value=2, health=2, tier=2, 
-			m_type=MinionType.MECH, has_deathrattle=True)
 
-	def deathrattle(self, battle, friendly_minions, enemy_minions, j):
-		if enemy_minions.warband:
-			enemy_random_minion = random.choice(enemy_minions.warband)
-			i = enemy_minions.warband.index(enemy_random_minion)
-			enemy_random_minion.take_damage(4, self.poisonous)
 
 
 class KangorsApprentice(Card):
 	def __init__(self):
 		super().__init__(name="Kangor's Apprentice", attack_value=3, health=6, tier=6, 
-			m_type=MinionType.MINION, has_deathrattle=True)
+						m_type=MinionType.MINION, has_deathrattle=True)
 
 
 	def deathrattle(self, battle, friendly_minions, enemy_minions, j):
@@ -243,7 +219,7 @@ class KangorsApprentice(Card):
 class KindlyGrandmother(Card):
 	def __init__(self):
 		super().__init__(name="Kindly Grandmother", attack_value=1, health=1, tier=2, 
-			m_type=MinionType.BEAST, has_deathrattle=True)
+						m_type=MinionType.BEAST, has_deathrattle=True)
 
 	def deathrattle(self, battle, friendly_minions, enemy_minions, j):
 		wolf = self.summon_minion(BigBadWolf)
@@ -269,30 +245,11 @@ class KingBagurgle(Card):
 # 		super().__init__(name="Murloc Warleader", attack_value=3, health=3, tier=2, 
 # 			m_type=MinionType.MURLOC)
 
+
 class Maexxna(Card):
 	def __init__(self):
 		super().__init__(name="Maexxna", attack_value=2, health=8, tier=6, 
-			m_type=MinionType.BEAST, poisonous=True)
-
-
-class MechanoEgg(Card):
-	def __init__(self):
-		super().__init__(name="Mechano-Egg", attack_value=0, health=5, tier=4, 
-			m_type=MinionType.MECH, has_deathrattle=True)
-
-	def deathrattle(self, battle, friendly_minions, enemy_minions, j):
-		robosaur = self.summon_minion(Robosaur)
-		friendly_minions.warband.insert(j, robosaur)
-
-
-class Mecharoo(Card):
-	def __init__(self):
-		super().__init__(name="Mecharoo", attack_value=1, health=1, tier=1, 
-			m_type=MinionType.MECH, has_deathrattle=True)
-
-	def deathrattle(self, battle, friendly_minions, enemy_minions, j):
-		joebot = self.summon_minion(JoEBot)
-		friendly_minions.warband.insert(j, joebot)
+						m_type=MinionType.BEAST, poisonous=True)
 
 
 class NadinaTheRed(Card):
@@ -310,7 +267,7 @@ class NadinaTheRed(Card):
 class RedWhelp(Card):
 	def __init__(self):
 		super().__init__(name="Red Whelp", attack_value=1, health=2, tier=1, 
-			m_type=MinionType.DRAGON)
+						m_type=MinionType.DRAGON)
 
 	def add_damage_in_combat(self, minions):
 		damage = 0
@@ -347,16 +304,20 @@ class RatPack(Card):
 			friendly_minions.warband.insert(j + i, rat)
 			i += 1
 
+
+
 class RighteousProtector(Card):
 	def __init__(self):
 		super().__init__(name="Righteous Protector", attack_value=1, health=1, tier=1, 
 						m_type=MinionType.MINION, taunt=True, has_ds =True)
 
 
+
 class RockpoolHunter(Card):
 	def __init__(self):
 		super().__init__(name="Rockpool Hunter", attack_value=2, health=3, tier=1, 
 						m_type=MinionType.MURLOC)
+
 
 
 class SavannahHighmane(Card):
@@ -371,16 +332,7 @@ class SavannahHighmane(Card):
 			friendly_minions.warband.insert(j, hyena)
 			i += 1
 
-class SecurityRover(Card):
-	def __init__(self):
-		super().__init__(name="Security Rover", attack_value=2, health=6, tier=4, 
-						m_type=MinionType.MECH, damage_effect=True)
 
-	def act_after_damage(self, battle, friendly_minions, enemy_minions, j):
-
-		if len(friendly_minions.warband) < 7:
-			guard_bot = self.summon_minion(GuardBot)
-			friendly_minions.warband.insert(j + 1, guard_bot)
 
 
 class SelflessHero(Card):
@@ -401,6 +353,7 @@ class SelflessHero(Card):
 		minion.has_ds = True
 
 
+
 class SpawnOfnZoth(Card):
 	def __init__(self):
 		super().__init__(name="Spawn Of n'Zoth", attack_value=2, health=2, tier=2, 
@@ -413,10 +366,11 @@ class SpawnOfnZoth(Card):
 				minion.health += 1
 
 
+
 class TheBeast(Card):
 	def __init__(self):
 		super().__init__(name="The Beast", attack_value=9, health=7, tier=3, 
-			m_type=MinionType.BEAST, has_deathrattle=True)
+						m_type=MinionType.BEAST, has_deathrattle=True)
 
 	def deathrattle(self, battle, friendly_minions, enemy_minions, j):
 
@@ -424,6 +378,7 @@ class TheBeast(Card):
 			finkle_einhorn = self.summon_minion(FinkleEinhorn)
 			last_place = len(enemy_minions.warband)
 			enemy_minions.warband.insert(last_place, finkle_einhorn)
+
 
 
 class UnstableGhoul(Card):
@@ -442,8 +397,6 @@ class UnstableGhoul(Card):
 
 
 
-
-
 # class(es) not imported to create minions in warbands:
 class BigBadWolf(Card):
 	def __init__(self):
@@ -451,21 +404,14 @@ class BigBadWolf(Card):
 						m_type=MinionType.BEAST)
 
 
-class DamagedGolem(Card):
-	def __init__(self):
-		super().__init__(name="Damaged Golem", attack_value=2, health=1, tier=1, 
-						m_type=MinionType.MECH)
-
 
 class FinkleEinhorn(Card):
 	def __init__(self):
 		super().__init__(name="Finkle Einhorn", attack_value=3, health=3, tier=1, 
 						m_type=MinionType.MINION)
 
-class GuardBot(Card):
-	def __init__(self):
-		super().__init__(name="Guard Bot", attack_value=2, health=3, tier=1, 
-						m_type=MinionType.MECH, taunt=True)	
+
+
 
 
 class Hyena(Card):
@@ -482,10 +428,6 @@ class IronhideRunt(Card):
 						m_type=MinionType.BEAST)
 
 
-class JoEBot(Card):
-	def __init__(self):
-		super().__init__(name="Jo-E Bot", attack_value=1, health=1, tier=1, 
-						m_type=MinionType.MECH)
 
 class Rat(Card):
 	def __init__(self):
@@ -493,21 +435,13 @@ class Rat(Card):
 						m_type=MinionType.BEAST)
 
 
-class Robosaur(Card):
-	def __init__(self):
-		super().__init__(name="Robosaur", attack_value=8, health=8, tier=1, 
-						m_type=MinionType.MECH)
+
 
 
 class Spider(Card):
 	def __init__(self):
 		super().__init__(name="Spider", attack_value=1, health=1, tier=1, 
 						m_type=MinionType.BEAST)
-
-
-
-
-		
 
 
 
