@@ -3,6 +3,7 @@ from random import choice
 import copy
 from battle import Player, Warband, BattleState
 from minions import *
+from demons import *
 
 def choose_first(player1, player2):
 	order = True
@@ -187,23 +188,23 @@ def simulate(warband1, warband2, num_simulations=100):
 	}
 
 warband1 = [ 
-	Voidlord(), 
-	InfestedWolf(),
-	HarvestGolem(), 
-	KindlyGrandmother(),
-	SavannahHighmane(),
-	MechanoEgg(),
-	Mecharoo(),
+	Voidlord(),  
+	ImpMama(),
+	# SavannahHighmane(),
+	# MechanoEgg(),
+	# Mecharoo(),
 	]
 
 warband2 = [
-	SecurityRover(),
-	RatPack(),
+	# SecurityRover(),
+	# RatPack(),
 	ImpGangBoss(),
-	IronhideDirehorn(),
-	TheBeast(), 
+	ImpMama(),
+	# IronhideDirehorn(),
+	# TheBeast(), 
 	Imprisoner(),  
-	KangorsApprentice(),
+	# KangorsApprentice(),
+	Voidlord(),
 	]
 
 w1, w2, battle_state, Player1, Player2 = start_of_game(warband1, warband2)
