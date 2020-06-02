@@ -52,6 +52,12 @@ class Mecharoo(Card):
 		joebot = self.summon_minion(JoEBot)
 		friendly_minions.warband.insert(j, joebot)
 
+class MetaltoothLeaper(Card):
+	# add the btlcry
+	def __init__(self):
+		super().__init__(name="Metaltooth Leaper", attack_value=3, health=3, tier=2, 
+						m_type=MinionType.MECH)
+
 
 class SecurityRover(Card):
 	def __init__(self):
