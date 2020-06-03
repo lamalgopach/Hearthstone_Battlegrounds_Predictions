@@ -16,6 +16,12 @@ class GlyphGuardian(Card):
 		self.attack_value = 2 * self.attack_value
 
 
+class HangryDragon(Card):
+	def __init__(self):
+		super().__init__(name="Hangry Dragon ", attack_value=4, health=4, tier=3, 
+						m_type=MinionType.DRAGON)
+
+
 class HeraldOfFlame(Card):
 # to be continued
 	def __init__(self):
