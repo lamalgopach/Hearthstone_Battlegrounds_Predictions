@@ -173,8 +173,14 @@ class KingBagurgle(Card):
 					minion.attack_value += 2
 					minion.health += 2
 
+class LightfangEnforcer(Card):
+	# effect
+	def __init__(self):
+		super().__init__(name="Lightfang Enforcer", attack_value=2, health=2, tier=5, 
+						m_type=MinionType.MINION)
 
 class MenagerieMagician(Card):
+	#btlcry
 	def __init__(self):
 		super().__init__(name="Menagerie Magician", attack_value=4, health=4, tier=4, 
 						m_type=MinionType.MINION)
