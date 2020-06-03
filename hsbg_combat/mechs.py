@@ -16,6 +16,12 @@ class HarvestGolem(Card):
 		friendly_minions.warband.insert(j, golem)
 
 
+class IronSensei(Card):
+	def __init__(self):
+		super().__init__(name="Iron Sensei", attack_value=2, health=2, tier=4, 
+						m_type=MinionType.MECH)
+
+
 class KaboomBot(Card):
 	def __init__(self):
 		super().__init__(name="Kaboom Bot", attack_value=2, health=2, tier=2, 
