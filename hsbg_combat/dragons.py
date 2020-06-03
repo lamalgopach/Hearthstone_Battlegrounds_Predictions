@@ -56,6 +56,14 @@ class HeraldOfFlame(Card):
 				
 		return any_died
 
+
+class KalecgosArcaneAspect(Card):
+	#effect
+	def __init__(self):
+		super().__init__(name="Kalecgos, Arcane Aspect", attack_value=4, health=12, 
+						tier=6, m_type=MinionType.DRAGON)	 
+
+
 class Murozond(Card):
 	#btlcry
 	def __init__(self):
