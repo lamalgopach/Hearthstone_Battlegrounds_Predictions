@@ -10,6 +10,11 @@ class FiendishServant(Card):
 		friendly_random_minion.attack_value += self.attack_value
 
 
+class FloatingWatcher(Card):
+	def __init__(self):
+		super().__init__(name="Floating Watcher", attack_value=4, health=4, tier=4, 
+						m_type=MinionType.DEMON)
+
 
 class ImpGangBoss(Card):
 	def __init__(self):
