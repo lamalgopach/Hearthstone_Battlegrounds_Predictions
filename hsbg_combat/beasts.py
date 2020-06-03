@@ -65,6 +65,15 @@ class Maexxna(Card):
 						m_type=MinionType.BEAST, poisonous=True)
 
 
+
+class RabidSaurolisk(Card):
+	#action on turn
+	def __init__(self):
+		super().__init__(name="Rabid Saurolisk", attack_value=3, health=1, tier=1, 
+						m_type=MinionType.BEAST)
+
+
+
 class RatPack(Card):
 	def __init__(self):
 		super().__init__(name="Rat Pack", attack_value=2, health=2, tier=2, 
