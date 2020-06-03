@@ -63,6 +63,13 @@ class Murozond(Card):
 						m_type=MinionType.DRAGON)	
 
 
+class RazorgoreTheUntamed(Card):
+	#effect
+	def __init__(self):
+		super().__init__(name="Razorgore, the Untamed", attack_value=2, health=4, 
+						tier=5, m_type=MinionType.DRAGON)	
+
+
 class RedWhelp(Card):
 	def __init__(self):
 		super().__init__(name="Red Whelp", attack_value=1, health=2, tier=1, 
