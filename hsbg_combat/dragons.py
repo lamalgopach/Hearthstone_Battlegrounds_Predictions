@@ -56,6 +56,12 @@ class HeraldOfFlame(Card):
 				
 		return any_died
 
+class Murozond(Card):
+	#btlcry
+	def __init__(self):
+		super().__init__(name="Murozond", attack_value=5, health=5, tier=5, 
+						m_type=MinionType.DRAGON)	
+
 
 class RedWhelp(Card):
 	def __init__(self):
