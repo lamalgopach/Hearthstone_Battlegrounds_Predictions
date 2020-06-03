@@ -80,11 +80,20 @@ class Card:
 		minion = minion_class()
 		return minion
 
+
+class CrowdFavorite(Card):
+	# add special function later
+	def __init__(self):
+		super().__init__(name="Crowd Favorite", attack_value=4, health=4, tier=3, 
+						m_type=MinionType.MINION)
+
+
 class Crystalweaver(Card):
 	#btlcry
 	def __init__(self):
 		super().__init__(name="Crystalweaver", attack_value=5, health=4, tier=3, 
 						m_type=MinionType.MINION)
+
 
 class KangorsApprentice(Card):
 	def __init__(self):
