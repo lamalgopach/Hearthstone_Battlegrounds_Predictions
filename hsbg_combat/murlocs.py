@@ -8,6 +8,14 @@ class ColdlightSeer(Card):
 						m_type=MinionType.MURLOC)
 
 
+class FelfinNavigator(Card):
+	#btlcry
+	def __init__(self):
+		super().__init__(name="Felfin Navigator", attack_value=4, health=4, tier=3, 
+						m_type=MinionType.MURLOC)
+
+
+
 
 class MurlocTidecaller(Card):
 # add attack
