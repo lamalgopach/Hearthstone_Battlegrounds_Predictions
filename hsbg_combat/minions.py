@@ -198,13 +198,10 @@ class NadinaTheRed(Card):
 					minion.has_ds = True
 
 
-
-
 class RighteousProtector(Card):
 	def __init__(self):
 		super().__init__(name="Righteous Protector", attack_value=1, health=1, tier=1, 
 						m_type=MinionType.MINION, taunt=True, has_ds =True)
-
 
 
 class SelflessHero(Card):
@@ -232,8 +229,6 @@ class ShifterZerus(Card):
 						m_type=MinionType.MINION)
 
 
-
-
 class SpawnOfnZoth(Card):
 	def __init__(self):
 		super().__init__(name="Spawn Of n'Zoth", attack_value=2, health=2, tier=2, 
@@ -244,6 +239,13 @@ class SpawnOfnZoth(Card):
 			for minion in friendly_minions.warband:
 				minion.attack_value += 1
 				minion.health += 1
+
+
+class StrongshellScavenger(Card):
+	# btlcry
+	def __init__(self):
+		super().__init__(name="Strongshell Scavenger", attack_value=2, health=3, tier=5,
+						m_type=MinionType.MINION)
 
 
 class UnstableGhoul(Card):
