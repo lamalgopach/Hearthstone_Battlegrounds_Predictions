@@ -76,6 +76,15 @@ class SecurityRover(Card):
 			friendly_minions.warband.insert(j + 1, guard_bot)
 
 
+
+class ScrewjankClunker(Card):
+	# add the btlcry
+	def __init__(self):
+		super().__init__(name="Screwjank Clunker", attack_value=2, health=5, tier=3, 
+						m_type=MinionType.MECH)
+
+
+
 class Zoobot(Card):
 	#btlcry
 	def __init__(self):
