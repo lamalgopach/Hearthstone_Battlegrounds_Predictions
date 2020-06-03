@@ -95,11 +95,17 @@ class Crystalweaver(Card):
 						m_type=MinionType.MINION)
 
 
+class Houndmaster(Card):
+	#btlcry
+	def __init__(self):
+		super().__init__(name="Houndmaster", attack_value=4, health=3, tier=3, 
+						m_type=MinionType.MINION)
+
+
 class KangorsApprentice(Card):
 	def __init__(self):
 		super().__init__(name="Kangor's Apprentice", attack_value=3, health=6, tier=6, 
 						m_type=MinionType.MINION, has_deathrattle=True)
-
 
 	def deathrattle(self, battle, friendly_minions, enemy_minions, j):
 		warband = []
