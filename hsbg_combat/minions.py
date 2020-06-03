@@ -95,6 +95,14 @@ class Crystalweaver(Card):
 						m_type=MinionType.MINION)
 
 
+class DefenderOfArgus(Card):
+	#btlcry
+	def __init__(self):
+		super().__init__(name="Defender of Argus", attack_value=2, health=3, tier=4, 
+						m_type=MinionType.MINION)
+
+
+
 class Houndmaster(Card):
 	#btlcry
 	def __init__(self):
