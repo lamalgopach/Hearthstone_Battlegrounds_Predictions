@@ -31,13 +31,24 @@ class MurlocTidehunter(Card):
 		super().__init__(name="Murloc Tidehunter", attack_value=2, health=1, tier=1, 
 						m_type=MinionType.MURLOC)
 
+# class MurlocWarleader(Card):
+# 	def __init__(self):
+# 		super().__init__(name="Murloc Warleader", attack_value=3, health=3, tier=2, 
+# 			m_type=MinionType.MURLOC)
+
 
 class RockpoolHunter(Card):
+	# btlcry
 	def __init__(self):
 		super().__init__(name="Rockpool Hunter", attack_value=2, health=3, tier=1, 
 						m_type=MinionType.MURLOC)
 
 
+class Toxfin(Card):
+	# btlcry
+	def __init__(self):
+		super().__init__(name="Toxfin", attack_value=1, health=2, tier=4, 
+						m_type=MinionType.MURLOC)
 
 
 # summoned:
