@@ -1,4 +1,9 @@
+from random import choice
+from beasts import *
+from demons import *
+from dragons import *
 from minions import *
+from murlocs import *
 
 class FoeReaper4000(Card):
 	def __init__(self):
@@ -58,17 +63,43 @@ class Mecharoo(Card):
 		joebot = self.summon_minion(JoEBot)
 		friendly_minions.warband.insert(j, joebot)
 
+
 class MetaltoothLeaper(Card):
 	# add the btlcry
 	def __init__(self):
 		super().__init__(name="Metaltooth Leaper", attack_value=3, health=3, tier=2, 
 						m_type=MinionType.MECH)
 
+
 class PogoHopper(Card):
 	# add the btlcry
 	def __init__(self):
 		super().__init__(name="Pogo-Hopper", attack_value=1, health=1, tier=2, 
 						m_type=MinionType.MECH)
+
+
+class PilotedShredder(Card):
+	def __init__(self):
+		super().__init__(name="Piloted Shredder", attack_value=4, health=3, tier=3, 
+						m_type=MinionType.MECH, has_deathrattle=True)
+
+	def deathrattle(self, battle, friendly_minions, enemy_minions, j):
+		two_cost_minions = [
+			VulgarHomunculus,
+			MicroMachine,
+			MurlocTidehunter,
+			RockpoolHunter,
+			DragonspawnLieutenant,
+			KindlyGrandmother,
+			# ScavengingHyena,
+			UnstableGhoul,
+			# Khadgar,	
+			]
+
+		random_2cost_minion = random.choice(two_cost_minions)
+		minion = self.summon_minion(random_2cost_minion)
+		friendly_minions.warband.insert(j, minion)
+
 
 
 class SecurityRover(Card):
@@ -88,7 +119,6 @@ class ScrewjankClunker(Card):
 	def __init__(self):
 		super().__init__(name="Screwjank Clunker", attack_value=2, health=5, tier=3, 
 						m_type=MinionType.MECH)
-
 
 
 class Zoobot(Card):
