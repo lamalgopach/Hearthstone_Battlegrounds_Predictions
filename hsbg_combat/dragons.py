@@ -79,6 +79,15 @@ class RedWhelp(Card):
 
 
 class StewardOfTime(Card):
+	# add effect
 	def __init__(self):
 		super().__init__(name="Steward Of Time", attack_value=3, health=4, tier=2, 
 						m_type=MinionType.DRAGON)
+
+
+
+class TwilightEmissary(Card):
+	#btlcry
+	def __init__(self):
+		super().__init__(name="Twilight Emissary", attack_value=4, health=4, tier=3, 
+						m_type=MinionType.DRAGON)	
