@@ -1,5 +1,14 @@
 from minions import *
 
+
+class ColdlightSeer(Card):
+	#btlcry
+	def __init__(self):
+		super().__init__(name="Coldlight Seer", attack_value=2, health=3, tier=3, 
+						m_type=MinionType.MURLOC)
+
+
+
 class MurlocTidecaller(Card):
 # add attack
 	def __init__(self):
