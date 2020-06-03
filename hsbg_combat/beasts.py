@@ -14,9 +14,16 @@ class CaveHydra(Card):
 						has_triggered_attack=True, m_type=MinionType.BEAST)
 
 
+class GentleMegasaur(Card):
+	# btlcry
+	def __init__(self):
+		super().__init__(name="Gentle Megasaur", attack_value=5, health=4, tier=6, 
+						m_type=MinionType.BEAST)
+
+
 class GoldrinnTheGreatWolf(Card):
 	def __init__(self):
-		super().__init__(name="Goldrinn The Great Wolf", attack_value=4, health=4, 
+		super().__init__(name="Goldrinn, the Great Wolf", attack_value=4, health=4, 
 						tier=5, m_type=MinionType.BEAST, has_deathrattle=True)
 	
 	def deathrattle(self, battle, friendly_minions, enemy_minions, j):
@@ -63,7 +70,6 @@ class Maexxna(Card):
 	def __init__(self):
 		super().__init__(name="Maexxna", attack_value=2, health=8, tier=6, 
 						m_type=MinionType.BEAST, poisonous=True)
-
 
 
 class RabidSaurolisk(Card):
