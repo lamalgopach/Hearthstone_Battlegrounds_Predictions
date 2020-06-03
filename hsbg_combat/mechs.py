@@ -79,6 +79,7 @@ class PogoHopper(Card):
 
 
 class PilotedShredder(Card):
+	#unhash summoned minions
 	def __init__(self):
 		super().__init__(name="Piloted Shredder", attack_value=4, health=3, tier=3, 
 						m_type=MinionType.MECH, has_deathrattle=True)
@@ -100,6 +101,18 @@ class PilotedShredder(Card):
 		minion = self.summon_minion(random_2cost_minion)
 		friendly_minions.warband.insert(j, minion)
 
+class ReplicatingMenace(Card):
+	# add magnetic
+	def __init__(self):
+		super().__init__(name="Replicating Menace", attack_value=3, health=1, tier=3, 
+						m_type=MinionType.MECH, has_deathrattle=True)
+
+	def deathrattle(self, battle, friendly_minions, enemy_minions, j):
+		i = 0
+		while len(friendly_minions.warband) < 7 and i != 3:
+			microbot = self.summon_minion(Microbot)
+			friendly_minions.warband.insert(j, microbot)
+			i += 1
 
 
 class SecurityRover(Card):
@@ -143,6 +156,12 @@ class GuardBot(Card):
 class JoEBot(Card):
 	def __init__(self):
 		super().__init__(name="Jo-E Bot", attack_value=1, health=1, tier=1, 
+						m_type=MinionType.MECH)
+
+
+class Microbot(Card):
+	def __init__(self):
+		super().__init__(name="Microbot", attack_value=1, health=1, tier=1, 
 						m_type=MinionType.MECH)
 
 
