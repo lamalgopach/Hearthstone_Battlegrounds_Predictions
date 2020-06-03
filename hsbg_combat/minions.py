@@ -81,6 +81,14 @@ class Card:
 		return minion
 
 
+class BrannBronzebeard(Card):
+# add effect
+	def __init__(self):
+		super().__init__(name="Brann Bronzebeard", attack_value=2, health=4, tier=5, 
+						m_type=MinionType.MINION)
+
+
+
 class CrowdFavorite(Card):
 	# add special function later
 	def __init__(self):
