@@ -1,5 +1,13 @@
 from minions import *
 
+
+class AnnihilanBattlemaster(Card): 
+	# bttlcry
+	def __init__(self):
+		super().__init__(name="Annihilan Battlemaster", attack_value=3, health=1, 
+						tier=5, m_type=MinionType.DEMON)
+
+
 class FiendishServant(Card):
 	def __init__(self):
 		super().__init__(name="Fiendish Servant", attack_value=2, health=1, tier=1, 
@@ -22,11 +30,9 @@ class ImpGangBoss(Card):
 						m_type=MinionType.DEMON, damage_effect=True)	
 
 	def act_after_damage(self, battle, friendly_minions, enemy_minions, j):
-
 		if len(friendly_minions.warband) < 7:
 			imp = self.summon_minion(Imp)
 			friendly_minions.warband.insert(j + 1, imp)
-
 
 
 class ImpMama(Card):
