@@ -166,11 +166,6 @@ class KingBagurgle(Card):
 					minion.health += 2
 
 
-# class MurlocWarleader(Card):
-# 	def __init__(self):
-# 		super().__init__(name="Murloc Warleader", attack_value=3, health=3, tier=2, 
-# 			m_type=MinionType.MURLOC)
-
 class MenagerieMagician(Card):
 	def __init__(self):
 		super().__init__(name="Menagerie Magician", attack_value=4, health=4, tier=4, 
@@ -250,6 +245,13 @@ class UnstableGhoul(Card):
 		if enemy_minions.warband:
 			for minion in enemy_minions.warband:
 				minion.take_damage(1, self.poisonous)
+
+
+class VirmenSensei(Card):
+	#btlcry
+	def __init__(self):
+		super().__init__(name="Virmen Sensei", attack_value=4, health=5, tier=4, 
+						m_type=MinionType.MINION)
 
 class WrathWeaver(Card):
 	#btlcry damage
