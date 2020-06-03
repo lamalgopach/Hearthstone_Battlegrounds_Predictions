@@ -180,23 +180,10 @@ class NadinaTheRed(Card):
 
 
 
-
-
-
-
-
 class RighteousProtector(Card):
 	def __init__(self):
 		super().__init__(name="Righteous Protector", attack_value=1, health=1, tier=1, 
 						m_type=MinionType.MINION, taunt=True, has_ds =True)
-
-
-
-class RockpoolHunter(Card):
-	def __init__(self):
-		super().__init__(name="Rockpool Hunter", attack_value=2, health=3, tier=1, 
-						m_type=MinionType.MURLOC)
-
 
 
 
@@ -216,6 +203,15 @@ class SelflessHero(Card):
 
 		minion = random.choice(minions_no_ds)
 		minion.has_ds = True
+
+
+class ShifterZerus(Card):
+	# add effect
+	def __init__(self):
+		super().__init__(name="Shifter Zerus", attack_value=1, health=1, tier=3, 
+						m_type=MinionType.MINION)
+
+
 
 
 class SpawnOfnZoth(Card):

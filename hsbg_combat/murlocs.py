@@ -32,6 +32,14 @@ class MurlocTidehunter(Card):
 						m_type=MinionType.MURLOC)
 
 
+class RockpoolHunter(Card):
+	def __init__(self):
+		super().__init__(name="Rockpool Hunter", attack_value=2, health=3, tier=1, 
+						m_type=MinionType.MURLOC)
+
+
+
+
 # summoned:
 class MurlocScout(Card):
 	def __init__(self):
