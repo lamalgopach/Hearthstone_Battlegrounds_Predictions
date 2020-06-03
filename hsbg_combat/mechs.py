@@ -76,6 +76,12 @@ class SecurityRover(Card):
 			friendly_minions.warband.insert(j + 1, guard_bot)
 
 
+class Zoobot(Card):
+	#btlcry
+	def __init__(self):
+		super().__init__(name="Zoobot", attack_value=3, health=3, tier=2, 
+						m_type=MinionType.MECH)
+
 # summoned:
 class DamagedGolem(Card):
 	def __init__(self):
