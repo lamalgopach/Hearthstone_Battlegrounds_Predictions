@@ -1,5 +1,10 @@
 from minions import *
 
+class CobaltScalebane(Card):
+	#add effect
+	def __init__(self):
+		super().__init__(name="Cobalt Scalebane", attack_value=5, health=5, tier=4, 
+						m_type=MinionType.DRAGON)
 
 class DragonspawnLieutenant(Card):
 	def __init__(self):
@@ -18,7 +23,7 @@ class GlyphGuardian(Card):
 
 class HangryDragon(Card):
 	def __init__(self):
-		super().__init__(name="Hangry Dragon ", attack_value=4, health=4, tier=3, 
+		super().__init__(name="Hangry Dragon", attack_value=4, health=4, tier=3, 
 						m_type=MinionType.DRAGON)
 
 
