@@ -14,8 +14,9 @@ class FiendishServant(Card):
 						m_type=MinionType.DEMON, has_deathrattle=True)
 	
 	def deathrattle(self, battle, friendly_minions, enemy_minions, j):
-		friendly_random_minion = random.choice(friendly_minions.warband)
-		friendly_random_minion.attack_value += self.attack_value
+		if friendly_minions.warband:
+			friendly_random_minion = random.choice(friendly_minions.warband)
+			friendly_random_minion.attack_value += self.attack_value
 
 
 class FloatingWatcher(Card):
