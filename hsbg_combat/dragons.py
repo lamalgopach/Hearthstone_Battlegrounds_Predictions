@@ -6,6 +6,7 @@ class CobaltScalebane(Card):
 		super().__init__(name="Cobalt Scalebane", attack_value=5, health=5, tier=4, 
 						m_type=MinionType.DRAGON)
 
+
 class DragonspawnLieutenant(Card):
 	def __init__(self):
 		super().__init__(name="Dragonspawn Lieutenant", attack_value=2, health=3, 
@@ -109,7 +110,6 @@ class StewardOfTime(Card):
 	def __init__(self):
 		super().__init__(name="Steward Of Time", attack_value=3, health=4, tier=2, 
 						m_type=MinionType.DRAGON)
-
 
 
 class TwilightEmissary(Card):

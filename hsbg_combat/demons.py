@@ -43,13 +43,13 @@ class ImpMama(Card):
 
 	def act_after_damage(self, battle, friendly_minions, enemy_minions, j):
 		demons = [
-			# Annihilan Battlemaster,
+			AnnihilanBattlemaster,
 			FiendishServant, 
-			# FloatingWatcher,
+			FloatingWatcher,
 			ImpGangBoss, 
 			Imprisoner, 
 			# Mal'Ganis, 
-			# Nathrezim Overseer,
+			NathrezimOverseer,
 			# Siegebreaker,
 			Voidlord, 
 			VulgarHomunculus,

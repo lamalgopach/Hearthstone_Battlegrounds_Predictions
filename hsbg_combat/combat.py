@@ -2,8 +2,13 @@ import random
 from random import choice
 import copy
 from battle import Player, Warband, BattleState
-from minions import *
+from beasts import *
+from dragons import *
 from demons import *
+from mechs import *
+from minions import *
+from murlocs import *
+from multiple_types_deathrattle_minions import *
 
 def choose_first(player1, player2):
 	order = True
@@ -188,23 +193,94 @@ def simulate(warband1, warband2, num_simulations=100):
 	}
 
 warband1 = [ 
-	Voidlord(),  
-	ImpMama(),
+
+	# StewardOfTime(),
+	# GlyphGuardian(),
+	# HangryDragon(),
+	# TwilightEmissary(),
+	# CobaltScalebane(),
+	# RazorgoreTheUntamed(),
+	# KalecgosArcaneAspect(),
+
+	# Voidlord(),  
+	# ImpMama(),
+	# FloatingWatcher(),
+	# FiendishServant(),
+
+	# TheBeast(),
 	# SavannahHighmane(),
+	# InfestedWolf(),
+	# Maexxna(),
+	# IronhideDirehorn(),
+	# GentleMegasaur(),
+	Ghastcoiler(),
+
+	# MetaltoothLeaper(),
+	# HarvestGolem(),
 	# MechanoEgg(),
 	# Mecharoo(),
+	# Zoobot(),
+	# ScrewjankClunker(),
+	SneedsOldShredder(),
+
+	# KangorsApprentice(),
+	# Crystalweaver(),
+	# Houndmaster(),
+	# MenagerieMagician(),
+	# BrannBronzebeard(),
+	# StrongshellScavenger(),
+
+	# MurlocTidehunter(),
+	# MurlocScout(),
+	# FelfinNavigator(),
+	# Toxfin(),
+
 	]
 
 warband2 = [
+	
+	# DragonspawnLieutenant(),
+	# HeraldOfFlame(),
+	# RedWhelp(),
+	# Murozond(),
+
+	# MurlocTidecaller(),
+	# ColdlightSeer(),
+	# RockpoolHunter(),
+	# PrimalfinLookout(),
+
+	# GoldrinnTheGreatWolf(),
+	# Alleycat(),
+	# CaveHydra(),
+	RatPack(),
+	# KindlyGrandmother(),
+	# RabidSaurolisk(),
+
 	# SecurityRover(),
-	# RatPack(),
-	ImpGangBoss(),
-	ImpMama(),
-	# IronhideDirehorn(),
-	# TheBeast(), 
-	Imprisoner(),  
+	# MechanoEgg(),
+	# Mecharoo(),
+
+	KaboomBot(),
+	# MicroMachine(),
+	# PogoHopper(),
+	# IronSensei(),
+	PilotedShredder(),
+	ReplicatingMenace(),
+
+	# ImpGangBoss(),
+	# ImpMama(),
+	# Imprisoner(),  
+	# Voidlord(),
+	NathrezimOverseer(),
+
 	# KangorsApprentice(),
-	Voidlord(),
+	# WrathWeaver(),
+	CrowdFavorite(),
+	# ShifterZerus(),
+	# DefenderOfArgus(),
+	# VirmenSensei(),
+	# LightfangEnforcer(),
+
 	]
 
 w1, w2, battle_state, Player1, Player2 = start_of_game(warband1, warband2)

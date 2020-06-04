@@ -5,7 +5,6 @@ from enum import Enum
 
 
 
-
 class MinionType(Enum):
 	MINION = 0
 	MURLOC = 1
@@ -110,7 +109,6 @@ class DefenderOfArgus(Card):
 						m_type=MinionType.MINION)
 
 
-
 class Houndmaster(Card):
 	#btlcry
 	def __init__(self):
@@ -157,21 +155,6 @@ class KangorsApprentice(Card):
 				else:
 					break
 
-
-
-
-class KingBagurgle(Card):
-	# add the battlecry later
-	def __init__(self):
-		super().__init__(name="King Bagurgle", attack_value=6, health=3, tier=5, 
-						m_type=MinionType.MURLOC, has_deathrattle=True)
-	
-	def deathrattle(self, battle, friendly_minions, enemy_minions, j):
-		if friendly_minions.warband:
-			for minion in friendly_minions.warband:
-				if minion.m_type == MinionType.MURLOC:
-					minion.attack_value += 2
-					minion.health += 2
 
 class LightfangEnforcer(Card):
 	# effect

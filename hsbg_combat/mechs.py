@@ -1,9 +1,4 @@
-from random import choice
-from beasts import *
-from demons import *
-from dragons import *
 from minions import *
-from murlocs import *
 
 class FoeReaper4000(Card):
 	def __init__(self):
@@ -78,29 +73,6 @@ class PogoHopper(Card):
 						m_type=MinionType.MECH)
 
 
-class PilotedShredder(Card):
-	#unhash summoned minions
-	def __init__(self):
-		super().__init__(name="Piloted Shredder", attack_value=4, health=3, tier=3, 
-						m_type=MinionType.MECH, has_deathrattle=True)
-
-	def deathrattle(self, battle, friendly_minions, enemy_minions, j):
-		two_cost_minions = [
-			VulgarHomunculus,
-			MicroMachine,
-			MurlocTidehunter,
-			RockpoolHunter,
-			DragonspawnLieutenant,
-			KindlyGrandmother,
-			# ScavengingHyena,
-			UnstableGhoul,
-			# Khadgar,	
-			]
-
-		random_2cost_minion_type = random.choice(two_cost_minions)
-		random_2cost_minion = self.summon_minion(random_2cost_minion_type)
-		friendly_minions.warband.insert(j, random_2cost_minion)
-
 class ReplicatingMenace(Card):
 	# add magnetic
 	def __init__(self):
@@ -132,34 +104,6 @@ class ScrewjankClunker(Card):
 	def __init__(self):
 		super().__init__(name="Screwjank Clunker", attack_value=2, health=5, tier=3, 
 						m_type=MinionType.MECH)
-
-
-class SneedsOldShredder(Card):
-	def __init__(self):
-		super().__init__(name="Sneed's Old Shredder", attack_value=5, health=7, tier=5, 
-						m_type=MinionType.MECH, has_deathrattle=True)
-
-	def deathrattle(self, battle, friendly_minions, enemy_minions, j):
-		legendary_minions = [
-			# OldMurkEye,
-			# Khadgar,
-			ShifterZerus,
-			# BolvarFireblood,
-			# BaronRivendare,
-			BrannBronzebeard,
-			# Malganis,
-			Maexxna,
-			GoldrinnTheGreatWolf,
-			TheBeast,
-			KingBagurgle,
-			FoeReaper4000,
-			]
-
-		random_legendary_minion_type = random.choice(legendary_minions)
-		random_legendary_minion = self.summon_minion(random_legendary_minion_type)
-		friendly_minions.warband.insert(j, random_legendary_minion)
-
-
 
 
 class Zoobot(Card):

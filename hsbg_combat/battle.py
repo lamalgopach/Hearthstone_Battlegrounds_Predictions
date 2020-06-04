@@ -1,5 +1,7 @@
 import random
+from dragons import *
 from minions import *
+from mechs import KaboomBot
 
 class Warband:
 	def __init__(self, player, warband=[]):

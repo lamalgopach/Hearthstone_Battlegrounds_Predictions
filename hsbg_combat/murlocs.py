@@ -1,5 +1,6 @@
 from minions import *
 
+
 class ColdlightSeer(Card):
 	#btlcry
 	def __init__(self):
@@ -12,6 +13,20 @@ class FelfinNavigator(Card):
 	def __init__(self):
 		super().__init__(name="Felfin Navigator", attack_value=4, health=4, tier=3, 
 						m_type=MinionType.MURLOC)
+
+
+class KingBagurgle(Card):
+	# add the battlecry later
+	def __init__(self):
+		super().__init__(name="King Bagurgle", attack_value=6, health=3, tier=5, 
+						m_type=MinionType.MURLOC, has_deathrattle=True)
+	
+	def deathrattle(self, battle, friendly_minions, enemy_minions, j):
+		if friendly_minions.warband:
+			for minion in friendly_minions.warband:
+				if minion.m_type == MinionType.MURLOC:
+					minion.attack_value += 2
+					minion.health += 2
 
 
 class MurlocTidecaller(Card):

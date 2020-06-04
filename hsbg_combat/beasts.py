@@ -1,6 +1,5 @@
 from minions import *
 
-
 class Alleycat(Card):
 	#btlcry
 	def __init__(self):
