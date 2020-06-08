@@ -17,7 +17,7 @@ class MinionType(Enum):
 class Card:
 	def __init__(self, *, name, attack_value, health, tier, m_type, taunt=False, 
 		has_ds=False, has_deathrattle=False, has_triggered_attack=False, 
-		has_overkill=False, poisonous=False, damage_effect=False):
+		has_overkill=False, poisonous=False, damage_effect=False, has_windfury=False):
 
 		self.name = name
 		self.attack_value = attack_value
@@ -31,6 +31,7 @@ class Card:
 		self.has_overkill = has_overkill
 		self.poisonous = poisonous
 		self.damage_effect = damage_effect
+		self.has_windfury = has_windfury
 
 	def attack(self):
 		# used in Glyph Guardian
@@ -180,6 +181,31 @@ class NadinaTheRed(Card):
 				if minion.m_type == MinionType.DRAGON:
 					minion.has_ds = True
 
+class RedWhelp(Card):
+	def __init__(self):
+		super().__init__(name="Red Whelp", attack_value=1, health=2, tier=1, 
+						m_type=MinionType.DRAGON)
+
+	def add_damage_in_combat(self, minions):
+		damage = 0
+		for minion in minions:
+			if minion.m_type == MinionType.DRAGON:
+				damage += 1
+		return damage
+
+	def attack_in_start_of_combat(self, friendly_minions, enemy_minions, dead_warband, battle):
+		damage = self.add_damage_in_combat(friendly_minions.warband)
+		attacked_minion = random.choice(enemy_minions.warband)
+		j = enemy_minions.warband.index(attacked_minion)
+		attacked_minion.take_damage(damage, self.poisonous)
+
+		if attacked_minion.health < 1:
+			attacked_minion.die(enemy_minions.warband, j, dead_warband)
+			if attacked_minion.has_deathrattle:
+				attacked_minion.deathrattle(battle, enemy_minions, friendly_minions, j)
+				if isinstance(attacked_minion, KaboomBot) or isinstance(attacked_minion, UnstableGhoul):
+					return True
+
 
 class RighteousProtector(Card):
 	def __init__(self):
@@ -257,6 +283,11 @@ class WrathWeaver(Card):
 	def __init__(self):
 		super().__init__(name="Wrath Weaver", attack_value=1, health=1, tier=1, 
 						m_type=MinionType.MINION)
+
+class ZappSlywick(Card):
+	def __init__(self):
+		super().__init__(name="ZappSlywick", attack_value=7, health=10, tier=6, 
+						m_type=MinionType.MINION, has_windfury=True)	
 
 # class(es) not imported to create minions in warbands
 class FinkleEinhorn(Card):

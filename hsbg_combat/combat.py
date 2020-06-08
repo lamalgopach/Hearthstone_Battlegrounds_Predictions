@@ -49,18 +49,20 @@ def start_of_game(warband1, warband2):
 
 	battle_state = BattleState(attacking_player, attacked_player, 
 								attacking_warband, attacked_warband)
-	battle_state.print_state("START OF THE GAME: ")
+	# battle_state.print_state("START OF THE GAME: ")
 
 	return w1, w2, battle_state, Player1, Player2
 
 def combat(w1, w2, battle_state, Player1, Player2):
 	winner = None
 	battle_state.start_of_combat()
-	battle_state.print_state("after start of combat:")
+	# battle_state.print_state("after start of combat:")
+
 
 	# attack till at least one player has no minions:
 	while battle_state.attacking_warband.warband and battle_state.attacked_warband.warband:
 		# assign attacked minion:
+
 		next_phase = False
 		attacked_minion = battle_state.choose_attacked_minion()
 
@@ -116,31 +118,33 @@ def combat(w1, w2, battle_state, Player1, Player2):
 				dead_attacked_minion += 1
 
 
-		# neverending stories with deathrattles: 
+		# DEATHRATTLES:
 		if next_phase:
 			dead_attacking_minion, dead_attacked_minion = battle_state.solve_next_phase(next_phase, dead_attacking_minion, dead_attacked_minion)
 		
-		# (keep track it of dead minion (counted only if indexes < than ind tracked)
-		battle_state.attack_i += 1 - dead_attacking_minion
+		if minion1 and minion1.has_windfury:
+			minion1.has_windfury = False
+			print("windfury")
+		else:
+			# ATTACKING INDEX:
+			battle_state.attack_i += 1 - dead_attacking_minion
 
-		# if the last minion in the warband was attacking this turn start once again:
-		if battle_state.attack_i > len(battle_state.attacking_warband.warband) - 1 or battle_state.attack_i < 0:
-			battle_state.attack_i = 0
+			# ATTACKING INDEX -> 0:
+			if battle_state.attack_i > len(battle_state.attacking_warband.warband) - 1 or battle_state.attack_i < 0:
+				battle_state.attack_i = 0
 
-		if dead_attacked_minion >= 1:
-			battle_state.attacked_i -= dead_attacked_minion
+			# ATTACKED INDEX:
+			if dead_attacked_minion >= 1:
+				battle_state.attacked_i -= dead_attacked_minion
 
-		# if attacking/attacked was last minion -> 
-		# -> start again:
-		if battle_state.attacked_i > len(battle_state.attacked_warband.warband) - 1 or battle_state.attacked_i < 0:
-			battle_state.attacked_i = 0
+			# ATTACKED INDEX -> 0:
+			if battle_state.attacked_i > len(battle_state.attacked_warband.warband) - 1 or battle_state.attacked_i < 0:
+				battle_state.attacked_i = 0
+
+			battle_state.play_next()
 
 		statement = f'Warbands after {battle_state.attacking_player.name}\'s attack:'
 		battle_state.print_state(statement)
-		# end of turn, change the player:
-		# battle_state.print_negative_health()
-
-		battle_state.play_next()
 
 
 	if not w1.warband and not w2.warband:
@@ -193,17 +197,16 @@ def simulate(warband1, warband2, num_simulations=100):
 	}
 
 warband1 = [ 
-
 	# StewardOfTime(),
 	# GlyphGuardian(),
 	# HangryDragon(),
 	# TwilightEmissary(),
 	# CobaltScalebane(),
-	# RazorgoreTheUntamed(),
-	# KalecgosArcaneAspect(),
+	# HeraldOfFlame(),
 
+	# AnnihilanBattlemaster(),
 	# Voidlord(),  
-	# ImpMama(),
+	ImpMama(),
 	# FloatingWatcher(),
 	# FiendishServant(),
 
@@ -213,17 +216,30 @@ warband1 = [
 	# Maexxna(),
 	# IronhideDirehorn(),
 	# GentleMegasaur(),
-	Ghastcoiler(),
+	# Ghastcoiler(),
+
+	ZappSlywick(),
+	SecurityRover(),
+	# SecurityRover(),
+	# SecurityRover(),
+	# SecurityRover(),
+	# SecurityRover(),
+	# SecurityRover(),
+
 
 	# MetaltoothLeaper(),
-	# HarvestGolem(),
-	# MechanoEgg(),
+	# FoeReaper4000(),
+	HarvestGolem(),
 	# Mecharoo(),
 	# Zoobot(),
 	# ScrewjankClunker(),
-	SneedsOldShredder(),
+	# SneedsOldShredder(),
 
-	# KangorsApprentice(),
+	# CrowdFavorite(),
+	# ShifterZerus(),
+	# DefenderOfArgus(),
+	# VirmenSensei(),
+	# LightfangEnforcer(),
 	# Crystalweaver(),
 	# Houndmaster(),
 	# MenagerieMagician(),
@@ -231,18 +247,31 @@ warband1 = [
 	# StrongshellScavenger(),
 
 	# MurlocTidehunter(),
-	# MurlocScout(),
+	# KingBagurgle(),
 	# FelfinNavigator(),
 	# Toxfin(),
-
 	]
 
 warband2 = [
+	# RighteousProtector(), 
+	SpawnOfnZoth(),
+	# SelflessHero(), 
+	# UnstableGhoul(), 
+	# NadinaTheRed(),
+	# KangorsApprentice(),
+	# WrathWeaver(),
 	
 	# DragonspawnLieutenant(),
-	# HeraldOfFlame(),
 	# RedWhelp(),
 	# Murozond(),
+	# RazorgoreTheUntamed(),
+	# KalecgosArcaneAspect(),
+	# HeraldOfFlame(),
+	# HeraldOfFlame(),
+	# HeraldOfFlame(),
+	# HeraldOfFlame(),
+	# HeraldOfFlame(),
+	# HeraldOfFlame(),
 
 	# MurlocTidecaller(),
 	# ColdlightSeer(),
@@ -252,35 +281,28 @@ warband2 = [
 	# GoldrinnTheGreatWolf(),
 	# Alleycat(),
 	# CaveHydra(),
-	RatPack(),
+	# RatPack(),
 	# KindlyGrandmother(),
 	# RabidSaurolisk(),
 
-	# SecurityRover(),
 	# MechanoEgg(),
-	# Mecharoo(),
-
 	KaboomBot(),
 	# MicroMachine(),
 	# PogoHopper(),
 	# IronSensei(),
-	PilotedShredder(),
-	ReplicatingMenace(),
+	# PilotedShredder(),
+	# ReplicatingMenace(),
 
+	ImpGangBoss(),
+	ImpGangBoss(),
 	# ImpGangBoss(),
-	# ImpMama(),
+	# ImpGangBoss(),
+	# ImpGangBoss(),
+	# ImpGangBoss(),
+	# ImpGangBoss(),
 	# Imprisoner(),  
 	# Voidlord(),
-	NathrezimOverseer(),
-
-	# KangorsApprentice(),
-	# WrathWeaver(),
-	CrowdFavorite(),
-	# ShifterZerus(),
-	# DefenderOfArgus(),
-	# VirmenSensei(),
-	# LightfangEnforcer(),
-
+	# NathrezimOverseer(),
 	]
 
 w1, w2, battle_state, Player1, Player2 = start_of_game(warband1, warband2)
