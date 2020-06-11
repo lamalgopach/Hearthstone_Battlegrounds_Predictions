@@ -79,31 +79,6 @@ class RazorgoreTheUntamed(Card):
 						tier=5, m_type=MinionType.DRAGON)	
 
 
-class RedWhelp(Card):
-	def __init__(self):
-		super().__init__(name="Red Whelp", attack_value=1, health=2, tier=1, 
-						m_type=MinionType.DRAGON)
-
-	def add_damage_in_combat(self, minions):
-		damage = 0
-		for minion in minions:
-			if minion.m_type == MinionType.DRAGON:
-				damage += 1
-		return damage
-
-	def attack_in_start_of_combat(self, friendly_minions, enemy_minions, dead_warband, battle):
-		damage = self.add_damage_in_combat(friendly_minions.warband)
-		attacked_minion = random.choice(enemy_minions.warband)
-		j = enemy_minions.warband.index(attacked_minion)
-		attacked_minion.take_damage(damage, self.poisonous)
-
-		if attacked_minion.health < 1:
-			attacked_minion.die(enemy_minions.warband, j, dead_warband)
-			if attacked_minion.has_deathrattle:
-				attacked_minion.deathrattle(battle, enemy_minions, friendly_minions, j)
-				if isinstance(attacked_minion, KaboomBot) or isinstance(attacked_minion, UnstableGhoul):
-					return True
-
 
 class StewardOfTime(Card):
 	# add effect

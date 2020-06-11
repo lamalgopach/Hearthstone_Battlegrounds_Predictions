@@ -1,7 +1,22 @@
 import random
-from dragons import *
-from minions import *
+from dragons import RedWhelp
 from mechs import KaboomBot
+from minions import UnstableGhoul
+
+
+
+def attack_in_start_of_combat(red_whelp, friendly_minions, enemy_minions, dead_warband, battle):
+	damage = red_whelp.add_damage_in_combat(friendly_minions.warband)
+	attacked_minion = random.choice(enemy_minions.warband)
+	j = enemy_minions.warband.index(attacked_minion)
+	attacked_minion.take_damage(damage, red_whelp.poisonous)
+
+	if attacked_minion.health < 1:
+		attacked_minion.die(enemy_minions.warband, j, dead_warband)
+		if attacked_minion.has_deathrattle:
+			attacked_minion.deathrattle(battle, enemy_minions, friendly_minions, j)
+			if isinstance(attacked_minion, KaboomBot) or isinstance(attacked_minion, UnstableGhoul):
+				return True
 
 class Warband:
 	def __init__(self, player, warband=[]):
@@ -170,8 +185,10 @@ class BattleState:
 				dead_warband = self.dead_attacking_minions
 			else:
 				dead_warband = self.dead_attacked_minions
-			if random_rw.attack_in_start_of_combat(friendly_warband, enemy_warband, dead_warband, self):
-				self.solve_next_phase(True, 0, 0)
+			# if random_rw.attack_in_start_of_combat(friendly_warband, enemy_warband, dead_warband, self):
+			# 	self.solve_next_phase(True, 0, 0)
+			if attack_in_start_of_combat(random_rw, friendly_warband, enemy_warband, dead_warband, self):
+				self.solve_next_phase(True, 0, 0)		
 			red_whelp_list.remove(random_rw)
 
 	def create_rw_list_and_dict(self, friendly_warband, enemy_warband):
