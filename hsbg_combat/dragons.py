@@ -34,27 +34,26 @@ class HeraldOfFlame(Card):
 		super().__init__(name="Herald Of Flame", attack_value=5, health=6, tier=4, 
 						m_type=MinionType.DRAGON, has_overkill=True)	
 
-	def overkill(self, battle, j, k):
-
+	def overkill(self, battle):
 		any_died = False
+		k = battle.attacked_player.attacked_minion
+		if len(battle.attacked_player.warband) > 1:
+			for i in range(len(battle.attacked_player.warband)):
+				if i == k:
+					continue
+				else:
+					leftmost_minion = battle.attacked_player.warband[i]
+					leftmost_minion.take_damage(3, self.poisonous)
+					
+					if leftmost_minion.health > 0:
+						break
 
-		for i in range(len(battle.attacked_warband.warband)):
-			if i == k:
-				continue
-			else:
-				leftmost_minion = battle.attacked_warband.warband[i]
-				leftmost_minion.take_damage(3, self.poisonous)
-				
-				if leftmost_minion.health > 0:
-					break
+					elif leftmost_minion.health == 0:
+						any_died = True
+						break
 
-				elif leftmost_minion.health == 0:
-					any_died = True
-					break
-
-				elif leftmost_minion.health < 0:
-					any_died = True
-				
+					elif leftmost_minion.health < 0:
+						any_died = True
 		return any_died
 
 
@@ -77,7 +76,6 @@ class RazorgoreTheUntamed(Card):
 	def __init__(self):
 		super().__init__(name="Razorgore, the Untamed", attack_value=2, health=4, 
 						tier=5, m_type=MinionType.DRAGON)	
-
 
 
 class StewardOfTime(Card):

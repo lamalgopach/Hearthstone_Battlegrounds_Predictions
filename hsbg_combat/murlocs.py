@@ -20,10 +20,11 @@ class KingBagurgle(Card):
 	def __init__(self):
 		super().__init__(name="King Bagurgle", attack_value=6, health=3, tier=5, 
 						m_type=MinionType.MURLOC, has_deathrattle=True)
-	
-	def deathrattle(self, battle, friendly_minions, enemy_minions, j):
-		if friendly_minions.warband:
-			for minion in friendly_minions.warband:
+
+	def deathrattle(self, battle, status):
+		friendly_minions = battle.attacking_player.warband if status == 1 else battle.attacked_player.warband
+		if friendly_minions:
+			for minion in friendly_minions:
 				if minion.m_type == MinionType.MURLOC:
 					minion.attack_value += 2
 					minion.health += 2
@@ -48,6 +49,20 @@ class MurlocTidehunter(Card):
 # 		super().__init__(name="Murloc Warleader", attack_value=3, health=3, tier=2, 
 # 			m_type=MinionType.MURLOC)
 
+class OldMurkEye(Card):
+	def __init__(self):
+		super().__init__(name="Old Murk Eye", attack_value=2, health=4, tier=1, 
+						m_type=MinionType.MURLOC)	
+
+	def add_attack(self, friendly_minions, enemy_minions):
+		
+		for minion in friendly_minions.warband:
+			if minion.m_type == MinionType.MURLOC:
+				self.attack_value += 1
+
+		for minion in enemy_minions.warband:
+			if minion.m_type == MinionType.MURLOC:
+				self.attack_value += 1
 
 class PrimalfinLookout(Card):
 	#Btlcry

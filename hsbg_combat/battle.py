@@ -1,60 +1,45 @@
 import random
+from minions import UnstableGhoul
 from dragons import RedWhelp
 from mechs import KaboomBot
-from minions import UnstableGhoul
 
 
+def attack_in_start_of_combat(battle, redwhelp, status):
+	friendly_minions = battle.attacking_player.warband if status == 1 else battle.attacked_player.warband
+	enemy_minions = battle.attacked_player.warband if status == 1 else battle.attacking_player.warband
+	damage = redwhelp.add_damage_in_combat(friendly_minions=friendly_minions)
+	attacked_minion = random.choice(enemy_minions)
 
-def attack_in_start_of_combat(red_whelp, friendly_minions, enemy_minions, dead_warband, battle):
-	damage = red_whelp.add_damage_in_combat(friendly_minions.warband)
-	attacked_minion = random.choice(enemy_minions.warband)
-	j = enemy_minions.warband.index(attacked_minion)
-	attacked_minion.take_damage(damage, red_whelp.poisonous)
+	j = enemy_minions.index(attacked_minion)
+
+	attacked_minion.take_damage(damage, redwhelp.poisonous)
+
 
 	if attacked_minion.health < 1:
-		attacked_minion.die(enemy_minions.warband, j, dead_warband)
+
+		status = 2 if status == 1 else 1
+		attacked_minion.die(battle=battle, status=status, j=j)
+
 		if attacked_minion.has_deathrattle:
-			attacked_minion.deathrattle(battle, enemy_minions, friendly_minions, j)
-			if isinstance(attacked_minion, KaboomBot) or isinstance(attacked_minion, UnstableGhoul):
+			attacked_minion.deathrattle(battle=battle, status=status)
+			if isinstance(attacked_minion, KaboomBot):
 				return True
+			elif isinstance(attacked_minion, UnstableGhoul):
+				return True
+		elif isinstance(attacked_minion, RedWhelp):
+			return attacked_minion
 
-class Warband:
-	def __init__(self, player, warband=[]):
-		self.player = player
-		self.warband = warband
-
-	def create_minion(self):
-		# add the rest of classes 
-		available_classes = [
-			DragonspawnLieutenant, 
-			GlyphGuardian, 
-			InfestedWolf,
-			KaboomBot, 
-			RatPack,
-			RedWhelp, 
-			RighteousProtector, 
-			RockpoolHunter, 
-			SpawnOfnZoth, 
-			SelflessHero,
-			]
-		return random.choice(available_classes)()
-
-	# def create_warband(self):
-	# random created warband
-	# 	warband = []
-	# 	while len(warband) != 7:
-	# 		minion = self.create_minion()
-	# 		warband.append(minion)
-	# 		self.warband = warband
-
-	def create_warband(self, warband_x):
-		# Create given warband
-		self.warband = warband_x
 
 class Player:
-	def __init__(self, name, warband, level=1, life=40):
+	def __init__(self, name, start_warband, warband, attack_index=0, attacked_minion=0,
+				dead_minions=[], dead_minions_dict={}, level=1, life=40):
 		self.name = name
+		self.start_warband = start_warband 
 		self.warband = warband
+		self.attack_index = attack_index
+		self.attacked_minion = attacked_minion
+		self.dead_minions = dead_minions
+		self.dead_minions_dict = dead_minions_dict
 		self.level = level
 		self.life = life
 
@@ -71,169 +56,69 @@ class Player:
 
 
 class BattleState:
-	def __init__ (self, attacking_player, attacked_player, attacking_warband, 
-		attacked_warband, attack_i=0, attacked_i=0, dead_attacking_minions=[],
-		dead_attacked_minions=[]):
-		self.attacking_player = attacking_player
-		self.attacked_player = attacked_player
-		self.attacking_warband = attacking_warband
-		self.attacked_warband = attacked_warband
-		self.attack_i = attack_i
-		self.attacked_i = attacked_i
-		self.dead_attacking_minions = dead_attacking_minions
-		self.dead_attacked_minions = dead_attacked_minions
+	def __init__(self, players, round):
+		self.players = players
+		self.round = 0
 
+	@property
+	def attacking_player(self):
+		return self.players[self.round % len(self.players)]
 
-	def count_taunts(self):
-		output = 0
-		taunted_minions = []
-		for minion in self.attacked_warband.warband:
-			if minion.taunt == True:
-				output += 1
-				taunted_minions.append(minion)
-		return output, taunted_minions
+	@property
+	def attacked_player(self):
+		return self.players[(self.round + 1) % len(self.players)]
 
-	def choose_attacked_minion(self):
-		if self.count_taunts()[0] > 0:
-			taunts = self.count_taunts()[1]
-			r = random.randint(0, len(taunts) - 1)
-			minion = taunts[r]
-			for i in range(len(self.attacked_warband.warband)):
-				if self.attacked_warband.warband[i].name == minion.name:
-					attacked_minion = i
-					break
-		# otherwise attacked minion is chosen randomly:
-		else:
-			attacked_minion = random.randint(0, len(self.attacked_warband.warband) - 1)
-		return attacked_minion	
-
-	def play_next(self):
-		temp_player = self.attacking_player
-		self.attacking_player = self.attacked_player
-		self.attacked_player = temp_player
-
-		temp_warband = self.attacking_warband
-		self.attacking_warband = self.attacked_warband
-		self.attacked_warband = temp_warband
-
-		temp_i = self.attack_i
-		self.attack_i = self.attacked_i
-		self.attacked_i = temp_i
-
-		temp_dead = self.dead_attacking_minions
-		self.dead_attacking_minions = self.dead_attacked_minions
-		self.dead_attacked_minions = temp_dead
-
-	def play(self):
-		# first player attack
-		# next player attack
-		# 
-		pass
 
 	def print_state(self, statement):
 		print(statement)
-		print(f'{self.attacking_player.name}:')
-		if self.attacking_warband.warband:
-			for minion in self.attacking_warband.warband:
+		print(f'{self.players[0].name}:')
+		if self.players[0].warband:
+			for minion in self.players[0].warband:
 				print(minion.name, minion.attack_value, minion.health, minion.has_ds)
 		else:
 			print("Warband empty")	
 		print()
-		print(f'{self.attacked_player.name}:')
-		if self.attacked_warband.warband:
-			for minion in self.attacked_warband.warband:
+		print(f'{self.players[1].name}:')
+		if self.players[1].warband:
+			for minion in self.players[1].warband:
 				print(minion.name, minion.attack_value, minion.health, minion.has_ds)
 		else:
 			print("Warband empty")	
 		print()
 		print()
 
-	def print_negative_health(self):
-		if self.attacking_warband.warband:
-			for minion in self.attacking_warband.warband:
-				if minion.health <= 0:
-					print(f'{self.attacking_player.name}:')
-					print(minion.name)
-					print("ERROR")
-		else:
-			print("Warband empty")	
-		if self.attacked_warband.warband:
-			for minion in self.attacked_warband.warband:
-				if minion.health <= 0:
-					print(f'{self.attacking_player.name}:')
-					print(minion.name)
-					print("ERROR")
-		else:
-			print("Warband empty")
-
+	def create_rw_list_and_dict(self, status):
+		friendly_minions = self.attacking_player.warband if status == 1 else self.attacked_player.warband
+		redwhelp_list = []
+		redwhelp_dict = {}
+		for minion in friendly_minions:
+			if isinstance(minion, RedWhelp):
+				redwhelp_list.append(minion)
+				redwhelp_dict[minion] = status
+		return redwhelp_list, redwhelp_dict
 
 	def start_of_combat(self):
 		# create list and dictionary of red whelp 
 		# both in attacked and attacking warband
-		red_whelp_list, red_whelp_dict = self.create_rw_list_and_dict(self.attacking_warband, self.attacked_warband)
-		red_whelp_list2, red_whelp_dict2 = self.create_rw_list_and_dict(self.attacked_warband, self.attacking_warband)
+		redwhelp_list, redwhelp_dict = self.create_rw_list_and_dict(status=1)
+		redwhelp_list2, redwhelp_dict2 = self.create_rw_list_and_dict(status=2)
 		# merge those lists and dicts
-		red_whelp_dict.update(red_whelp_dict2)
-		red_whelp_list.extend(red_whelp_list2)
+		redwhelp_dict.update(redwhelp_dict2)
+		redwhelp_list.extend(redwhelp_list2)
 		# randomly choose attacking red whelp
-		while red_whelp_list:
-			random_rw = random.choice(red_whelp_list)
-			friendly_warband = red_whelp_dict[random_rw][0]
-			enemy_warband = red_whelp_dict[random_rw][1]
-			# if Unstable Ghoul or Kaboombot dead:
-			if enemy_warband == self.attacking_warband:
-				dead_warband = self.dead_attacking_minions
-			else:
-				dead_warband = self.dead_attacked_minions
-			# if random_rw.attack_in_start_of_combat(friendly_warband, enemy_warband, dead_warband, self):
-			# 	self.solve_next_phase(True, 0, 0)
-			if attack_in_start_of_combat(random_rw, friendly_warband, enemy_warband, dead_warband, self):
-				self.solve_next_phase(True, 0, 0)		
-			red_whelp_list.remove(random_rw)
+		while redwhelp_list:
+			print(redwhelp_list)
+			random_redwhelp = random.choice(redwhelp_list)
+			status = redwhelp_dict[random_redwhelp]
+			output = attack_in_start_of_combat(self, random_redwhelp, status)
+			if isinstance(output, RedWhelp) and output in redwhelp_list:
+				redwhelp_list.remove(output)
+			elif output == True:
+				self.solve_next_phase(True, 0, 0)
 
-	def create_rw_list_and_dict(self, friendly_warband, enemy_warband):
-		red_whelp_list = []
-		red_whelp_dict = {}
-		for minion in friendly_warband.warband:
-			if isinstance(minion, RedWhelp):
-				red_whelp_list.append(minion)
-				red_whelp_dict[minion] = (friendly_warband, enemy_warband)
-		return red_whelp_list, red_whelp_dict
+			redwhelp_list.remove(random_redwhelp)
 
-
-	def one_minion_dies(self, minion, next_phase, friendly_minions, enemy_minions, j, dead_warband):
-
-		minion.die(friendly_minions.warband, j, dead_warband)
-		
-		if minion.has_deathrattle:
-			minion.deathrattle(self, friendly_minions, enemy_minions, j)			
-			if isinstance(minion, KaboomBot) or isinstance(minion, UnstableGhoul):
-				next_phase = True
-
-		return next_phase
-
-
-	def both_minions_die(self, minion1, minion2, next_phase, i):
-		if minion1.health < 1:
-			minion1.die(self.attacking_warband.warband, self.attack_i, self.dead_attacking_minions)
-
-		if minion2.health < 1:
-			minion2.die(self.attacked_warband.warband, i, self.dead_attacking_minions)
-
-		if minion1.has_deathrattle:
-			minion1.deathrattle(self, self.attacking_warband, self.attacked_warband, self.attack_i)
-			if isinstance(minion1, KaboomBot) or isinstance(minion1, UnstableGhoul):
-				next_phase = True
-
-		if minion2.has_deathrattle:
-			minion2.deathrattle(self, self.attacked_warband, self.attacking_warband, i)
-			if isinstance(minion2, KaboomBot) or isinstance(minion2, UnstableGhoul):
-				next_phase = True
-
-		return next_phase
-
-	def solve_next_phase(self, next_phase, dead_attacking_minion, dead_attacked_minion):
-
+	def solve_next_phase(self, next_phase, dead_attacking_minions, dead_attacked_minions):
 		while next_phase:
 			# slighten
 			dthr1 = False
@@ -244,37 +129,100 @@ class BattleState:
 			j2 = 0
 			next_phase = False
 
-			for minion in self.attacking_warband.warband:
-				#function/method for that?
+			for minion in self.attacking_player.warband:
+				status = 1
 				if minion.health < 1:
-					j1 = self.attacking_warband.warband.index(minion)
-					minion.die(self.attacking_warband.warband, j1, self.dead_attacking_minions)
+					j1 = self.attacking_player.warband.index(minion)
+					minion.die(self, status=status, j=j1)
 					next_phase = True
 					if minion.has_deathrattle:
 						dthr1 = True
 						minion1t = minion
-					if j1 < self.attack_i:
-						dead_attacking_minion += 1
+					if j1 < self.attacking_player.attack_index:
+						dead_attacking_minions += 1
 					break
 
-			for minion in self.attacked_warband.warband:
+			for minion in self.attacked_player.warband:
+				status = 2
 				if minion.health < 1:
-					j2 = self.attacked_warband.warband.index(minion)
-					minion.die(self.attacked_warband.warband, j2, self.dead_attacked_minions)
+					j2 = self.attacked_player.warband.index(minion)
+		
+					minion.die(self, status=status, j=j2)
 					next_phase = True
 					if minion.has_deathrattle:
 						dthr2 = True
 						minion2t = minion
-					if j2 < self.attacked_i:
-						dead_attacked_minion += 1
+					if j2 < self.attacked_player.attack_index:
+						dead_attacked_minions += 1
 					break
 
 			if dthr1:
-				minion1t.deathrattle(self, self.attacking_warband, self.attacked_warband, j1)
+				status = 1
+				minion1t.deathrattle(self, status=status)
 				next_phase = True
 
 			if dthr2:
-				minion2t.deathrattle(self, self.attacked_warband, self.attacking_warband, j2)
+				status = 2
+				minion2t.deathrattle(self, status=status)
 				next_phase = True
 
-		return dead_attacking_minion, dead_attacked_minion
+		return dead_attacking_minions, dead_attacked_minions
+
+	def count_taunts(self):
+		output = 0
+		taunted_minions = []
+		for minion in self.attacked_player.warband:
+			if minion.taunt == True:
+				output += 1
+				taunted_minions.append(minion)
+		return output, taunted_minions
+
+	def choose_attacked_minion(self):
+		if self.count_taunts()[0] > 0:
+			taunts = self.count_taunts()[1]
+			random_minion = random.choice(taunts)
+			attacked_minion = [i for i in range(len(self.attacked_player.warband)) if self.attacked_player.warband[i] == random_minion][0]
+		# otherwise attacked minion is chosen randomly:
+		else:
+			attacked_minion = random.randint(0, len(self.attacked_player.warband) - 1)
+		return attacked_minion	
+
+	def both_minions_die(self, next_phase):
+		minion1 = self.attacking_player.warband[self.attacking_player.attack_index]
+		minion2 = self.attacked_player.warband[self.attacked_player.attacked_minion]
+
+		if minion1.health < 1:
+			status = 1
+			j = self.attacking_player.attack_index 
+			minion1.die(self, status=status, j=j)
+		if minion2.health < 1:
+			j = self.attacked_player.attacked_minion
+			status = 2
+			minion2.die(self, status=status, j=j)
+
+		if minion1.has_deathrattle:
+			status = 1
+			minion1.deathrattle(self, status=status)
+			if isinstance(minion1, KaboomBot) or isinstance(minion1, UnstableGhoul):
+				next_phase = True
+
+		if minion2.has_deathrattle:
+			status = 2
+			minion2.deathrattle(self, status=status)
+			if isinstance(minion2, KaboomBot) or isinstance(minion2, UnstableGhoul):
+				next_phase = True
+
+		return next_phase
+
+	def one_minion_dies(self, minion, status, next_phase):
+
+		j = self.attacking_player.attack_index if status == 1 else self.attacked_player.attacked_minion
+
+		minion.die(self, status=status, j=j)
+		
+		if minion.has_deathrattle:
+			minion.deathrattle(self, status=status)			
+			if isinstance(minion, KaboomBot) or isinstance(minion, UnstableGhoul):
+				next_phase = True
+
+		return next_phase

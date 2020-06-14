@@ -11,9 +11,11 @@ class HarvestGolem(Card):
 		super().__init__(name="Harvest Golem", attack_value=2, health=3, tier=2, 
 						m_type=MinionType.MECH, has_deathrattle=True)
 
-	def deathrattle(self, battle, friendly_minions, enemy_minions, j):
+	def deathrattle(self, battle, status):
+		friendly_minions = battle.attacking_player.warband if status == 1 else battle.attacked_player.warband
+		j = battle.attacking_player.dead_minions_dict[self] if status == 1 else battle.attacked_player.dead_minions_dict[self]
 		golem = self.summon_minion(DamagedGolem)
-		friendly_minions.warband.insert(j, golem)
+		friendly_minions.insert(j, golem)
 
 
 class IronSensei(Card):
@@ -27,10 +29,11 @@ class KaboomBot(Card):
 		super().__init__(name="Kaboom Bot", attack_value=2, health=2, tier=2, 
 						m_type=MinionType.MECH, has_deathrattle=True)
 
-	def deathrattle(self, battle, friendly_minions, enemy_minions, j):
-		if enemy_minions.warband:
-			enemy_random_minion = random.choice(enemy_minions.warband)
-			i = enemy_minions.warband.index(enemy_random_minion)
+	def deathrattle(self, battle, status):
+		enemy_minions = battle.attacked_player.warband if status == 1 else battle.attacking_player.warband
+		if enemy_minions:
+			enemy_random_minion = random.choice(enemy_minions)
+			i = enemy_minions.index(enemy_random_minion)
 			enemy_random_minion.take_damage(4, self.poisonous)
 
 class MicroMachine(Card):
@@ -44,9 +47,11 @@ class MechanoEgg(Card):
 		super().__init__(name="Mechano-Egg", attack_value=0, health=5, tier=4, 
 						m_type=MinionType.MECH, has_deathrattle=True)
 
-	def deathrattle(self, battle, friendly_minions, enemy_minions, j):
+	def deathrattle(self, battle, status):
+		friendly_minions = battle.attacking_player.warband if status == 1 else battle.attacked_player.warband
+		j = battle.attacking_player.dead_minions_dict[self] if status == 1 else battle.attacked_player.dead_minions_dict[self]
 		robosaur = self.summon_minion(Robosaur)
-		friendly_minions.warband.insert(j, robosaur)
+		friendly_minions.insert(j, robosaur)
 
 
 class Mecharoo(Card):
@@ -54,9 +59,12 @@ class Mecharoo(Card):
 		super().__init__(name="Mecharoo", attack_value=1, health=1, tier=1, 
 						m_type=MinionType.MECH, has_deathrattle=True)
 
-	def deathrattle(self, battle, friendly_minions, enemy_minions, j):
+	def deathrattle(self, battle, status):
+		friendly_minions = battle.attacking_player.warband if status == 1 else battle.attacked_player.warband
+		j = battle.attacking_player.dead_minions_dict[self] if status == 1 else battle.attacked_player.dead_minions_dict[self]
+
 		joebot = self.summon_minion(JoEBot)
-		friendly_minions.warband.insert(j, joebot)
+		friendly_minions.insert(j, joebot)
 
 
 class MetaltoothLeaper(Card):
@@ -79,11 +87,13 @@ class ReplicatingMenace(Card):
 		super().__init__(name="Replicating Menace", attack_value=3, health=1, tier=3, 
 						m_type=MinionType.MECH, has_deathrattle=True)
 
-	def deathrattle(self, battle, friendly_minions, enemy_minions, j):
+	def deathrattle(self, battle, status):
+		friendly_minions = battle.attacking_player.warband if status == 1 else battle.attacked_player.warband
+		j = battle.attacking_player.dead_minions_dict[self] if status == 1 else battle.attacked_player.dead_minions_dict[self]
 		i = 0
-		while len(friendly_minions.warband) < 7 and i != 3:
+		while len(friendly_minions) < 7 and i != 3:
 			microbot = self.summon_minion(Microbot)
-			friendly_minions.warband.insert(j, microbot)
+			friendly_minions.insert(j, microbot)
 			i += 1
 
 
@@ -92,11 +102,12 @@ class SecurityRover(Card):
 		super().__init__(name="Security Rover", attack_value=2, health=6, tier=4, 
 						m_type=MinionType.MECH, damage_effect=True)
 
-	def act_after_damage(self, battle, friendly_minions, enemy_minions, j):
-		if len(friendly_minions.warband) < 7:
+	def act_after_damage(self, battle, status):
+		friendly_minions = battle.attacking_player.warband if status == 1 else battle.attacked_player.warband
+		j = battle.attacking_player.attack_index if status == 1 else battle.attacked_player.attacked_minion
+		if len(friendly_minions) < 7:
 			guard_bot = self.summon_minion(GuardBot)
-			friendly_minions.warband.insert(j + 1, guard_bot)
-
+			friendly_minions.insert(j + 1, guard_bot)
 
 
 class ScrewjankClunker(Card):

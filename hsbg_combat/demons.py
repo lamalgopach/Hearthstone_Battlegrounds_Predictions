@@ -13,9 +13,11 @@ class FiendishServant(Card):
 		super().__init__(name="Fiendish Servant", attack_value=2, health=1, tier=1, 
 						m_type=MinionType.DEMON, has_deathrattle=True)
 	
-	def deathrattle(self, battle, friendly_minions, enemy_minions, j):
-		if friendly_minions.warband:
-			friendly_random_minion = random.choice(friendly_minions.warband)
+	def deathrattle(self, battle, status):
+		friendly_minions = battle.attacking_player.warband if status == 1 else battle.attacked_player.warband
+
+		if friendly_minions:
+			friendly_random_minion = random.choice(friendly_minions)
 			friendly_random_minion.attack_value += self.attack_value
 
 
@@ -30,10 +32,12 @@ class ImpGangBoss(Card):
 		super().__init__(name="Imp Gang Boss", attack_value=2, health=4, tier=3, 
 						m_type=MinionType.DEMON, damage_effect=True)	
 
-	def act_after_damage(self, battle, friendly_minions, enemy_minions, j):
-		if len(friendly_minions.warband) < 7:
+	def act_after_damage(self, battle, status):
+		friendly_minions = battle.attacking_player.warband if status == 1 else battle.attacked_player.warband
+		j = battle.attacking_player.attack_index if status == 1 else battle.attacked_player.attacked_minion
+		if len(friendly_minions) < 7:
 			imp = self.summon_minion(Imp)
-			friendly_minions.warband.insert(j + 1, imp)
+			friendly_minions.insert(j + 1, imp)
 
 
 class ImpMama(Card):
@@ -41,7 +45,7 @@ class ImpMama(Card):
 		super().__init__(name="Imp Mama", attack_value=6, health=10, tier=6, 
 						m_type=MinionType.DEMON, damage_effect=True)	
 
-	def act_after_damage(self, battle, friendly_minions, enemy_minions, j):
+	def act_after_damage(self, battle, status):
 		demons = [
 			AnnihilanBattlemaster,
 			FiendishServant, 
@@ -54,16 +58,17 @@ class ImpMama(Card):
 			Voidlord, 
 			VulgarHomunculus,
 			]
-
 		random_demon = random.choice(demons)
-		if len(friendly_minions.warband) < 7:
+		friendly_minions = battle.attacking_player.warband if status == 1 else battle.attacked_player.warband
+		j = battle.attacking_player.attack_index if status == 1 else battle.attacked_player.attacked_minion
+
+		if len(friendly_minions) < 7:
 			demon = self.summon_minion(random_demon)
 
 			if not demon.taunt:
 				demon.taunt = True
 
-			friendly_minions.warband.insert(j + 1, demon)
-
+			friendly_minions.insert(j + 1, demon)
 
 
 class Imprisoner(Card):
@@ -71,9 +76,13 @@ class Imprisoner(Card):
 		super().__init__(name="Imprisoner", attack_value=3, health=3, tier=2, 
 						m_type=MinionType.DEMON, taunt=True, has_deathrattle=True)
 
-	def deathrattle(self, battle, friendly_minions, enemy_minions, j):
+	def deathrattle(self, battle, status):
+		friendly_minions = battle.attacking_player.warband if status == 1 else battle.attacked_player.warband
+		j = battle.attacking_player.attack_index if status == 1 else battle.attacked_player.attacked_minion
+
 		imp = self.summon_minion(Imp)
-		friendly_minions.warband.insert(j, imp)
+		friendly_minions.insert(j, imp)
+
 
 
 class NathrezimOverseer(Card):
@@ -88,11 +97,13 @@ class Voidlord(Card):
 		super().__init__(name="Voidlord", attack_value=3, health=9, tier=5, 
 						m_type=MinionType.DEMON, taunt=True, has_deathrattle=True)
 
-	def deathrattle(self, battle, friendly_minions, enemy_minions, j):
+	def deathrattle(self, battle, status):
+		friendly_minions = battle.attacking_player.warband if status == 1 else battle.attacked_player.warband
+		j = battle.attacking_player.attack_index if status == 1 else battle.attacked_player.attacked_minion
 		i = 0
-		while len(friendly_minions.warband) < 7 and i != 3:
+		while len(friendly_minions) < 7 and i != 3:
 			voidwalker = self.summon_minion(Voidwalker)
-			friendly_minions.warband.insert(j, voidwalker)
+			friendly_minions.insert(j, voidwalker)
 			i += 1
 
 class VulgarHomunculus(Card):

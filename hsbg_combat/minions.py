@@ -1,9 +1,5 @@
 import random
-import copy
-from random import choice
 from enum import Enum
-
-
 
 class MinionType(Enum):
 	MINION = 0
@@ -60,11 +56,21 @@ class Card:
 		# else:
 		# 	self.health -= damage
 
-	def die(self, friendly_minions, j, dead_warband):
+	def die(self, battle, status, j):
+		friendly_minions = battle.attacking_player.warband if status == 1 else battle.attacked_player.warband
+		# dead_warband = battle.attacking_player.dead_minions if status == 1 else battle.attacked_player.dead_minions
 		del friendly_minions[j]
-		dead_warband.append(self)
+		# dead_warband.append(self)
+		if status == 1:
+			battle.attacking_player.dead_minions_dict[self] = j
+			battle.attacking_player.dead_minions.append(self)
+		else:
+			battle.attacked_player.dead_minions_dict[self] = j
+			battle.attacked_player.dead_minions.append(self)
 
-	def triggered_attack(self, enemy_minions, j):
+	def triggered_attack(self, battle):
+		enemy_minions = battle.attacked_player.warband
+		j = battle.attacked_player.attacked_minion
 		if j != 0 and j + 1 < len(enemy_minions):
 			a = j - 1
 			b = j + 1	
@@ -121,13 +127,12 @@ class KangorsApprentice(Card):
 		super().__init__(name="Kangor's Apprentice", attack_value=3, health=6, tier=6, 
 						m_type=MinionType.MINION, has_deathrattle=True)
 
-	def deathrattle(self, battle, friendly_minions, enemy_minions, j):
-		warband = []
+	def deathrattle(self, battle, status):
+		friendly_minions = battle.attacking_player.warband if status == 1 else battle.attacked_player.warband
+		j = battle.attacking_player.dead_minions_dict[self] if status == 1 else battle.attacked_player.dead_minions_dict[self]
 
-		if friendly_minions == battle.attacking_warband:
-			warband = battle.dead_attacking_minions
-		else:
-			warband = battle.dead_attacked_minions
+		warband = []
+		warband = battle.attacking_player.dead_minions if status == 1 else battle.attacked_player.dead_minions
 
 		mechs_to_summon = []
 
@@ -139,7 +144,7 @@ class KangorsApprentice(Card):
 			mechs = []
 			i = 0
 			for mech in mechs_to_summon:
-				if len(friendly_minions.warband) < 7 and i < 2:
+				if len(friendly_minions) < 7 and i < 2:
 					summoned_mech = self.summon_minion(type(mech))
 
 					# summoned_mech.attack_value = mech.attack_value
@@ -150,7 +155,7 @@ class KangorsApprentice(Card):
 					# summoned_mech.has_triggered_attack = mech.has_triggered_attack
 					# summoned_mech.damage_effect = mech.damage_effect
 
-					friendly_minions.warband.insert(j + i, summoned_mech)
+					friendly_minions.insert(j + i, summoned_mech)
 					i += 1
 				else:
 					break
@@ -174,9 +179,11 @@ class NadinaTheRed(Card):
 		super().__init__(name="Nadina The Red", attack_value=7, health=4, tier=6, 
 						m_type=MinionType.MINION, has_deathrattle=True)
 	
-	def deathrattle(self, battle, friendly_minions, enemy_minions, j):
-		if friendly_minions.warband:
-			for minion in friendly_minions.warband:
+	def deathrattle(self, battle, status):
+		friendly_minions = battle.attacking_player.warband if status == 1 else battle.attacked_player.warband
+
+		if friendly_minions:
+			for minion in friendly_minions:
 				if minion.m_type == MinionType.DRAGON:
 					minion.has_ds = True
 
@@ -185,25 +192,12 @@ class RedWhelp(Card):
 		super().__init__(name="Red Whelp", attack_value=1, health=2, tier=1, 
 						m_type=MinionType.DRAGON)
 
-	def add_damage_in_combat(self, minions):
+	def add_damage_in_combat(self, friendly_minions):
 		damage = 0
-		for minion in minions:
+		for minion in friendly_minions:
 			if minion.m_type == MinionType.DRAGON:
 				damage += 1
 		return damage
-
-	# def attack_in_start_of_combat(self, friendly_minions, enemy_minions, dead_warband, battle):
-	# 	damage = self.add_damage_in_combat(friendly_minions.warband)
-	# 	attacked_minion = random.choice(enemy_minions.warband)
-	# 	j = enemy_minions.warband.index(attacked_minion)
-	# 	attacked_minion.take_damage(damage, self.poisonous)
-
-	# 	if attacked_minion.health < 1:
-	# 		attacked_minion.die(enemy_minions.warband, j, dead_warband)
-	# 		if attacked_minion.has_deathrattle:
-	# 			attacked_minion.deathrattle(battle, enemy_minions, friendly_minions, j)
-	# 			if isinstance(attacked_minion, KaboomBot) or isinstance(attacked_minion, UnstableGhoul):
-	# 				return True
 
 
 class RighteousProtector(Card):
@@ -217,11 +211,13 @@ class SelflessHero(Card):
 		super().__init__(name="Selfless Hero", attack_value=2, health=1, tier=1, 
 						m_type=MinionType.MINION, has_deathrattle=True)
 
-	def deathrattle(self, battle, friendly_minions, enemy_minions, j):	
-		if not friendly_minions.warband:
+	def deathrattle(self, battle, status):
+		friendly_minions = battle.attacking_player.warband if status == 1 else battle.attacked_player.warband
+	
+		if not friendly_minions:
 			return
 
-		minions_no_ds = [minion for minion in friendly_minions.warband if not minion.has_ds]
+		minions_no_ds = [minion for minion in friendly_minions if not minion.has_ds]
 		
 		if not minions_no_ds:
 			return
@@ -242,9 +238,11 @@ class SpawnOfnZoth(Card):
 		super().__init__(name="Spawn Of n'Zoth", attack_value=2, health=2, tier=2, 
 						m_type=MinionType.MINION, has_deathrattle=True)
 	
-	def deathrattle(self, battle, friendly_minions, enemy_minions, j):
-		if friendly_minions.warband:
-			for minion in friendly_minions.warband:
+	def deathrattle(self, battle, status):
+		friendly_minions = battle.attacking_player.warband if status == 1 else battle.attacked_player.warband
+
+		if friendly_minions:
+			for minion in friendly_minions:
 				minion.attack_value += 1
 				minion.health += 1
 
@@ -261,21 +259,32 @@ class UnstableGhoul(Card):
 		super().__init__(name="Unstable Ghoul", attack_value=1, health=3, tier=2, 
 						m_type=MinionType.MINION, has_deathrattle=True)
 	
-	def deathrattle(self, battle, friendly_minions, enemy_minions, j):
-		if friendly_minions.warband:
-			for minion in friendly_minions.warband:
+	def deathrattle(self, battle, status):
+		friendly_minions = battle.attacking_player.warband if status == 1 else battle.attacked_player.warband
+		enemy_minions = battle.attacked_player.warband if status == 1 else battle.attacking_player.warband
+
+		if friendly_minions:
+			for minion in friendly_minions:
 				minion.take_damage(1, self.poisonous)
 
-		if enemy_minions.warband:
-			for minion in enemy_minions.warband:
+		if enemy_minions:
+			for minion in enemy_minions:
 				minion.take_damage(1, self.poisonous)
-
 
 class VirmenSensei(Card):
 	#btlcry
 	def __init__(self):
 		super().__init__(name="Virmen Sensei", attack_value=4, health=5, tier=4, 
 						m_type=MinionType.MINION)
+
+class WaxriderTogwaggle(Card):
+	def __init__(self):
+		super().__init__(name="Waxrider Togwaggle", attack_value=1, health=2, tier=2, 
+						m_type=MinionType.MINION)
+
+	def change_stats(self):
+		self.health += 2
+		self.attack_value += 2
 
 class WrathWeaver(Card):
 	#btlcry damage
