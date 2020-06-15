@@ -89,6 +89,8 @@ class Card:
 				if isinstance(m, MamaBear):
 					minion.health += 5
 					minion.attack_value += 5
+				elif isinstance(m, PackLeader):
+					minion.attack_value += 3
 		return minion
 
 
@@ -151,7 +153,7 @@ class KangorsApprentice(Card):
 			i = 0
 			for mech in mechs_to_summon:
 				if len(friendly_minions) < 7 and i < 2:
-					summoned_mech = self.summon_minion(type(mech))
+					summoned_mech = self.summon_minion(type(mech), battle, status)
 
 					# summoned_mech.attack_value = mech.attack_value
 					# summoned_mech.health = mech.health
@@ -201,6 +203,11 @@ class NadinaTheRed(Card):
 			for minion in friendly_minions:
 				if minion.m_type == MinionType.DRAGON:
 					minion.has_ds = True
+
+class PackLeader(Card):
+	def __init__(self):
+		super().__init__(name="Pack Leader", attack_value=3, health=3, tier=3, 
+						m_type=MinionType.BEAST)
 
 class RedWhelp(Card):
 	def __init__(self):
