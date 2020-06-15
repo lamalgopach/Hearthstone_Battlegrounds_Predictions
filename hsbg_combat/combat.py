@@ -16,19 +16,29 @@ def choose_first(player1, player2):
 		game = [player2.warband, player1.warband]
 	return game
 
+def find_special_minions(warband):
+
+	lst_of_specials = [MamaBear]
+	special_types = []
+	for minion in warband:
+		if type(minion) in lst_of_specials:
+			special_types.append(type(minion))
+
+	return special_types
+
+
+
 def start_of_game(warband1, warband2):
 
 	w1 = copy.deepcopy(warband1)
 	w2 = copy.deepcopy(warband2)
-	dead_minions_alice = list()
-	dead_minions_bob = list()
 	player1 = Player("Alice", warband1, w1)
 	player2 = Player("Bob", warband2, w2)
 	player1.dead_minions = []
 	player2.dead_minions = []
 
-	# player1 = Player("Alice", warband1, w1, dead_minions=dead_minions_alice)
-	# player2 = Player("Bob", warband2, w2, dead_minions=dead_minions_bob)
+	player1.special_types = find_special_minions(warband2)
+	player2.special_types = find_special_minions(warband2)
 
 	game = choose_first(player1, player2)
 
@@ -94,42 +104,24 @@ def combat(battle_state, player1, player2):
 		dead_attacked_minions = 0
 
 		if minion1.health < 1 and minion2.health < 1:
-			if minion1.has_overkill and minion2.health < 0:
-				if minion1.overkill(battle=battle_state):
-					next_phase = True
+			next_phase, dead_attacking_minions, dead_attacked_minions = battle_state.both_minions_die(next_phase=next_phase, d_ag_ms=dead_attacking_minions, d_ad_ms=dead_attacked_minions)
 
-			next_phase = battle_state.both_minions_die(next_phase=next_phase)
-			dead_attacking_minions += 1
-			if attacked_minion < battle_state.attacked_player.attack_index:
-				dead_attacked_minions += 1
+		elif minion1.health < 1 or minion2.health < 1:
+			if minion1.health < 1:
+				status = 1
+				minion = minion1
+				dead_minions = dead_attacking_minions
+			elif minion2.health < 1:
+				status = 2
+				minion = minion2
+				dead_minions = dead_attacked_minions
+			next_phase, dead_minions = battle_state.one_minion_dies(next_phase=next_phase, minion=minion, status=status, dead_minions=dead_minions)
+			if status == 1:
+				dead_attacking_minions = dead_minions
+			elif status == 2:
+				dead_attacking_minions = dead_minions
 
-		elif minion1.health < 1:
-			if battle_state.one_minion_dies(minion=minion1, status=1, next_phase=next_phase):
-				next_phase = True
-			dead_attacking_minions += 1
-
-			# if minion1.m_type = MinionType.BEAST and ScavengingHyena in friendly_warband:
-			# 	ScavengingHyena.change_stats()
-
-			# elif minion1.m_type = MinionType.MECH and Junkbot in friendly_warband:
-			# 	Junkbot.change_stats()
-
-			# elif minion2.m_type = MinionType.DEMON and SoulJuggler in friendly_warband:
-			# 	SoulJuggler attacks random minion
-
-			# if minion2.m_type == MinionType.DRAGON and WaxxTogwagler in friendly warband:
-			# 	WaxxTogwagler.change_stats()
-
-
-
-		elif minion2.health < 1:
-			if minion1.has_overkill and minion2.health < 0:
-				if minion1.overkill(battle=battle_state):
-					next_phase = True
-			next_phase = battle_state.one_minion_dies(minion=minion2, status=2, next_phase=next_phase)
-			if attacked_minion < battle_state.attacked_player.attack_index:
-				dead_attacked_minions += 1
-
+			#minion1, minion2 
 			# if minion2.m_type = MinionType.BEAST and ScavengingHyena in friendly_warband:
 			# 	ScavengingHyena.change_stats()
 
@@ -143,10 +135,7 @@ def combat(battle_state, player1, player2):
 			# 	WaxxTogwagler.change_stats()
 
 
-
-
-
-	# 	# DEATHRATTLES:
+		# next DEATHRATTLES:
 		if next_phase:
 			dead_attacking_minions, dead_attacked_minions = battle_state.solve_next_phase(next_phase, dead_attacking_minions, dead_attacked_minions)
 		
@@ -212,97 +201,131 @@ def combat(battle_state, player1, player2):
 
 
 warband1 = [ 
-	StewardOfTime(),
-	GlyphGuardian(),
-	RedWhelp(),
-	HangryDragon(),
-	TwilightEmissary(),
-	CobaltScalebane(),
-	HeraldOfFlame(),
+# #1
+# 	GlyphGuardian(),
+# 	RedWhelp(),
+# 	HeraldOfFlame(),
 
-	AnnihilanBattlemaster(),
-	ImpMama(),
-	FloatingWatcher(),
-	FiendishServant(),
+# 	ImpMama(),
+# 	FiendishServant(),
 
-	TheBeast(),
-	SavannahHighmane(),
-	InfestedWolf(),
-	Maexxna(),
-	IronhideDirehorn(),
-	GentleMegasaur(),
-	Ghastcoiler(),
+# 	TheBeast(),
+# 	SavannahHighmane(),
 
-	SecurityRover(),
-	MetaltoothLeaper(),
-	KaboomBot(),
+
+# #2
+# 	InfestedWolf(),
+# 	Maexxna(),
+# 	IronhideDirehorn(),
+# 	Ghastcoiler(),
+# 	MamaBear(),
+
+# 	SecurityRover(),
+# 	KaboomBot(),
+
+
+#3
 	FoeReaper4000(),
 	HarvestGolem(),
 	Mecharoo(),
-	Zoobot(),
-	ScrewjankClunker(),
 	SneedsOldShredder(),
 
-	CrowdFavorite(),
-	ShifterZerus(),
-	DefenderOfArgus(),
-	VirmenSensei(),
-	LightfangEnforcer(),
-	Crystalweaver(),
-	Houndmaster(),
-	MenagerieMagician(),
-	BrannBronzebeard(),
-	StrongshellScavenger(),
 	ZappSlywick(),
 
 	KingBagurgle(),
-	FelfinNavigator(),
-	Toxfin(),
+
+#######################################
+	# StewardOfTime(),
+	# HangryDragon(),
+	# TwilightEmissary(),
+	# CobaltScalebane(),
+
+
+	# FloatingWatcher(),
+	# AnnihilanBattlemaster(),
+
+
+	# GentleMegasaur(),
+
+
+	# MetaltoothLeaper(),
+	# Zoobot(),
+	# ScrewjankClunker(),
+
+
+	# CrowdFavorite(),
+	# ShifterZerus(),
+	# DefenderOfArgus(),
+	# VirmenSensei(),
+	# LightfangEnforcer(),
+	# Crystalweaver(),
+	# Houndmaster(),
+	# MenagerieMagician(),
+	# BrannBronzebeard(),
+	# StrongshellScavenger(),
+
+
+	# FelfinNavigator(),
+	# Toxfin(),
 	]
 
 warband2 = [
-	CaveHydra(),
-	RighteousProtector(), 
-	SpawnOfnZoth(),
-	SelflessHero(),
+# #1
+# 	RighteousProtector(), 
+# 	SpawnOfnZoth(),
+# 	SelflessHero(),
+# 	UnstableGhoul(), 
 
-	UnstableGhoul(), 
-	NadinaTheRed(),
-
-	WrathWeaver(),
-
-	DragonspawnLieutenant(),
-	RedWhelp(),
-	Murozond(),
-	RazorgoreTheUntamed(),
-	KalecgosArcaneAspect(),
-	HeraldOfFlame(),
-
-	MurlocTidecaller(),
-	ColdlightSeer(),
-	RockpoolHunter(),
-	PrimalfinLookout(),
-
-	GoldrinnTheGreatWolf(),
-	Alleycat(),
-	RatPack(), 
+# 	ImpGangBoss(),
+# 	Imprisoner(),  
+# 	Voidlord(),
 
 
+# #2
+# 	NadinaTheRed(),
+# 	DragonspawnLieutenant(),
+# 	RedWhelp(),
+# 	HeraldOfFlame(),
+
+# 	GoldrinnTheGreatWolf(),
+# 	CaveHydra(),
+
+
+#3	
 	KindlyGrandmother(),
-	RabidSaurolisk(),
+	RatPack(),
 
 	MechanoEgg(),
-	MicroMachine(),
-	PogoHopper(),
-	IronSensei(),
 	PilotedShredder(),
 	ReplicatingMenace(),
 	KangorsApprentice(),
+	MamaBear(),
 
-	ImpGangBoss(),
-	Imprisoner(),  
-	Voidlord(),
-	NathrezimOverseer(),
+
+
+############################################
+	# Murozond(),
+	# RazorgoreTheUntamed(),
+	# KalecgosArcaneAspect(),
+
+
+	# MurlocTidecaller(),
+	# ColdlightSeer(),
+	# RockpoolHunter(),
+	# PrimalfinLookout(),
+
+
+	# Alleycat(),
+	# RabidSaurolisk(),
+
+
+	# MicroMachine(),
+	# PogoHopper(),
+	# IronSensei(),
+
+
+	# WrathWeaver(),
+	# NathrezimOverseer(),
 	]
 
 battle_state, player1, player2 = start_of_game(warband1, warband2)

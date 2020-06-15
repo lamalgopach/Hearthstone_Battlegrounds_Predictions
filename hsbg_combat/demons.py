@@ -36,7 +36,7 @@ class ImpGangBoss(Card):
 		friendly_minions = battle.attacking_player.warband if status == 1 else battle.attacked_player.warband
 		j = battle.attacking_player.attack_index if status == 1 else battle.attacked_player.attacked_minion
 		if len(friendly_minions) < 7:
-			imp = self.summon_minion(Imp)
+			imp = self.summon_minion(Imp, battle, status)
 			friendly_minions.insert(j + 1, imp)
 
 
@@ -63,7 +63,7 @@ class ImpMama(Card):
 		j = battle.attacking_player.attack_index if status == 1 else battle.attacked_player.attacked_minion
 
 		if len(friendly_minions) < 7:
-			demon = self.summon_minion(random_demon)
+			demon = self.summon_minion(random_demon, battle, status)
 
 			if not demon.taunt:
 				demon.taunt = True
@@ -80,7 +80,7 @@ class Imprisoner(Card):
 		friendly_minions = battle.attacking_player.warband if status == 1 else battle.attacked_player.warband
 		j = battle.attacking_player.attack_index if status == 1 else battle.attacked_player.attacked_minion
 
-		imp = self.summon_minion(Imp)
+		imp = self.summon_minion(Imp, battle, status)
 		friendly_minions.insert(j, imp)
 
 
@@ -102,7 +102,7 @@ class Voidlord(Card):
 		j = battle.attacking_player.attack_index if status == 1 else battle.attacked_player.attacked_minion
 		i = 0
 		while len(friendly_minions) < 7 and i != 3:
-			voidwalker = self.summon_minion(Voidwalker)
+			voidwalker = self.summon_minion(Voidwalker, battle, status)
 			friendly_minions.insert(j, voidwalker)
 			i += 1
 

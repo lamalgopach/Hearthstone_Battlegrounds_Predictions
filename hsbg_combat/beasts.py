@@ -44,7 +44,7 @@ class InfestedWolf(Card):
 		j = battle.attacking_player.dead_minions_dict[self] if status == 1 else battle.attacked_player.dead_minions_dict[self]
 		i = 0
 		while len(friendly_minions) < 7 and i != 2:
-			spider = self.summon_minion(Spider)
+			spider = self.summon_minion(Spider, battle, status)
 			friendly_minions.insert(j, spider)
 			i += 1
 
@@ -57,7 +57,7 @@ class IronhideDirehorn(Card):
 	def overkill(self, battle):
 		j = battle.attacking_player.attack_index
 		if len(battle.attacking_player.warband) < 7:
-			ironhide_runt = self.summon_minion(IronhideRunt)
+			ironhide_runt = self.summon_minion(IronhideRunt, battle, status=1)
 			battle.attacking_player.warband.insert(j + 1, ironhide_runt)
 
 
@@ -69,14 +69,9 @@ class KindlyGrandmother(Card):
 	def deathrattle(self, battle, status):
 		friendly_minions = battle.attacking_player.warband if status == 1 else battle.attacked_player.warband
 		j = battle.attacking_player.dead_minions_dict[self] if status == 1 else battle.attacked_player.dead_minions_dict[self]
-		wolf = self.summon_minion(BigBadWolf)
+		wolf = self.summon_minion(BigBadWolf, battle, status)
 		friendly_minions.insert(j, wolf)
 
-		# if MamaBear or PackLeader in FW:
-			# wolf.increase_attack(3)
-			# wolf.increase_health_and_attack(5, 5)
-			# wolf.health += 5
-			# wolf.attack_value += 5 / += 3
 
 
 class Maexxna(Card):
@@ -100,13 +95,12 @@ class RatPack(Card):
 	def deathrattle(self, battle, status):
 		friendly_minions = battle.attacking_player.warband if status == 1 else battle.attacked_player.warband
 		j = battle.attacking_player.dead_minions_dict[self] if status == 1 else battle.attacked_player.dead_minions_dict[self]
-		print(j)
 
 		x = self.attack_value
 		i = 0
 
 		while len(friendly_minions) < 7 and i != x:
-			rat = self.summon_minion(Rat)
+			rat = self.summon_minion(Rat, battle, status)
 			friendly_minions.insert(j + i, rat)
 			i += 1
 
@@ -121,7 +115,7 @@ class SavannahHighmane(Card):
 		j = battle.attacking_player.dead_minions_dict[self] if status == 1 else battle.attacked_player.dead_minions_dict[self]
 		i = 0
 		while len(friendly_minions) < 7 and i != 2:
-			hyena = self.summon_minion(Hyena)
+			hyena = self.summon_minion(Hyena, battle, status)
 			friendly_minions.insert(j, hyena)
 			i += 1
 
@@ -134,7 +128,7 @@ class TheBeast(Card):
 	def deathrattle(self, battle, status):
 		enemy_minions = battle.attacked_player.warband if status == 1 else battle.attacking_player.warband
 		if len(enemy_minions) < 7:
-			finkle_einhorn = self.summon_minion(FinkleEinhorn)
+			finkle_einhorn = self.summon_minion(FinkleEinhorn, battle, status)
 			last_place = len(enemy_minions)
 			enemy_minions.insert(last_place, finkle_einhorn)
 
@@ -152,7 +146,7 @@ class Hyena(Card):
 
 class IronhideRunt(Card):
 	def __init__(self):
-		super().__init__(name="Ironhide Runt", attack_value=7, health=7, tier=1, 
+		super().__init__(name="Ironhide Runt", attack_value=5, health=5, tier=1, 
 						m_type=MinionType.BEAST)
 
 class Rat(Card):

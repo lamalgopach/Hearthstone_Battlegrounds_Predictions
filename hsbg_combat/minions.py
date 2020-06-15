@@ -81,8 +81,14 @@ class Card:
 			a = j - 1
 		enemy_minions[a].take_damage(self.attack_value, self.poisonous)
 
-	def summon_minion(self, minion_class):
+	def summon_minion(self, minion_class, battle, status):
 		minion = minion_class()
+		if minion.m_type == MinionType.BEAST:
+			warband =  battle.attacking_player.warband if status == 1 else battle.attacked_player.warband
+			for m in warband:
+				if isinstance(m, MamaBear):
+					minion.health += 5
+					minion.attack_value += 5
 		return minion
 
 
@@ -156,6 +162,10 @@ class KangorsApprentice(Card):
 					# summoned_mech.damage_effect = mech.damage_effect
 
 					friendly_minions.insert(j + i, summoned_mech)
+					# if DeflectOBot in friendly_minions and random_deathrattle_minion.m_type == MinionType.MECH:
+					# 	DeflectOBot.has_ds = True
+					# 	DeflectOBot.attack_value += 1
+					#	DeflectOBot.change_stats()
 					i += 1
 				else:
 					break
@@ -166,6 +176,11 @@ class LightfangEnforcer(Card):
 	def __init__(self):
 		super().__init__(name="Lightfang Enforcer", attack_value=2, health=2, tier=5, 
 						m_type=MinionType.MINION)
+
+class MamaBear(Card):
+	def __init__(self):
+		super().__init__(name="Mama Bear", attack_value=5, health=5, tier=6, 
+						m_type=MinionType.BEAST)
 
 class MenagerieMagician(Card):
 	#btlcry

@@ -42,9 +42,13 @@ class Ghastcoiler(Card):
 		i = 0
 		while len(friendly_minions) < 7 and i != 2:
 			random_deathrattle_minion_type = random.choice(deathrattle_minions)
-			random_deathrattle_minion = self.summon_minion(random_deathrattle_minion_type)
+			random_deathrattle_minion = self.summon_minion(random_deathrattle_minion_type, battle, status)
 			friendly_minions.insert(j, random_deathrattle_minion)
 			i += 1
+			# if DeflectOBot in friendly_minions and random_deathrattle_minion.m_type == MinionType.MECH:
+			# 	DeflectOBot.has_ds = True
+			# 	DeflectOBot.attack_value += 1
+			#	DeflectOBot.change_stats()
 
 
 class PilotedShredder(Card):
@@ -70,8 +74,12 @@ class PilotedShredder(Card):
 			]
 
 		random_2cost_minion_type = random.choice(two_cost_minions)
-		random_2cost_minion = self.summon_minion(random_2cost_minion_type)
+		random_2cost_minion = self.summon_minion(random_2cost_minion_type, battle, status)
 		friendly_minions.insert(j, random_2cost_minion)	
+		# if DeflectOBot in friendly_minions and random_deathrattle_minion.m_type == MinionType.MECH:
+		# 	DeflectOBot.has_ds = True
+		# 	DeflectOBot.attack_value += 1
+		#	DeflectOBot.change_stats()
 
 
 class SneedsOldShredder(Card):
@@ -99,5 +107,9 @@ class SneedsOldShredder(Card):
 			]
 
 		random_legendary_minion_type = random.choice(legendary_minions)
-		random_legendary_minion = self.summon_minion(random_legendary_minion_type)
+		random_legendary_minion = self.summon_minion(random_legendary_minion_type, battle, status)
 		friendly_minions.insert(j, random_legendary_minion)
+		# if DeflectOBot in friendly_minions and random_deathrattle_minion.m_type == MinionType.MECH:
+			# 	DeflectOBot.has_ds = True
+			# 	DeflectOBot.attack_value += 1
+			#	DeflectOBot.change_stats()
