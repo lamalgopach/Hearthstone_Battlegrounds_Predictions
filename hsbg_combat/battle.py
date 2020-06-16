@@ -68,6 +68,16 @@ class MamaBearChangeStats(Effect):
 			minion.attack_value += 5
 		return minion
 
+class PackLeaderChangeStats(Effect):
+	def __init__(self):
+		super().__init__(class_type=PackLeader)
+
+	def change_stats(self, minion):
+		if minion.m_type == MinionType.BEAST:
+			minion.attack_value += 3
+		return minion
+
+		
 
 		
 class BattleState:

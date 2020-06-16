@@ -18,13 +18,16 @@ def choose_first(player1, player2):
 
 def find_special_minions(warband):
 
-	lst_of_specials = [MamaBear]
-	specials_dict = {MamaBear:MamaBearChangeStats()}
+	lst_of_specials = [MamaBear, PackLeader]
+	specials_dict = {MamaBear:MamaBearChangeStats(), 
+					PackLeader:PackLeaderChangeStats(),
+					}
 	effects = {}
 
 	for minion in warband:
 		if type(minion) in lst_of_specials:
 			effects[minion] = specials_dict[type(minion)]
+	print(effects)
 	return effects
 
 

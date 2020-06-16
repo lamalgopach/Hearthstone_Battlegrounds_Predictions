@@ -84,14 +84,9 @@ class Card:
 	def summon_minion(self, minion_class, battle, status):
 		minion = minion_class()
 		effects = battle.attacking_player.effects if status == 1 else battle.attacked_player.effects
-
 		if effects:
-			print(effects)
 			for k, v in effects.items():
-				print(v)
-				print(minion)
 				v.change_stats(minion)
-
 		return minion
 
 
