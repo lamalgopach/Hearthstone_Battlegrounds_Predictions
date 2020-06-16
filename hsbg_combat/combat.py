@@ -19,13 +19,13 @@ def choose_first(player1, player2):
 def find_special_minions(warband):
 
 	lst_of_specials = [MamaBear]
-	special_types = []
+	specials_dict = {MamaBear:MamaBearChangeStats()}
+	effects = {}
+
 	for minion in warband:
 		if type(minion) in lst_of_specials:
-			special_types.append(type(minion))
-
-	return special_types
-
+			effects[minion] = specials_dict[type(minion)]
+	return effects
 
 
 def start_of_game(warband1, warband2):
@@ -37,10 +37,8 @@ def start_of_game(warband1, warband2):
 	player1.dead_minions = []
 	player2.dead_minions = []
 
-	player1.special_types = find_special_minions(warband2)
-	player2.special_types = find_special_minions(warband2)
-
-	game = choose_first(player1, player2)
+	player1.effects = find_special_minions(w1)
+	player2.effects = find_special_minions(w2)
 
 	# THE ORDER OF ATTACK:
 	game = choose_first(player1, player2)
@@ -82,6 +80,7 @@ def combat(battle_state, player1, player2):
 		minion1.attack()
 		minion1.take_damage(minion2.attack_value, minion2.poisonous)
 		minion2.take_damage(minion1.attack_value, minion1.poisonous)
+
 		
 		# summon after damage:
 		if minion1.damage_effect and minion2.attack_value > 0:
@@ -209,30 +208,30 @@ warband1 = [
 # 	ImpMama(),
 # 	FiendishServant(),
 
-# 	TheBeast(),
-# 	SavannahHighmane(),
+	TheBeast(),
+	SavannahHighmane(),
 
 
 # #2
-# 	InfestedWolf(),
+	Ghastcoiler(),
+	InfestedWolf(),
 # 	Maexxna(),
-# 	IronhideDirehorn(),
-# 	Ghastcoiler(),
-# 	MamaBear(),
+	MamaBear(),
 
 # 	SecurityRover(),
 # 	KaboomBot(),
 
 
 #3
-	FoeReaper4000(),
-	HarvestGolem(),
-	Mecharoo(),
-	SneedsOldShredder(),
+	# FoeReaper4000(),
+	# HarvestGolem(),
+	# Mecharoo(),
+	# SneedsOldShredder(),
 
-	ZappSlywick(),
+	# ZappSlywick(),
 
-	KingBagurgle(),
+	# KingBagurgle(),
+	PackLeader(),
 
 #######################################
 	# StewardOfTime(),
@@ -287,19 +286,21 @@ warband2 = [
 # 	RedWhelp(),
 # 	HeraldOfFlame(),
 
-# 	GoldrinnTheGreatWolf(),
-# 	CaveHydra(),
+	GoldrinnTheGreatWolf(),
+	CaveHydra(),
 
 
 #3	
 	KindlyGrandmother(),
 	RatPack(),
+	IronhideDirehorn(),
 
-	MechanoEgg(),
-	PilotedShredder(),
-	ReplicatingMenace(),
-	KangorsApprentice(),
+	# MechanoEgg(),
+	# PilotedShredder(),
+	# ReplicatingMenace(),
+	# KangorsApprentice(),
 	MamaBear(),
+	PackLeader(),
 
 
 

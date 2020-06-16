@@ -13,7 +13,8 @@ class MinionType(Enum):
 class Card:
 	def __init__(self, *, name, attack_value, health, tier, m_type, taunt=False, 
 		has_ds=False, has_deathrattle=False, has_triggered_attack=False, 
-		has_overkill=False, poisonous=False, damage_effect=False, has_windfury=False):
+		has_overkill=False, poisonous=False, damage_effect=False, has_windfury=False, 
+		has_effect=False):
 
 		self.name = name
 		self.attack_value = attack_value
@@ -28,6 +29,7 @@ class Card:
 		self.poisonous = poisonous
 		self.damage_effect = damage_effect
 		self.has_windfury = has_windfury
+		self.has_effect = has_effect
 
 	def attack(self):
 		# used in Glyph Guardian
@@ -58,9 +60,7 @@ class Card:
 
 	def die(self, battle, status, j):
 		friendly_minions = battle.attacking_player.warband if status == 1 else battle.attacked_player.warband
-		# dead_warband = battle.attacking_player.dead_minions if status == 1 else battle.attacked_player.dead_minions
 		del friendly_minions[j]
-		# dead_warband.append(self)
 		if status == 1:
 			battle.attacking_player.dead_minions_dict[self] = j
 			battle.attacking_player.dead_minions.append(self)
@@ -83,14 +83,15 @@ class Card:
 
 	def summon_minion(self, minion_class, battle, status):
 		minion = minion_class()
-		if minion.m_type == MinionType.BEAST:
-			warband =  battle.attacking_player.warband if status == 1 else battle.attacked_player.warband
-			for m in warband:
-				if isinstance(m, MamaBear):
-					minion.health += 5
-					minion.attack_value += 5
-				elif isinstance(m, PackLeader):
-					minion.attack_value += 3
+		effects = battle.attacking_player.effects if status == 1 else battle.attacked_player.effects
+
+		if effects:
+			print(effects)
+			for k, v in effects.items():
+				print(v)
+				print(minion)
+				v.change_stats(minion)
+
 		return minion
 
 
@@ -182,7 +183,16 @@ class LightfangEnforcer(Card):
 class MamaBear(Card):
 	def __init__(self):
 		super().__init__(name="Mama Bear", attack_value=5, health=5, tier=6, 
-						m_type=MinionType.BEAST)
+						m_type=MinionType.BEAST, has_effect=True)
+
+	def die(self, battle, status, j):
+		super().die(battle, status, j)
+		if status == 1:
+			del battle.attacking_player.effects[self]
+		else:
+			del battle.attacked_player.effects[self]
+
+
 
 class MenagerieMagician(Card):
 	#btlcry
@@ -207,7 +217,7 @@ class NadinaTheRed(Card):
 class PackLeader(Card):
 	def __init__(self):
 		super().__init__(name="Pack Leader", attack_value=3, health=3, tier=3, 
-						m_type=MinionType.BEAST)
+						m_type=MinionType.BEAST, has_effect=True)
 
 class RedWhelp(Card):
 	def __init__(self):

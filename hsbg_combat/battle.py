@@ -1,7 +1,8 @@
 import random
-from minions import UnstableGhoul
+from minions import *
 from dragons import RedWhelp
 from mechs import KaboomBot
+
 
 
 def attack_in_start_of_combat(battle, redwhelp, status):
@@ -29,7 +30,7 @@ def attack_in_start_of_combat(battle, redwhelp, status):
 
 class Player:
 	def __init__(self, name, start_warband, warband, attack_index=0, attacked_minion=0,
-				dead_minions=[], dead_minions_dict={}, special_types=[], level=1, life=40):
+				dead_minions=[], dead_minions_dict={}, effects=[], level=1, life=40):
 		self.name = name
 		self.start_warband = start_warband 
 		self.warband = warband
@@ -37,7 +38,7 @@ class Player:
 		self.attacked_minion = attacked_minion
 		self.dead_minions = dead_minions
 		self.dead_minions_dict = dead_minions_dict
-		self.special_types = special_types
+		self.effects = effects
 		self.level = level
 		self.life = life
 
@@ -52,7 +53,23 @@ class Player:
 		# if self.life < 0:
 		pass
 
+class Effect:
+	def __init__(self, class_type):
+		self.class_type = class_type
 
+
+class MamaBearChangeStats(Effect):
+	def __init__(self):
+		super().__init__(class_type=MamaBear)
+
+	def change_stats(self, minion):
+		if minion.m_type == MinionType.BEAST:
+			minion.health += 5
+			minion.attack_value += 5
+		return minion
+
+
+		
 class BattleState:
 	def __init__(self, players, round):
 		self.players = players
