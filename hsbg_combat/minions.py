@@ -14,7 +14,7 @@ class Card:
 	def __init__(self, *, name, attack_value, health, tier, m_type, taunt=False, 
 		has_ds=False, has_deathrattle=False, has_triggered_attack=False, 
 		has_overkill=False, poisonous=False, damage_effect=False, has_windfury=False, 
-		has_effect=False):
+		has_effect=False, effects=[]):
 
 		self.name = name
 		self.attack_value = attack_value
@@ -30,6 +30,7 @@ class Card:
 		self.damage_effect = damage_effect
 		self.has_windfury = has_windfury
 		self.has_effect = has_effect
+		self.effects = effects
 
 	def attack(self):
 		# used in Glyph Guardian
@@ -75,6 +76,7 @@ class Card:
 			a = j - 1
 			b = j + 1	
 			enemy_minions[b].take_damage(self.attack_value, self.poisonous)
+
 		elif j == 0 and j + 1 <= len(enemy_minions):
 			a = j + 1
 		elif j == len(enemy_minions) - 1:
@@ -83,7 +85,7 @@ class Card:
 
 	def summon_minion(self, minion_class, battle, status):
 		minion = minion_class()
-		effects = battle.attacking_player.effects if status == 1 else battle.attacked_player.effects
+		effects = battle.attacking_player.effects_dict if status == 1 else battle.attacked_player.effects_dict
 		if effects:
 			for k, v in effects.items():
 				v.change_stats(minion)
@@ -117,6 +119,23 @@ class DefenderOfArgus(Card):
 	def __init__(self):
 		super().__init__(name="Defender of Argus", attack_value=2, health=3, tier=4, 
 						m_type=MinionType.MINION)
+
+
+
+class DeflectoBot(Card):
+	def __init__(self):
+		super().__init__(name="Deflect-o-Bot", attack_value=3, health=2, tier=3, 
+						m_type=MinionType.MINION, has_ds=False, has_effect=True, 
+						effects=[DeflectoBotChangeStats()])
+
+
+	def die(self, battle, status, j):
+		super().die(battle, status, j)
+		#not sure if needed, but probably yes
+		if status == 1:
+			del battle.attacking_player.effects[self]
+		else:
+			del battle.attacked_player.effects[self]
 
 
 class Houndmaster(Card):
@@ -178,14 +197,15 @@ class LightfangEnforcer(Card):
 class MamaBear(Card):
 	def __init__(self):
 		super().__init__(name="Mama Bear", attack_value=5, health=5, tier=6, 
-						m_type=MinionType.BEAST, has_effect=True)
+						m_type=MinionType.BEAST, has_effect=True, 
+						effects=MamaBearChangeStats())
 
 	def die(self, battle, status, j):
 		super().die(battle, status, j)
 		if status == 1:
-			del battle.attacking_player.effects[self]
+			del battle.attacking_player.effects_dict[self]
 		else:
-			del battle.attacked_player.effects[self]
+			del battle.attacked_player.effects_dict[self]
 
 
 
@@ -212,7 +232,15 @@ class NadinaTheRed(Card):
 class PackLeader(Card):
 	def __init__(self):
 		super().__init__(name="Pack Leader", attack_value=3, health=3, tier=3, 
-						m_type=MinionType.BEAST, has_effect=True)
+						m_type=MinionType.BEAST, has_effect=True, 
+						effects=PackLeaderChangeStats())
+
+	def die(self, battle, status, j):
+		super().die(battle, status, j)
+		if status == 1:
+			del battle.attacking_player.effects_dict[self]
+		else:
+			del battle.attacked_player.effects_dict[self]
 
 class RedWhelp(Card):
 	def __init__(self):
@@ -329,6 +357,43 @@ class FinkleEinhorn(Card):
 	def __init__(self):
 		super().__init__(name="Finkle Einhorn", attack_value=3, health=3, tier=1, 
 						m_type=MinionType.MINION)
+
+#effects:
+class Effect:
+	def __init__(self, class_type):
+		self.class_type = class_type
+
+
+class DeflectoBotChangeStats(Effect):
+	def __init__(self):
+		super().__init__(class_type=DeflectoBot)
+
+	def change_stats(self, minion):
+		if minion.m_type == MinionType.MECH:
+			x.attack_value += 1
+			x.has_ds = True
+		return minion
+
+
+class MamaBearChangeStats(Effect):
+	def __init__(self):
+		super().__init__(class_type=MamaBear)
+
+	def change_stats(self, minion):
+		if minion.m_type == MinionType.BEAST:
+			minion.health += 5
+			minion.attack_value += 5
+		return minion
+
+
+class PackLeaderChangeStats(Effect):
+	def __init__(self):
+		super().__init__(class_type=PackLeader)
+
+	def change_stats(self, minion):
+		if minion.m_type == MinionType.BEAST:
+			minion.attack_value += 3
+		return minion
 
 
 # Jakub:

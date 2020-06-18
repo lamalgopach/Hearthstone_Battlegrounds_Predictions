@@ -4,7 +4,6 @@ from dragons import RedWhelp
 from mechs import KaboomBot
 
 
-
 def attack_in_start_of_combat(battle, redwhelp, status):
 	friendly_minions = battle.attacking_player.warband if status == 1 else battle.attacked_player.warband
 	enemy_minions = battle.attacked_player.warband if status == 1 else battle.attacking_player.warband
@@ -14,23 +13,16 @@ def attack_in_start_of_combat(battle, redwhelp, status):
 	attacked_minion.take_damage(damage, redwhelp.poisonous)
 
 	if attacked_minion.health < 1:
-
-		status = 2 if status == 1 else 1
-		attacked_minion.die(battle=battle, status=status, j=j)
-
-		if attacked_minion.has_deathrattle:
-			attacked_minion.deathrattle(battle=battle, status=status)
-			if isinstance(attacked_minion, KaboomBot):
-				return True
-			elif isinstance(attacked_minion, UnstableGhoul):
-				return True
-		elif isinstance(attacked_minion, RedWhelp):
+		battle.execute_death_phase(0, 0)
+		if isinstance(attacked_minion, RedWhelp):
 			return attacked_minion
 
 
 class Player:
 	def __init__(self, name, start_warband, warband, attack_index=0, attacked_minion=0,
-				dead_minions=[], dead_minions_dict={}, effects=[], level=1, life=40):
+				dead_minions=[], dead_minions_dict={}, this_turn_dead=[], deathrattles=[],
+				effects_dict={}, after_triggered_attack=False, level=1, life=40):
+
 		self.name = name
 		self.start_warband = start_warband 
 		self.warband = warband
@@ -38,7 +30,10 @@ class Player:
 		self.attacked_minion = attacked_minion
 		self.dead_minions = dead_minions
 		self.dead_minions_dict = dead_minions_dict
-		self.effects = effects
+		self.this_turn_dead = this_turn_dead
+		self.deathrattles = deathrattles
+		self.effects_dict = effects_dict
+		self.after_triggered_attack = after_triggered_attack
 		self.level = level
 		self.life = life
 
@@ -53,33 +48,7 @@ class Player:
 		# if self.life < 0:
 		pass
 
-class Effect:
-	def __init__(self, class_type):
-		self.class_type = class_type
 
-
-class MamaBearChangeStats(Effect):
-	def __init__(self):
-		super().__init__(class_type=MamaBear)
-
-	def change_stats(self, minion):
-		if minion.m_type == MinionType.BEAST:
-			minion.health += 5
-			minion.attack_value += 5
-		return minion
-
-class PackLeaderChangeStats(Effect):
-	def __init__(self):
-		super().__init__(class_type=PackLeader)
-
-	def change_stats(self, minion):
-		if minion.m_type == MinionType.BEAST:
-			minion.attack_value += 3
-		return minion
-
-		
-
-		
 class BattleState:
 	def __init__(self, players, round):
 		self.players = players
@@ -134,66 +103,19 @@ class BattleState:
 		while redwhelp_list:
 			random_redwhelp = random.choice(redwhelp_list)
 			status = redwhelp_dict[random_redwhelp]
-			output = attack_in_start_of_combat(self, random_redwhelp, status)
-			if isinstance(output, RedWhelp) and output in redwhelp_list:
-				redwhelp_list.remove(output)
-			elif output == True:
-				self.solve_next_phase(True, 0, 0)
+			killed_before_attack = attack_in_start_of_combat(self, random_redwhelp, status)
+			if killed_before_attack in redwhelp_list:
+				redwhelp_list.remove(killed_before_attack)
 			redwhelp_list.remove(random_redwhelp)
 
-	def solve_next_phase(self, next_phase, dead_attacking_minions, dead_attacked_minions):
-		while next_phase:
-			# slighten
-			dthr1 = False
-			dthr2 = False
-			minion1t = None
-			minion2t = None
-			j1 = 0
-			j2 = 0
-			next_phase = False
-
-			for minion in self.attacking_player.warband:
-				if minion.health < 1:
-					j1 = self.attacking_player.warband.index(minion)
-					minion.die(self, status=1, j=j1)
-					next_phase = True
-					if minion.has_deathrattle:
-						dthr1 = True
-						minion1t = minion
-					if j1 < self.attacking_player.attack_index:
-						dead_attacking_minions += 1
-					break
-
-			for minion in self.attacked_player.warband:
-				if minion.health < 1:
-					j2 = self.attacked_player.warband.index(minion)
-					minion.die(self, status=2, j=j2)
-					next_phase = True
-					if minion.has_deathrattle:
-						dthr2 = True
-						minion2t = minion
-					if j2 < self.attacked_player.attack_index:
-						dead_attacked_minions += 1
-					break
-
-			if dthr1:
-				minion1t.deathrattle(self, status=1)
-				next_phase = True
-
-			if dthr2:
-				minion2t.deathrattle(self, status=2)
-				next_phase = True
-
-		return dead_attacking_minions, dead_attacked_minions
-
 	def count_taunts(self):
-		output = 0
+		taunted_minions_number = 0
 		taunted_minions = []
 		for minion in self.attacked_player.warband:
 			if minion.taunt == True:
-				output += 1
+				taunted_minions_number += 1
 				taunted_minions.append(minion)
-		return output, taunted_minions
+		return taunted_minions_number, taunted_minions
 
 	def choose_attacked_minion(self):
 		if self.count_taunts()[0] > 0:
@@ -205,43 +127,56 @@ class BattleState:
 			attacked_minion = random.randint(0, len(self.attacked_player.warband) - 1)
 		return attacked_minion	
 
-	def both_minions_die(self, next_phase, d_ag_ms, d_ad_ms):
-		minion1 = self.attacking_player.warband[self.attacking_player.attack_index]
-		minion2 = self.attacked_player.warband[self.attacked_player.attacked_minion]
-		if minion1.has_overkill and minion2.health < 0:
-			if minion1.overkill(self):
-				next_phase = True
-		j = self.attacking_player.attack_index 
-		minion1.die(self, status=1, j=j)
-		j = self.attacked_player.attacked_minion
-		minion2.die(self, status=2, j=j)
-		if minion1.has_deathrattle:
-			minion1.deathrattle(self, status=1)
-			if isinstance(minion1, KaboomBot) or isinstance(minion1, UnstableGhoul):
-				next_phase = True
-		if minion2.has_deathrattle:
-			minion2.deathrattle(self, status=2)
-			if isinstance(minion2, KaboomBot) or isinstance(minion2, UnstableGhoul):
-				next_phase = True
-		d_ag_ms += 1
-		if self.attacked_player.attacked_minion < self.attacked_player.attack_index:
-			d_ad_ms += 1
-		return next_phase, d_ag_ms, d_ad_ms
+	def execute_deaths(self, d_ag_ms, d_ad_ms):
 
-	def one_minion_dies(self, next_phase, minion, status, dead_minions):
-		j = self.attacking_player.attack_index if status == 1 else self.attacked_player.attacked_minion
-		if status == 2:
-			a_minion = self.attacking_player.warband[self.attacking_player.attack_index]
-			if a_minion.has_overkill and minion.health < 0:
-				if a_minion.overkill(self):
-					next_phase = True
-			if j < self.attacked_player.attack_index:
-				dead_minions += 1
-		elif status == 1:
-			dead_minions += 1
-		minion.die(self, status=status, j=j)
-		if minion.has_deathrattle:
-			minion.deathrattle(self, status=status)			
-			if isinstance(minion, KaboomBot) or isinstance(minion, UnstableGhoul):
-				next_phase = True
-		return next_phase, dead_minions
+		for minion in self.attacking_player.this_turn_dead:
+			j = self.attacking_player.warband.index(minion)
+			if j <= self.attacking_player.attack_index:
+				d_ag_ms += 1
+			if minion.has_deathrattle:
+				self.attacking_player.deathrattles.append(minion)
+			minion.die(self, status=1, j=j)
+
+		self.attacking_player.this_turn_dead = []
+
+		for minion in self.attacked_player.this_turn_dead:
+			j = self.attacked_player.warband.index(minion)
+			if j <= self.attacked_player.attack_index:
+				d_ad_ms += 1 
+			if minion.has_deathrattle:
+				self.attacked_player.deathrattles.append(minion)
+			minion.die(self, status=2, j=j)
+
+		self.attacked_player.this_turn_dead = []
+
+		return d_ag_ms, d_ad_ms
+
+	def execute_deathrattles(self):
+		
+		for minion in self.attacking_player.deathrattles:
+			minion.deathrattle(self, status=1)
+		self.attacking_player.deathrattles = []
+
+		for minion in self.attacked_player.deathrattles:
+			minion.deathrattle(self, status=2)
+		self.attacked_player.deathrattles = []
+
+	def execute_death_phase(self, dead_attacking_minions, dead_attacked_minions):
+		while True:
+			for minion in self.attacking_player.warband:
+				if minion.health < 1:
+					self.attacking_player.this_turn_dead.append(minion)
+
+			for minion in self.attacked_player.warband:
+				if minion.health < 1:
+					self.attacked_player.this_turn_dead.append(minion)
+
+			if not (self.attacking_player.this_turn_dead or self.attacked_player.this_turn_dead):
+				break
+
+			if self.attacking_player.this_turn_dead or self.attacked_player.this_turn_dead:
+				dead_attacking_minions, dead_attacked_minions = self.execute_deaths(d_ag_ms=dead_attacking_minions, d_ad_ms=dead_attacked_minions)		
+
+			if self.attacking_player.deathrattles or self.attacked_player.deathrattles:
+				self.execute_deathrattles()
+		return dead_attacking_minions, dead_attacked_minions
