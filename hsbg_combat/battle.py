@@ -1,7 +1,5 @@
 import random
-from minions import *
 from dragons import RedWhelp
-from mechs import KaboomBot
 
 
 def attack_in_start_of_combat(battle, redwhelp, status):
@@ -19,21 +17,23 @@ def attack_in_start_of_combat(battle, redwhelp, status):
 
 
 class Player:
-	def __init__(self, name, start_warband, warband, attack_index=0, attacked_minion=0,
-				dead_minions=[], dead_minions_dict={}, this_turn_dead=[], deathrattles=[],
-				effects_dict={}, after_triggered_attack=False, level=1, life=40):
+	def __init__(self, name, start_warband, warband, effects_dict={},
+				attack_index=0, 
+				attacked_minion=0, dead_minions=[], dead_minions_dict={}, 
+				this_turn_dead=[], deathrattles=[], deathrattles_causing_next_death=[], 
+				level=1, life=40):
 
 		self.name = name
 		self.start_warband = start_warband 
 		self.warband = warband
+		self.effects_dict = effects_dict
 		self.attack_index = attack_index
 		self.attacked_minion = attacked_minion
 		self.dead_minions = dead_minions
 		self.dead_minions_dict = dead_minions_dict
 		self.this_turn_dead = this_turn_dead
 		self.deathrattles = deathrattles
-		self.effects_dict = effects_dict
-		self.after_triggered_attack = after_triggered_attack
+		self.deathrattles_causing_next_death = deathrattles_causing_next_death
 		self.level = level
 		self.life = life
 
@@ -163,20 +163,26 @@ class BattleState:
 
 	def execute_death_phase(self, dead_attacking_minions, dead_attacked_minions):
 		while True:
-			for minion in self.attacking_player.warband:
-				if minion.health < 1:
-					self.attacking_player.this_turn_dead.append(minion)
+			self.attacking_player.deathrattles_causing_next_death = []
+			self.attacked_player.deathrattles_causing_next_death = []
 
-			for minion in self.attacked_player.warband:
-				if minion.health < 1:
-					self.attacked_player.this_turn_dead.append(minion)
+			players = [self.attacking_player, self.attacked_player]
+			
+			for player in players:
+				for minion in player.warband:
+					if minion.health < 1:
+						player.this_turn_dead.append(minion)
 
-			if not (self.attacking_player.this_turn_dead or self.attacked_player.this_turn_dead):
-				break
 
 			if self.attacking_player.this_turn_dead or self.attacked_player.this_turn_dead:
 				dead_attacking_minions, dead_attacked_minions = self.execute_deaths(d_ag_ms=dead_attacking_minions, d_ad_ms=dead_attacked_minions)		
 
 			if self.attacking_player.deathrattles or self.attacked_player.deathrattles:
 				self.execute_deathrattles()
+
+			if not (self.attacking_player.deathrattles_causing_next_death or self.attacked_player.deathrattles_causing_next_death):
+				break 
+			elif not self.attacking_player.warband or not self.attacked_player.warband:
+				break
+
 		return dead_attacking_minions, dead_attacked_minions

@@ -1,5 +1,5 @@
 import copy
-from new_battle import *
+from battle import *
 from multiple_types_deathrattle_minions import *
 
 def choose_first(player1, player2):
@@ -24,24 +24,18 @@ def find_special_minions(warband):
 		if minion.has_effect:
 			effects_dict[minion] = minion.effects
 
-	for k, v in effects_dict.items():
-		print(k, v)
-
 	return effects_dict
+
 
 
 def start_of_game(warband1, warband2):
 
 	w1 = copy.deepcopy(warband1)
 	w2 = copy.deepcopy(warband2)
-	player1 = Player("Alice", warband1, w1)
-	player2 = Player("Bob", warband2, w2)
-	player1.dead_minions = []
-	player2.dead_minions = []	
-	player1.this_turn_dead = []
-	player2.this_turn_dead = []
-	player1.deathrattles = []
-	player2.deathrattles = []
+	player1 = Player("Alice", warband1, w1, dead_minions=[], this_turn_dead=[], 
+						deathrattles=[], deathrattles_causing_next_death = [])
+	player2 = Player("Bob", warband2, w2, dead_minions=[], this_turn_dead=[], 
+						deathrattles=[], deathrattles_causing_next_death=[])
 
 	player1.effects_dict = find_special_minions(w1)
 	player2.effects_dict = find_special_minions(w2)
@@ -70,7 +64,6 @@ def combat(battle, player1, player2):
 	while battle.attacking_player.warband and battle.attacked_player.warband:
 		# choose attacked minion:
 
-		next_phase = False
 		attacked_minion = battle.choose_attacked_minion()
 		battle.attacked_player.attacked_minion = attacked_minion
 
@@ -97,7 +90,6 @@ def combat(battle, player1, player2):
 
 		if minion1.has_triggered_attack and len(battle.attacked_player.warband) > 1:
 			minion1.triggered_attack(battle=battle)
-			battle.attacking_player.after_triggered_attack = True
 
 		print("								Attacking: ", battle.attacking_player.name)
 		print("								", minion1.name, minion1.attack_value, minion1.health)
@@ -117,39 +109,20 @@ def combat(battle, player1, player2):
 			minion1.has_windfury = False
 
 		else:
-			# ATTACKING INDEX:
+			# ATTACKING minion INDEX:
 			battle.attacking_player.attack_index += 1 - dead_attacking_minions
+			battle.attacked_player.attack_index -= dead_attacked_minions
 
-			# ATTACKING INDEX -> 0:
-			if battle.attacking_player.attack_index > len(battle.attacking_player.warband) - 1:
+			# ATTACKING/ATTACKED INDEX -> 0:
+			if battle.attacking_player.attack_index < 0 or battle.attacking_player.attack_index > len(battle.attacking_player.warband) - 1:
 				battle.attacking_player.attack_index = 0
-			elif battle.attacking_player.attack_index < 0:
-				battle.attacking_player.attack_index = 0
-
-			# ATTACKED INDEX:
-			if dead_attacked_minions > 0:
-				battle.attacked_player.attack_index -= dead_attacked_minions
-
-			# ATTACKED INDEX -> 0:
-			if battle.attacked_player.attack_index > len(battle.attacked_player.warband) - 1:
-				battle.attacked_player.attack_index = 0
-			elif battle.attacked_player.attack_index < 0:
+			if battle.attacked_player.attack_index < 0 or battle.attacked_player.attack_index > len(battle.attacked_player.warband) - 1:
 				battle.attacked_player.attack_index = 0
 
 			battle.round += 1
 
-
-# def play_round(battle):
-# 	...
-# 	battle.round += 1
-
-# def combat(battle):
-# 	while not any(p.dead for p in battle.players):
-# 		play_round(battle)
-
 		statement = f'Warbands after {battle.attacking_player.name}\'s attack:'
 		battle.print_state(statement)
-
 
 	if not battle.attacking_player.warband and not battle.attacked_player.warband:
 		print("NO WINNER")
@@ -177,32 +150,32 @@ def combat(battle, player1, player2):
 
 warband1 = [ 
 # #1
-	HeraldOfFlame(),
-	GlyphGuardian(),
-	RedWhelp(),
+	# HeraldOfFlame(),
+	# GlyphGuardian(),
+	# RedWhelp(),
 
 	# ImpMama(),
 	# FiendishServant(),
-	KaboomBot(),
-	KaboomBot(),
+	# KaboomBot(),
+
 	# RedWhelp(),
 	# SavannahHighmane(),
 
 # #2
-	# Ghastcoiler(),
-	# Ghastcoiler(),
-	# MamaBear(),
+	RatPack(),
 	# Ghastcoiler(),
 	# Maexxna(),
-	# MamaBear(),
+	MamaBear(),
 
-	# SecurityRover(),
-	RedWhelp(),
+	SecurityRover(),
+	SecurityRover(),
+	# RedWhelp(),
 
 #3
 	# FoeReaper4000(),
-	# HarvestGolem(),
+	HarvestGolem(),
 	# Mecharoo(),
+	DeflectoBot(),
 	# SneedsOldShredder(),
 
 	# ZappSlywick(),
@@ -224,6 +197,7 @@ warband1 = [
 	# MetaltoothLeaper(),
 	# Zoobot(),
 	# ScrewjankClunker(),
+	DeflectoBot(),
 
 	# CrowdFavorite(),
 	# ShifterZerus(),
@@ -242,16 +216,14 @@ warband1 = [
 
 warband2 = [
 # #1
-	CaveHydra(),
 # 	RighteousProtector(), 
-	HeraldOfFlame(),
-	HeraldOfFlame(),
-	RedWhelp(),
-	# RedWhelp(),
+	# CaveHydra(),
+	# HeraldOfFlame(),
+
 	# SelflessHero(),
-	# UnstableGhoul(), 
-	# UnstableGhoul(), 
-	UnstableGhoul(), 
+ # 	UnstableGhoul(),
+ 
+	# KaboomBot(),	
 
 # 	ImpGangBoss(),
 # 	Imprisoner(),  
@@ -260,25 +232,29 @@ warband2 = [
 
 # #2
 # 	NadinaTheRed(),
-	RedWhelp(),
+	# RedWhelp(),
 
 	# GoldrinnTheGreatWolf(),
 
 	# IronhideDirehorn(),
-	# MamaBear(),
 
 #3	
 	# KindlyGrandmother(),
-	# RatPack(),
+	RatPack(),
+	RatPack(),
 	# IronhideDirehorn(),
-	# CaveHydra(),
 
+	# DeflectoBot(),
 	# MechanoEgg(),
 	# PilotedShredder(),
 	# ReplicatingMenace(),
+	DeflectoBot(),
 	# KangorsApprentice(),
-	# MamaBear(),
+	MamaBear(),
+	MamaBear(),
 	# PackLeader(),
+	RatPack(),
+	RatPack(),
 
 ############################################
 	# Murozond(),

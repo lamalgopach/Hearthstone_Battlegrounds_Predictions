@@ -69,6 +69,7 @@ class Card:
 			battle.attacked_player.dead_minions_dict[self] = j
 			battle.attacked_player.dead_minions.append(self)
 
+
 	def triggered_attack(self, battle):
 		enemy_minions = battle.attacked_player.warband
 		j = battle.attacked_player.attacked_minion
@@ -87,8 +88,8 @@ class Card:
 		minion = minion_class()
 		effects = battle.attacking_player.effects_dict if status == 1 else battle.attacked_player.effects_dict
 		if effects:
-			for k, v in effects.items():
-				v.change_stats(minion)
+			for obj, effect_obj in effects.items():
+				effect_obj.change_stats(minion, battle, status)
 		return minion
 
 
@@ -125,18 +126,15 @@ class DefenderOfArgus(Card):
 class DeflectoBot(Card):
 	def __init__(self):
 		super().__init__(name="Deflect-o-Bot", attack_value=3, health=2, tier=3, 
-						m_type=MinionType.MINION, has_ds=False, has_effect=True, 
-						effects=[DeflectoBotChangeStats()])
-
+						m_type=MinionType.MINION, has_ds=True, has_effect=True, 
+						effects=DeflectoBotChangeStats())
 
 	def die(self, battle, status, j):
 		super().die(battle, status, j)
-		#not sure if needed, but probably yes
 		if status == 1:
-			del battle.attacking_player.effects[self]
+			battle.attacking_player.effects_dict.pop(self)
 		else:
-			del battle.attacked_player.effects[self]
-
+			battle.attacked_player.effects_dict.pop(self)
 
 class Houndmaster(Card):
 	#btlcry
@@ -203,10 +201,9 @@ class MamaBear(Card):
 	def die(self, battle, status, j):
 		super().die(battle, status, j)
 		if status == 1:
-			del battle.attacking_player.effects_dict[self]
+			battle.attacking_player.effects_dict.pop(self)
 		else:
-			del battle.attacked_player.effects_dict[self]
-
+			battle.attacked_player.effects_dict.pop(self)
 
 
 class MenagerieMagician(Card):
@@ -238,9 +235,10 @@ class PackLeader(Card):
 	def die(self, battle, status, j):
 		super().die(battle, status, j)
 		if status == 1:
-			del battle.attacking_player.effects_dict[self]
+			battle.attacking_player.effects_dict.pop(self)
 		else:
-			del battle.attacked_player.effects_dict[self]
+			battle.attacked_player.effects_dict.pop(self)
+
 
 class RedWhelp(Card):
 	def __init__(self):
@@ -326,6 +324,13 @@ class UnstableGhoul(Card):
 			for minion in enemy_minions:
 				minion.take_damage(1, self.poisonous)
 
+		if status == 1:
+			battle.attacking_player.deathrattles_causing_next_death.append(self)
+		else:
+			battle.attacked_player.deathrattles_causing_next_death.append(self)
+
+
+
 class VirmenSensei(Card):
 	#btlcry
 	def __init__(self):
@@ -337,7 +342,7 @@ class WaxriderTogwaggle(Card):
 		super().__init__(name="Waxrider Togwaggle", attack_value=1, health=2, tier=2, 
 						m_type=MinionType.MINION)
 
-	def change_stats(self):
+	def change_stats_after_killed(self, minion, battle, status):
 		self.health += 2
 		self.attack_value += 2
 
@@ -368,18 +373,24 @@ class DeflectoBotChangeStats(Effect):
 	def __init__(self):
 		super().__init__(class_type=DeflectoBot)
 
-	def change_stats(self, minion):
+
+	def change_stats(self, minion, battle, status):
 		if minion.m_type == MinionType.MECH:
-			x.attack_value += 1
-			x.has_ds = True
-		return minion
+			if status == 1:
+				dict_ = battle.attacking_player.effects_dict
+			else:
+				dict_ = battle.attacked_player.effects_dict
+
+			obj = list(dict_.keys())[list(dict_.values()).index(self)]
+			obj.attack_value += 1
+			obj.has_ds = True
 
 
 class MamaBearChangeStats(Effect):
 	def __init__(self):
 		super().__init__(class_type=MamaBear)
 
-	def change_stats(self, minion):
+	def change_stats(self, minion, battle, status):
 		if minion.m_type == MinionType.BEAST:
 			minion.health += 5
 			minion.attack_value += 5
@@ -390,7 +401,7 @@ class PackLeaderChangeStats(Effect):
 	def __init__(self):
 		super().__init__(class_type=PackLeader)
 
-	def change_stats(self, minion):
+	def change_stats(self, minion, battle, status):
 		if minion.m_type == MinionType.BEAST:
 			minion.attack_value += 3
 		return minion
