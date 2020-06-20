@@ -23,11 +23,6 @@ class HarvestGolem(Card):
 		j = battle.attacking_player.dead_minions_dict[self] if status == 1 else battle.attacked_player.dead_minions_dict[self]
 		golem = self.summon_minion(DamagedGolem, battle, status)
 		friendly_minions.insert(j, golem)
-		# if DeflectOBot in friendly_minions:
-		# 	DeflectOBot.has_ds = True
-		# 	DeflectOBot.attack_value += 1
-		#	DeflectOBot.change_stats()
-
 
 
 class IronSensei(Card):
@@ -48,6 +43,12 @@ class KaboomBot(Card):
 			i = enemy_minions.index(enemy_random_minion)
 			enemy_random_minion.take_damage(4, self.poisonous)
 
+		if status == 1:
+			battle.attacking_player.deathrattles_causing_next_death.append(self)
+		else:
+			battle.attacked_player.deathrattles_causing_next_death.append(self)
+
+
 class MicroMachine(Card):
 	# tbd; gain 
 	def __init__(self):
@@ -64,10 +65,7 @@ class MechanoEgg(Card):
 		j = battle.attacking_player.dead_minions_dict[self] if status == 1 else battle.attacked_player.dead_minions_dict[self]
 		robosaur = self.summon_minion(Robosaur, battle, status)
 		friendly_minions.insert(j, robosaur)
-		# if DeflectOBot in friendly_minions:
-		# 	DeflectOBot.has_ds = True
-		# 	DeflectOBot.attack_value += 1
-		#	DeflectOBot.change_stats()
+
 
 
 class Mecharoo(Card):
@@ -80,10 +78,6 @@ class Mecharoo(Card):
 		j = battle.attacking_player.dead_minions_dict[self] if status == 1 else battle.attacked_player.dead_minions_dict[self]
 		joebot = self.summon_minion(JoEBot, battle, status)
 		friendly_minions.insert(j, joebot)
-		# if DeflectOBot in friendly_minions:
-		# 	DeflectOBot.has_ds = True
-		# 	DeflectOBot.attack_value += 1
-		#	DeflectOBot.change_stats()
 
 
 class MetaltoothLeaper(Card):
@@ -114,10 +108,7 @@ class ReplicatingMenace(Card):
 			microbot = self.summon_minion(Microbot, battle, status)
 			friendly_minions.insert(j, microbot)
 			i += 1
-			# if DeflectOBot in friendly_minions:
-			# 	DeflectOBot.has_ds = True
-			# 	DeflectOBot.attack_value += 1
-			#	DeflectOBot.change_stats()
+
 
 
 class SecurityRover(Card):
@@ -131,10 +122,7 @@ class SecurityRover(Card):
 		if len(friendly_minions) < 7:
 			guard_bot = self.summon_minion(GuardBot, battle, status)
 			friendly_minions.insert(j + 1, guard_bot)
-			# if DeflectOBot in friendly_minions:
-			# 	DeflectOBot.has_ds = True
-			# 	DeflectOBot.attack_value += 1
-			#	DeflectOBot.change_stats()
+
 
 
 class ScrewjankClunker(Card):
