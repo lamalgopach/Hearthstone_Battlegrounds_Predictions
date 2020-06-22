@@ -171,26 +171,27 @@ warband1 = [
 	# KaboomBot(),
 
 	# RedWhelp(),
-	SecurityRover(),
-	DeflectoBot(),
-	SavannahHighmane(),
+	# SecurityRover(),
+	# DeflectoBot(),
+	# SavannahHighmane(),
 
 # #2
-	RatPack(),
-	Ghastcoiler(),
-	Maexxna(),
-	MamaBear(),
-	ScavengingHyena(),
+	# RatPack(),
+	# Ghastcoiler(),
+	# Maexxna(),
+	# MamaBear(),
+	# ScavengingHyena(),
 
 
 	# RedWhelp(),
 
 #3
 	# FoeReaper4000(),
-	# HarvestGolem(),
-	# Mecharoo(),
-	# DeflectoBot(),
-	# SneedsOldShredder(),
+	HarvestGolem(),
+	Mecharoo(),
+	DeflectoBot(),
+	SneedsOldShredder(),
+	Junkbot(),
 
 	# ZappSlywick(),
 
@@ -248,26 +249,25 @@ warband2 = [
 # 	NadinaTheRed(),
 	# RedWhelp(),
 
-	GoldrinnTheGreatWolf(),
+	# GoldrinnTheGreatWolf(),
 
-	IronhideDirehorn(),
+	# IronhideDirehorn(),
 
 #3	
 	# KindlyGrandmother(),
-	RatPack(),
-	RatPack(),
+	# RatPack(),
 	# IronhideDirehorn(),
+	# ScavengingHyena(),
 
 	# DeflectoBot(),
-	# MechanoEgg(),
+	MechanoEgg(),
 	# PilotedShredder(),
-	# ReplicatingMenace(),
-	# DeflectoBot(),
+	ReplicatingMenace(),
+	DeflectoBot(),
 	# KangorsApprentice(),
-	MamaBear(),
-	MamaBear(),
+	# MamaBear(),
 	# PackLeader(),
-	ScavengingHyena(),
+
 
 ############################################
 	# Murozond(),
@@ -288,6 +288,7 @@ warband2 = [
 	# MicroMachine(),
 	# PogoHopper(),
 	# IronSensei(),
+	Junkbot(),
 
 
 	# WrathWeaver(),

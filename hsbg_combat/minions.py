@@ -161,6 +161,21 @@ class Houndmaster(Card):
 						m_type=MinionType.MINION)
 
 
+class Junkbot(Card):
+	def __init__(self):
+		super().__init__(name="Junkbot", attack_value=1, health=5, tier=5, 
+						m_type=MinionType.MECH, 
+						has_effects_after_friendly_deaths=True,
+						effects_after_friendly_deaths=JunkbotEffect())
+
+	def die(self, battle, status, j):
+		super().die(battle, status, j)
+		if status == 1:
+			battle.attacking_player.effects_after_friendly_deaths.pop(self)
+		else:
+			battle.attacked_player.effects_after_friendly_deaths.pop(self)
+	
+
 class KangorsApprentice(Card):
 	def __init__(self):
 		super().__init__(name="Kangor's Apprentice", attack_value=3, health=6, tier=6, 
@@ -283,6 +298,13 @@ class ScavengingHyena(Card):
 						m_type=MinionType.BEAST, 
 						has_effects_after_friendly_deaths=True,
 						effects_after_friendly_deaths=ScavengingHyenaEffect())
+
+	def die(self, battle, status, j):
+		super().die(battle, status, j)
+		if status == 1:
+			battle.attacking_player.effects_after_friendly_deaths.pop(self)
+		else:
+			battle.attacked_player.effects_after_friendly_deaths.pop(self)
 	
 
 class SelflessHero(Card):
@@ -413,6 +435,22 @@ class DeflectoBotChangeStats(Effect):
 			obj = list(dict_.keys())[list(dict_.values()).index(self)]
 			obj.attack_value += 1
 			obj.has_ds = True
+
+
+class JunkbotEffect(Effect):
+	def __init__(self):
+		super().__init__(class_type=Junkbot)
+
+	def change_stats(self, minion, battle, status):
+		if minion.m_type == MinionType.MECH:
+			if status == 1:
+				dict_ = battle.attacking_player.effects_after_friendly_deaths
+			else:
+				dict_ = battle.attacked_player.effects_after_friendly_deaths
+
+			obj = list(dict_.keys())[list(dict_.values()).index(self)]
+			obj.attack_value += 2
+			obj.health += 2
 
 
 class MamaBearChangeStats(Effect):
