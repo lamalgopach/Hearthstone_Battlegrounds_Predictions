@@ -20,7 +20,8 @@ class Player:
 	def __init__(self, name, start_warband, warband, effects_dict={},
 				attack_index=0, 
 				attacked_minion=0, dead_minions=[], dead_minions_dict={}, 
-				this_turn_dead=[], deathrattles=[], deathrattles_causing_next_death=[], 
+				this_turn_dead=[], effects_after_friendly_deaths = {},
+				deathrattles=[], deathrattles_causing_next_death=[], 
 				level=1, life=40):
 
 		self.name = name
@@ -32,6 +33,7 @@ class Player:
 		self.dead_minions = dead_minions
 		self.dead_minions_dict = dead_minions_dict
 		self.this_turn_dead = this_turn_dead
+		self.effects_after_friendly_deaths = effects_after_friendly_deaths
 		self.deathrattles = deathrattles
 		self.deathrattles_causing_next_death = deathrattles_causing_next_death
 		self.level = level
@@ -173,6 +175,8 @@ class BattleState:
 					if minion.health < 1:
 						player.this_turn_dead.append(minion)
 
+			# self.check_dead_minions()
+
 
 			if self.attacking_player.this_turn_dead or self.attacked_player.this_turn_dead:
 				dead_attacking_minions, dead_attacked_minions = self.execute_deaths(d_ag_ms=dead_attacking_minions, d_ad_ms=dead_attacked_minions)		
@@ -186,3 +190,18 @@ class BattleState:
 				break
 
 		return dead_attacking_minions, dead_attacked_minions
+
+	# def check_dead_minions(self):
+
+	# 	if self.attacking_player.gain_from_death:
+	# 		for dead_minion in self.attacking_player.this_turn_dead:
+
+
+
+
+
+
+
+
+
+

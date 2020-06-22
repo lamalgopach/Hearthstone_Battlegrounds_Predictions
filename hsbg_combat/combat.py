@@ -26,6 +26,15 @@ def find_special_minions(warband):
 
 	return effects_dict
 
+def find_minions(warband):
+
+	effects_after_friendly_deaths = {}
+
+	for minion in warband:
+		if minion.has_effects_after_friendly_deaths:
+			effects_after_friendly_deaths[minion] = minion.effects_after_friendly_deaths
+
+	return effects_after_friendly_deaths
 
 
 def start_of_game(warband1, warband2):
@@ -39,6 +48,9 @@ def start_of_game(warband1, warband2):
 
 	player1.effects_dict = find_special_minions(w1)
 	player2.effects_dict = find_special_minions(w2)
+
+	player1.effects_after_friendly_deaths = find_minions(w1)
+	player2.effects_after_friendly_deaths = find_minions(w2)
 
 	# THE ORDER OF ATTACK:
 	game = choose_first(player1, player2)
@@ -159,23 +171,25 @@ warband1 = [
 	# KaboomBot(),
 
 	# RedWhelp(),
-	# SavannahHighmane(),
+	SecurityRover(),
+	DeflectoBot(),
+	SavannahHighmane(),
 
 # #2
 	RatPack(),
-	# Ghastcoiler(),
-	# Maexxna(),
+	Ghastcoiler(),
+	Maexxna(),
 	MamaBear(),
+	ScavengingHyena(),
 
-	SecurityRover(),
-	SecurityRover(),
+
 	# RedWhelp(),
 
 #3
 	# FoeReaper4000(),
-	HarvestGolem(),
+	# HarvestGolem(),
 	# Mecharoo(),
-	DeflectoBot(),
+	# DeflectoBot(),
 	# SneedsOldShredder(),
 
 	# ZappSlywick(),
@@ -197,7 +211,7 @@ warband1 = [
 	# MetaltoothLeaper(),
 	# Zoobot(),
 	# ScrewjankClunker(),
-	DeflectoBot(),
+	# DeflectoBot(),
 
 	# CrowdFavorite(),
 	# ShifterZerus(),
@@ -234,9 +248,9 @@ warband2 = [
 # 	NadinaTheRed(),
 	# RedWhelp(),
 
-	# GoldrinnTheGreatWolf(),
+	GoldrinnTheGreatWolf(),
 
-	# IronhideDirehorn(),
+	IronhideDirehorn(),
 
 #3	
 	# KindlyGrandmother(),
@@ -248,13 +262,12 @@ warband2 = [
 	# MechanoEgg(),
 	# PilotedShredder(),
 	# ReplicatingMenace(),
-	DeflectoBot(),
+	# DeflectoBot(),
 	# KangorsApprentice(),
 	MamaBear(),
 	MamaBear(),
 	# PackLeader(),
-	RatPack(),
-	RatPack(),
+	ScavengingHyena(),
 
 ############################################
 	# Murozond(),

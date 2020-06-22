@@ -12,23 +12,35 @@ class MinionType(Enum):
 
 class Card:
 	def __init__(self, *, name, attack_value, health, tier, m_type, taunt=False, 
-		has_ds=False, has_deathrattle=False, has_triggered_attack=False, 
+		has_ds=False, has_deathrattle=False, has_effects_after_friendly_deaths=False,
+		effects_after_friendly_deaths=None,
+		has_triggered_attack=False, 
 		has_overkill=False, poisonous=False, damage_effect=False, has_windfury=False, 
-		has_effect=False, effects=[]):
+		has_effect=False, effects=None):
 
 		self.name = name
 		self.attack_value = attack_value
 		self.health = health
 		self.tier = tier
 		self.m_type = m_type
+
 		self.taunt = taunt
 		self.has_ds = has_ds
 		self.has_deathrattle = has_deathrattle
+
+		self.has_effects_after_friendly_deaths = has_effects_after_friendly_deaths
+		self.effects_after_friendly_deaths = effects_after_friendly_deaths
+
 		self.has_triggered_attack = has_triggered_attack
+
 		self.has_overkill = has_overkill
+
 		self.poisonous = poisonous
+
 		self.damage_effect = damage_effect
+
 		self.has_windfury = has_windfury
+
 		self.has_effect = has_effect
 		self.effects = effects
 
@@ -68,6 +80,12 @@ class Card:
 		else:
 			battle.attacked_player.dead_minions_dict[self] = j
 			battle.attacked_player.dead_minions.append(self)
+
+		effects = battle.attacking_player.effects_after_friendly_deaths if status == 1 else battle.attacked_player.effects_after_friendly_deaths
+
+		if effects:
+			for k, v in effects.items():
+				v.change_stats(self, battle, status)
 
 
 	def triggered_attack(self, battle):
@@ -259,6 +277,14 @@ class RighteousProtector(Card):
 						m_type=MinionType.MINION, taunt=True, has_ds =True)
 
 
+class ScavengingHyena(Card):
+	def __init__(self):
+		super().__init__(name="Scavenging Hyena", attack_value=2, health=2, tier=1, 
+						m_type=MinionType.BEAST, 
+						has_effects_after_friendly_deaths=True,
+						effects_after_friendly_deaths=ScavengingHyenaEffect())
+	
+
 class SelflessHero(Card):
 	def __init__(self):
 		super().__init__(name="Selfless Hero", attack_value=2, health=1, tier=1, 
@@ -342,9 +368,12 @@ class WaxriderTogwaggle(Card):
 		super().__init__(name="Waxrider Togwaggle", attack_value=1, health=2, tier=2, 
 						m_type=MinionType.MINION)
 
-	def change_stats_after_killed(self, minion, battle, status):
-		self.health += 2
-		self.attack_value += 2
+	def change_stats_after_attack(self, minion1, minion2, battle, status):
+		if minion.m_type == MinionType.DRAGON:
+			self.health += 2
+			self.attack_value += 2
+
+
 
 class WrathWeaver(Card):
 	#btlcry damage
@@ -406,10 +435,26 @@ class PackLeaderChangeStats(Effect):
 			minion.attack_value += 3
 		return minion
 
+class ScavengingHyenaEffect(Effect):
+	def __init__(self):
+		super().__init__(class_type=ScavengingHyena)
+
+	def change_stats(self, minion, battle, status):
+		if minion.m_type == MinionType.BEAST:
+			if status == 1:
+				dict_ = battle.attacking_player.effects_after_friendly_deaths
+			else:
+				dict_ = battle.attacked_player.effects_after_friendly_deaths
+
+			obj = list(dict_.keys())[list(dict_.values()).index(self)]
+			obj.attack_value += 2
+			obj.health += 1
+
 
 # Jakub:
 # minion = SpawnOfnZoth()
 # if minion.deathrattle is not None:
+# if minion.deathrattle:
 # # if hasattr(minion, "deathrattle"):
 # 	minion.deathrattle(friendly_minions, j)
 
@@ -423,6 +468,3 @@ class PackLeaderChangeStats(Effect):
 # 		self.attack_value *= 2
 # 		super().attack(*args, **kwargs)
 
-
-#todo:
-# classes to do: waxtoggler
