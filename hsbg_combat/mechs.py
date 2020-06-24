@@ -44,9 +44,9 @@ class KaboomBot(Card):
 			enemy_random_minion.take_damage(4, self.poisonous)
 
 		if status == 1:
-			battle.attacking_player.deathrattles_causing_next_death.append(self)
+			battle.attacking_player.effects_causing_next_death.append(self)
 		else:
-			battle.attacked_player.deathrattles_causing_next_death.append(self)
+			battle.attacked_player.effects_causing_next_death.append(self)
 
 
 class MicroMachine(Card):

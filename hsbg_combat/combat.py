@@ -42,9 +42,9 @@ def start_of_game(warband1, warband2):
 	w1 = copy.deepcopy(warband1)
 	w2 = copy.deepcopy(warband2)
 	player1 = Player("Alice", warband1, w1, dead_minions=[], this_turn_dead=[], 
-						deathrattles=[], deathrattles_causing_next_death = [])
+						deathrattles=[], effects_causing_next_death=[])
 	player2 = Player("Bob", warband2, w2, dead_minions=[], this_turn_dead=[], 
-						deathrattles=[], deathrattles_causing_next_death=[])
+						deathrattles=[], effects_causing_next_death=[])
 
 	player1.effects_dict = find_special_minions(w1)
 	player2.effects_dict = find_special_minions(w2)
@@ -168,6 +168,7 @@ warband1 = [
 
 	# ImpMama(),
 	# FiendishServant(),
+
 	# KaboomBot(),
 
 	# RedWhelp(),
@@ -184,7 +185,8 @@ warband1 = [
 
 
 	# RedWhelp(),
-
+	FloatingWatcher(),
+	AnnihilanBattlemaster(),
 #3
 	# FoeReaper4000(),
 	HarvestGolem(),
@@ -193,6 +195,7 @@ warband1 = [
 	SneedsOldShredder(),
 	Junkbot(),
 
+	# SoulJuggler(),
 	# ZappSlywick(),
 
 	# KingBagurgle(),
@@ -204,8 +207,7 @@ warband1 = [
 	# TwilightEmissary(),
 	# CobaltScalebane(),
 
-	# FloatingWatcher(),
-	# AnnihilanBattlemaster(),
+
 
 	# GentleMegasaur(),
 
@@ -240,9 +242,9 @@ warband2 = [
  
 	# KaboomBot(),	
 
-# 	ImpGangBoss(),
-# 	Imprisoner(),  
-# 	Voidlord(),
+	ImpGangBoss(),
+	Imprisoner(),  
+	Voidlord(),
 
 
 # #2
@@ -255,15 +257,15 @@ warband2 = [
 
 #3	
 	# KindlyGrandmother(),
-	# RatPack(),
+	RatPack(),
 	# IronhideDirehorn(),
 	# ScavengingHyena(),
 
 	# DeflectoBot(),
-	MechanoEgg(),
+	# MechanoEgg(),
 	# PilotedShredder(),
-	ReplicatingMenace(),
-	DeflectoBot(),
+	# ReplicatingMenace(),
+	# DeflectoBot(),
 	# KangorsApprentice(),
 	# MamaBear(),
 	# PackLeader(),
@@ -288,11 +290,12 @@ warband2 = [
 	# MicroMachine(),
 	# PogoHopper(),
 	# IronSensei(),
-	Junkbot(),
-
+	# Junkbot(),
+# 
 
 	# WrathWeaver(),
-	# NathrezimOverseer(),
+	NathrezimOverseer(),
+	SoulJuggler(),
 	]
 
 battle, player1, player2 = start_of_game(warband1, warband2)

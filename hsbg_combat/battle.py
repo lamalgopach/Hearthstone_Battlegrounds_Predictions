@@ -21,7 +21,7 @@ class Player:
 				attack_index=0, 
 				attacked_minion=0, dead_minions=[], dead_minions_dict={}, 
 				this_turn_dead=[], effects_after_friendly_deaths = {},
-				deathrattles=[], deathrattles_causing_next_death=[], 
+				deathrattles=[], effects_causing_next_death=[], 
 				level=1, life=40):
 
 		self.name = name
@@ -35,7 +35,7 @@ class Player:
 		self.this_turn_dead = this_turn_dead
 		self.effects_after_friendly_deaths = effects_after_friendly_deaths
 		self.deathrattles = deathrattles
-		self.deathrattles_causing_next_death = deathrattles_causing_next_death
+		self.effects_causing_next_death = effects_causing_next_death
 		self.level = level
 		self.life = life
 
@@ -131,25 +131,27 @@ class BattleState:
 
 	def execute_deaths(self, d_ag_ms, d_ad_ms):
 
-		for minion in self.attacking_player.this_turn_dead:
-			j = self.attacking_player.warband.index(minion)
-			if j <= self.attacking_player.attack_index:
-				d_ag_ms += 1
-			if minion.has_deathrattle:
-				self.attacking_player.deathrattles.append(minion)
-			minion.die(self, status=1, j=j)
+		if self.attacking_player.this_turn_dead:
+			for minion in self.attacking_player.this_turn_dead:
+				j = self.attacking_player.warband.index(minion)
+				if j <= self.attacking_player.attack_index:
+					d_ag_ms += 1
+				if minion.has_deathrattle:
+					self.attacking_player.deathrattles.append(minion)
+				minion.die(self, status=1, j=j)
 
-		self.attacking_player.this_turn_dead = []
+			self.attacking_player.this_turn_dead = []
 
-		for minion in self.attacked_player.this_turn_dead:
-			j = self.attacked_player.warband.index(minion)
-			if j <= self.attacked_player.attack_index:
-				d_ad_ms += 1 
-			if minion.has_deathrattle:
-				self.attacked_player.deathrattles.append(minion)
-			minion.die(self, status=2, j=j)
+		if self.attacked_player.this_turn_dead:
+			for minion in self.attacked_player.this_turn_dead:
+				j = self.attacked_player.warband.index(minion)
+				if j <= self.attacked_player.attack_index:
+					d_ad_ms += 1 
+				if minion.has_deathrattle:
+					self.attacked_player.deathrattles.append(minion)
+				minion.die(self, status=2, j=j)
 
-		self.attacked_player.this_turn_dead = []
+			self.attacked_player.this_turn_dead = []
 
 		return d_ag_ms, d_ad_ms
 
@@ -165,26 +167,26 @@ class BattleState:
 
 	def execute_death_phase(self, dead_attacking_minions, dead_attacked_minions):
 		while True:
-			self.attacking_player.deathrattles_causing_next_death = []
-			self.attacked_player.deathrattles_causing_next_death = []
+			# self.print_state("while True")
+			self.attacking_player.effects_causing_next_death = []
+			self.attacked_player.effects_causing_next_death = []
 
 			players = [self.attacking_player, self.attacked_player]
+
 			
 			for player in players:
 				for minion in player.warband:
 					if minion.health < 1:
 						player.this_turn_dead.append(minion)
 
-			# self.check_dead_minions()
-
-
 			if self.attacking_player.this_turn_dead or self.attacked_player.this_turn_dead:
 				dead_attacking_minions, dead_attacked_minions = self.execute_deaths(d_ag_ms=dead_attacking_minions, d_ad_ms=dead_attacked_minions)		
+
 
 			if self.attacking_player.deathrattles or self.attacked_player.deathrattles:
 				self.execute_deathrattles()
 
-			if not (self.attacking_player.deathrattles_causing_next_death or self.attacked_player.deathrattles_causing_next_death):
+			if not (self.attacking_player.effects_causing_next_death or self.attacked_player.effects_causing_next_death):
 				break 
 			elif not self.attacking_player.warband or not self.attacked_player.warband:
 				break

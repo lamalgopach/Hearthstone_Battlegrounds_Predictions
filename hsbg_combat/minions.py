@@ -149,7 +149,7 @@ class DeflectoBot(Card):
 
 	def die(self, battle, status, j):
 		super().die(battle, status, j)
-		if status == 1:
+		if status == 1:	
 			battle.attacking_player.effects_dict.pop(self)
 		else:
 			battle.attacked_player.effects_dict.pop(self)
@@ -334,6 +334,22 @@ class ShifterZerus(Card):
 						m_type=MinionType.MINION)
 
 
+
+class SoulJuggler(Card):
+	def __init__(self):
+		super().__init__(name="Soul Juggler", attack_value=3, health=3, tier=3, 
+						m_type=MinionType.MINION, 
+						has_effects_after_friendly_deaths=True,
+						effects_after_friendly_deaths=SoulJugglerEffect())
+
+	def die(self, battle, status, j):
+		super().die(battle, status, j)
+		if status == 1:
+			battle.attacking_player.effects_after_friendly_deaths.pop(self)
+		else:
+			battle.attacked_player.effects_after_friendly_deaths.pop(self)
+
+
 class SpawnOfnZoth(Card):
 	def __init__(self):
 		super().__init__(name="Spawn Of n'Zoth", attack_value=2, health=2, tier=2, 
@@ -373,9 +389,9 @@ class UnstableGhoul(Card):
 				minion.take_damage(1, self.poisonous)
 
 		if status == 1:
-			battle.attacking_player.deathrattles_causing_next_death.append(self)
+			battle.attacking_player.effects_causing_next_death.append(self)
 		else:
-			battle.attacked_player.deathrattles_causing_next_death.append(self)
+			battle.attacked_player.effects_causing_next_death.append(self)
 
 
 
@@ -394,7 +410,6 @@ class WaxriderTogwaggle(Card):
 		if minion.m_type == MinionType.DRAGON:
 			self.health += 2
 			self.attack_value += 2
-
 
 
 class WrathWeaver(Card):
@@ -487,6 +502,30 @@ class ScavengingHyenaEffect(Effect):
 			obj = list(dict_.keys())[list(dict_.values()).index(self)]
 			obj.attack_value += 2
 			obj.health += 1
+
+class SoulJugglerEffect(Effect):
+	def __init__(self):
+		super().__init__(class_type=SoulJuggler)
+
+	def change_stats(self, minion, battle, status):
+		
+		if minion.m_type == MinionType.DEMON:
+			random_enemy_minion = None
+			if status == 1:
+				if battle.attacked_player.warband:
+					random_enemy_minion = random.choice(battle.attacked_player.warband)
+					j = battle.attacked_player.warband.index(random_enemy_minion)
+			else:
+				if battle.attacking_player.warband:
+					random_enemy_minion = random.choice(battle.attacking_player.warband)
+					j = battle.attacking_player.warband.index(random_enemy_minion)
+
+			if random_enemy_minion:
+				random_enemy_minion.take_damage(3, False)
+				if random_enemy_minion.health < 1:
+					player = battle.attacking_player if status == 2 else battle.attacked_player
+					player.effects_causing_next_death.append(random_enemy_minion)
+
 
 
 # Jakub:
