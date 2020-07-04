@@ -40,8 +40,8 @@ class KaboomBot(Card):
 		enemy_minions = battle.attacked_player.warband if status == 1 else battle.attacking_player.warband
 		if enemy_minions:
 			enemy_random_minion = random.choice(enemy_minions)
-			i = enemy_minions.index(enemy_random_minion)
-			enemy_random_minion.take_damage(4, self.poisonous)
+			st = 2 if status == 1 else 1
+			enemy_random_minion.take_damage(4, self.poisonous, battle, st)
 
 		if status == 1:
 			battle.attacking_player.effects_causing_next_death.append(self)
@@ -114,11 +114,12 @@ class ReplicatingMenace(Card):
 class SecurityRover(Card):
 	def __init__(self):
 		super().__init__(name="Security Rover", attack_value=2, health=6, tier=4, 
-						m_type=MinionType.MECH, damage_effect=True)
+						m_type=MinionType.MECH)
 
-	def act_after_damage(self, battle, status):
+	def take_damage(self, damage, poisonous, battle, status):
+		super().take_damage(damage, poisonous, battle, status)
 		friendly_minions = battle.attacking_player.warband if status == 1 else battle.attacked_player.warband
-		j = battle.attacking_player.attack_index if status == 1 else battle.attacked_player.attacked_minion
+		j = battle.attacking_player.warband.index(self) if status == 1 else battle.attacked_player.warband.index(self)
 		if len(friendly_minions) < 7:
 			guard_bot = self.summon_minion(GuardBot, battle, status)
 			friendly_minions.insert(j + 1, guard_bot)

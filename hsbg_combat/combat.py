@@ -16,29 +16,21 @@ def choose_first(player1, player2):
 		game = [player2.warband, player1.warband]
 	return game
 
-def find_special_minions(warband):
 
-	effects_dict = {}
-
-	for minion in warband:
-		if minion.has_effect:
-			effects_dict[minion] = minion.effects
-
-	return effects_dict
-
-def find_minions(warband):
-
-	effects_after_friendly_deaths = {}
+def find_minions(warband, dict_, has_effect):
 
 	for minion in warband:
-		if minion.has_effects_after_friendly_deaths:
-			effects_after_friendly_deaths[minion] = minion.effects_after_friendly_deaths
+		if minion.has_effect == has_effect:
+			print(minion.name)
+			print("minion")
+			print()
+			dict_[minion] = minion.effect
 
-	return effects_after_friendly_deaths
+	return dict_
 
 
 def start_of_game(warband1, warband2):
-
+				
 	w1 = copy.deepcopy(warband1)
 	w2 = copy.deepcopy(warband2)
 	player1 = Player("Alice", warband1, w1, dead_minions=[], this_turn_dead=[], 
@@ -46,11 +38,14 @@ def start_of_game(warband1, warband2):
 	player2 = Player("Bob", warband2, w2, dead_minions=[], this_turn_dead=[], 
 						deathrattles=[], effects_causing_next_death=[])
 
-	player1.effects_dict = find_special_minions(w1)
-	player2.effects_dict = find_special_minions(w2)
+	player1.effects_after_friend_is_summoned = find_minions(w1, {}, "friend_summoned")
+	player2.effects_after_friend_is_summoned = find_minions(w2, {}, "friend_summoned")
 
-	player1.effects_after_friendly_deaths = find_minions(w1)
-	player2.effects_after_friendly_deaths = find_minions(w2)
+	player1.effects_after_friend_is_dead = find_minions(w1, {}, "friend_death")
+	player2.effects_after_friend_is_dead = find_minions(w2, {}, "friend_death")
+
+	player1.effects_after_friend_lost_ds = find_minions(w1, {}, "friend_ds_lost")
+	player2.effects_after_friend_lost_ds = find_minions(w2, {}, "friend_ds_lost")
 
 	# THE ORDER OF ATTACK:
 	game = choose_first(player1, player2)
@@ -83,27 +78,17 @@ def combat(battle, player1, player2):
 		minion1 = battle.attacking_player.warband[battle.attacking_player.attack_index]
 		minion2 = battle.attacked_player.warband[attacked_minion]
 
-		# if minion1.has_ds and DrakonidEnforcer or BolivarFireblood in fw:
-		# 	DrakonidEnforcer or BolivarFireblood.change_stats()
-		# if minion2.has_ds and DrakonidEnforcer or BolivarFireblood in fw:
-		# 	DrakonidEnforcer or BolivarFireblood.change_stats()
-
 		# attack phase:
 		minion1.attack()
-		minion1.take_damage(minion2.attack_value, minion2.poisonous)
-		minion2.take_damage(minion1.attack_value, minion1.poisonous)
-
-		# summon after damage:
-		if minion1.damage_effect and minion2.attack_value > 0:
-			minion1.act_after_damage(battle=battle, status=1)
-
-		if minion2.damage_effect and minion1.attack_value > 0:
-			minion2.act_after_damage(battle=battle, status=2)
-
+		minion1.take_damage(minion2.attack_value, minion2.poisonous, battle, status=1)
 		if minion1.has_triggered_attack and len(battle.attacked_player.warband) > 1:
 			minion1.triggered_attack(battle=battle)
+		else:
+			minion2.take_damage(minion1.attack_value, minion1.poisonous, battle, status=2)
 
-		print("								Attacking: ", battle.attacking_player.name)
+
+
+		print("								Attacking: ", battle.attacking_player.name, battle.attacking_player.attack_index)
 		print("								", minion1.name, minion1.attack_value, minion1.health)
 		print("								Attacked: ", battle.attacked_player.name)
 		print("								", minion2.name, minion2.attack_value, minion2.health)
@@ -165,41 +150,44 @@ warband1 = [
 	# HeraldOfFlame(),
 	# GlyphGuardian(),
 	# RedWhelp(),
-
+	DeflectoBot(),
 	# ImpMama(),
 	# FiendishServant(),
-
+	# Imprisoner(), 
 	# KaboomBot(),
 
 	# RedWhelp(),
+	SecurityRover(),
+	DeflectoBot(),
 	# SecurityRover(),
 	# DeflectoBot(),
 	# SavannahHighmane(),
 
 # #2
+
 	# RatPack(),
 	# Ghastcoiler(),
 	# Maexxna(),
-	# MamaBear(),
-	# ScavengingHyena(),
+
 
 
 	# RedWhelp(),
-	FloatingWatcher(),
-	AnnihilanBattlemaster(),
+	# FloatingWatcher(),
+	# AnnihilanBattlemaster(),
+	# SoulJuggler(),
+	# SoulJuggler(),
 #3
 	# FoeReaper4000(),
-	HarvestGolem(),
-	Mecharoo(),
-	DeflectoBot(),
-	SneedsOldShredder(),
+	# HarvestGolem(),
+	# Mecharoo(),
+	DrakonidEnforcer(),
+	DrakonidEnforcer(),
+	# SneedsOldShredder(),
 	Junkbot(),
 
-	# SoulJuggler(),
 	# ZappSlywick(),
 
 	# KingBagurgle(),
-	# PackLeader(),
 
 #######################################
 	# StewardOfTime(),
@@ -214,7 +202,7 @@ warband1 = [
 	# MetaltoothLeaper(),
 	# Zoobot(),
 	# ScrewjankClunker(),
-	# DeflectoBot(),
+
 
 	# CrowdFavorite(),
 	# ShifterZerus(),
@@ -234,18 +222,18 @@ warband1 = [
 warband2 = [
 # #1
 # 	RighteousProtector(), 
-	# CaveHydra(),
+	CaveHydra(),
 	# HeraldOfFlame(),
 
 	# SelflessHero(),
- # 	UnstableGhoul(),
+ 	# UnstableGhoul(),
  
 	# KaboomBot(),	
-
-	ImpGangBoss(),
-	Imprisoner(),  
-	Voidlord(),
-
+	# KaboomBot(),
+	# KaboomBot(),
+	# ImpGangBoss(),
+	# Imprisoner(),  
+	# Voidlord(),
 
 # #2
 # 	NadinaTheRed(),
@@ -256,20 +244,21 @@ warband2 = [
 	# IronhideDirehorn(),
 
 #3	
-	# KindlyGrandmother(),
+	KindlyGrandmother(),
 	RatPack(),
 	# IronhideDirehorn(),
 	# ScavengingHyena(),
 
-	# DeflectoBot(),
+
 	# MechanoEgg(),
 	# PilotedShredder(),
 	# ReplicatingMenace(),
-	# DeflectoBot(),
-	# KangorsApprentice(),
-	# MamaBear(),
-	# PackLeader(),
 
+	# KangorsApprentice(),
+
+	ScavengingHyena(),
+	PackLeader(),	
+	MamaBear(),
 
 ############################################
 	# Murozond(),
@@ -294,8 +283,10 @@ warband2 = [
 # 
 
 	# WrathWeaver(),
-	NathrezimOverseer(),
-	SoulJuggler(),
+	# NathrezimOverseer(),
+	# NathrezimOverseer(),
+	# SoulJuggler(),
+	# SoulJuggler(),
 	]
 
 battle, player1, player2 = start_of_game(warband1, warband2)

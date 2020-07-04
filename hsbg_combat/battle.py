@@ -1,5 +1,6 @@
 import random
 from dragons import RedWhelp
+import copy
 
 
 def attack_in_start_of_combat(battle, redwhelp, status):
@@ -8,7 +9,7 @@ def attack_in_start_of_combat(battle, redwhelp, status):
 	damage = redwhelp.add_damage_in_combat(friendly_minions=friendly_minions)
 	attacked_minion = random.choice(enemy_minions)
 	j = enemy_minions.index(attacked_minion)
-	attacked_minion.take_damage(damage, redwhelp.poisonous)
+	attacked_minion.take_damage(damage, False, battle, status)
 
 	if attacked_minion.health < 1:
 		battle.execute_death_phase(0, 0)
@@ -17,27 +18,41 @@ def attack_in_start_of_combat(battle, redwhelp, status):
 
 
 class Player:
-	def __init__(self, name, start_warband, warband, effects_dict={},
-				attack_index=0, 
-				attacked_minion=0, dead_minions=[], dead_minions_dict={}, 
-				this_turn_dead=[], effects_after_friendly_deaths = {},
-				deathrattles=[], effects_causing_next_death=[], 
+	def __init__(self, name, start_warband, warband,
+				attack_index=0, attacked_minion=0,
+
+				dead_minions=[], dead_minions_dict={}, 
+				this_turn_dead=[], deathrattles=[], 
+
+				effects_after_friend_is_summoned = {},
+				effects_after_friend_is_dead = {},
+				effects_after_friend_lost_ds = {},
+				
+				effects_causing_next_death=[], 
+
 				level=1, life=40):
 
 		self.name = name
 		self.start_warband = start_warband 
 		self.warband = warband
-		self.effects_dict = effects_dict
+
 		self.attack_index = attack_index
 		self.attacked_minion = attacked_minion
+
 		self.dead_minions = dead_minions
 		self.dead_minions_dict = dead_minions_dict
 		self.this_turn_dead = this_turn_dead
-		self.effects_after_friendly_deaths = effects_after_friendly_deaths
 		self.deathrattles = deathrattles
+
+		self.effects_after_friend_is_summoned = effects_after_friend_is_summoned
+		self.effects_after_friend_is_dead = effects_after_friend_is_dead
+		self.effects_after_friend_lost_ds = effects_after_friend_lost_ds
+
 		self.effects_causing_next_death = effects_causing_next_death
+
 		self.level = level
 		self.life = life
+
 
 	# at the end of the battle count damage:
 	def count_final_damage(self, alive_minions):
@@ -167,7 +182,6 @@ class BattleState:
 
 	def execute_death_phase(self, dead_attacking_minions, dead_attacked_minions):
 		while True:
-			# self.print_state("while True")
 			self.attacking_player.effects_causing_next_death = []
 			self.attacked_player.effects_causing_next_death = []
 
@@ -185,6 +199,7 @@ class BattleState:
 
 			if self.attacking_player.deathrattles or self.attacked_player.deathrattles:
 				self.execute_deathrattles()
+
 
 			if not (self.attacking_player.effects_causing_next_death or self.attacked_player.effects_causing_next_death):
 				break 

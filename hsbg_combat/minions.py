@@ -12,11 +12,12 @@ class MinionType(Enum):
 
 class Card:
 	def __init__(self, *, name, attack_value, health, tier, m_type, taunt=False, 
-		has_ds=False, has_deathrattle=False, has_effects_after_friendly_deaths=False,
-		effects_after_friendly_deaths=None,
-		has_triggered_attack=False, 
-		has_overkill=False, poisonous=False, damage_effect=False, has_windfury=False, 
-		has_effect=False, effects=None):
+		
+		has_ds=False, has_deathrattle=False, has_triggered_attack=False, 
+		has_overkill=False, poisonous=False, has_windfury=False, 
+		
+		has_effect=False,
+		effect=None):
 
 		self.name = name
 		self.attack_value = attack_value
@@ -28,21 +29,15 @@ class Card:
 		self.has_ds = has_ds
 		self.has_deathrattle = has_deathrattle
 
-		self.has_effects_after_friendly_deaths = has_effects_after_friendly_deaths
-		self.effects_after_friendly_deaths = effects_after_friendly_deaths
-
 		self.has_triggered_attack = has_triggered_attack
-
 		self.has_overkill = has_overkill
-
 		self.poisonous = poisonous
-
-		self.damage_effect = damage_effect
-
 		self.has_windfury = has_windfury
 
+		#EFFECTS:
 		self.has_effect = has_effect
-		self.effects = effects
+		self.effect = effect
+
 
 	def attack(self):
 		# used in Glyph Guardian
@@ -56,16 +51,25 @@ class Card:
 		else:
 			self.health = 0
 
-	def take_damage(self, damage, poisonous):
+	def take_damage(self, damage, poisonous, battle, status):
+
 		if damage == 0:
 			return
 
 		if self.has_ds:
 			self.has_ds = False
+			effects = battle.attacking_player.effects_after_friend_lost_ds if status == 1 else battle.attacked_player.effects_after_friend_lost_ds
+			if effects:
+				print("goni")
+				for k, v in effects.items():
+					v.change_stats(self, battle, status)
+
 		elif poisonous:
 			self.health = 0
 		else:
 			self.health -= damage
+
+		# ORIGINAL:
 		# if self.has_ds:
 		# 	self.has_ds = False
 		# else:
@@ -81,7 +85,7 @@ class Card:
 			battle.attacked_player.dead_minions_dict[self] = j
 			battle.attacked_player.dead_minions.append(self)
 
-		effects = battle.attacking_player.effects_after_friendly_deaths if status == 1 else battle.attacked_player.effects_after_friendly_deaths
+		effects = battle.attacking_player.effects_after_friend_is_dead if status == 1 else battle.attacked_player.effects_after_friend_is_dead
 
 		if effects:
 			for k, v in effects.items():
@@ -89,22 +93,40 @@ class Card:
 
 
 	def triggered_attack(self, battle):
-		enemy_minions = battle.attacked_player.warband
-		j = battle.attacked_player.attacked_minion
-		if j != 0 and j + 1 < len(enemy_minions):
-			a = j - 1
-			b = j + 1	
-			enemy_minions[b].take_damage(self.attack_value, self.poisonous)
 
-		elif j == 0 and j + 1 <= len(enemy_minions):
-			a = j + 1
-		elif j == len(enemy_minions) - 1:
-			a = j - 1
-		enemy_minions[a].take_damage(self.attack_value, self.poisonous)
+		enemy_minions = battle.attacked_player.warband
+		x = battle.attacked_player.attacked_minion
+		left_i = None
+		right_i = None
+		
+		if x != 0 and x + 1 < len(enemy_minions):
+			left_i = x - 1
+			right_i = x + 1
+		elif x == 0 and x + 1 <= len(enemy_minions):
+			right_i = x + 1
+		elif x == len(enemy_minions) - 1:
+			left_i = x - 1
+		
+		if left_i:
+			left_minion = enemy_minions[left_i]
+		
+		if right_i:
+			right_minion = enemy_minions[right_i]
+
+		main_minion = enemy_minions[x]
+		main_minion.take_damage(self.attack_value, self.poisonous, battle, status=2)
+
+		if left_minion:
+			left_minion.take_damage(self.attack_value, self.poisonous, battle, status=2)
+
+		if right_minion:
+			right_minion.take_damage(self.attack_value, self.poisonous, battle, status=2)
+
+
 
 	def summon_minion(self, minion_class, battle, status):
 		minion = minion_class()
-		effects = battle.attacking_player.effects_dict if status == 1 else battle.attacked_player.effects_dict
+		effects = battle.attacking_player.effects_after_friend_is_summoned if status == 1 else battle.attacked_player.effects_after_friend_is_summoned
 		if effects:
 			for obj, effect_obj in effects.items():
 				effect_obj.change_stats(minion, battle, status)
@@ -144,15 +166,30 @@ class DefenderOfArgus(Card):
 class DeflectoBot(Card):
 	def __init__(self):
 		super().__init__(name="Deflect-o-Bot", attack_value=3, health=2, tier=3, 
-						m_type=MinionType.MINION, has_ds=True, has_effect=True, 
-						effects=DeflectoBotChangeStats())
+						m_type=MinionType.MINION, has_ds=True, 
+						has_effect="friend_summoned",
+						effect=DeflectoBotChangeStats())
 
 	def die(self, battle, status, j):
 		super().die(battle, status, j)
 		if status == 1:	
-			battle.attacking_player.effects_dict.pop(self)
+			battle.attacking_player.effects_after_friend_is_summoned.pop(self)
 		else:
-			battle.attacked_player.effects_dict.pop(self)
+			battle.attacked_player.effects_after_friend_is_summoned.pop(self)
+
+class DrakonidEnforcer(Card):
+	def __init__(self):
+		super().__init__(name="Drakonid Enforcer", attack_value=3, health=6, tier=4, 
+						m_type=MinionType.DRAGON, has_effect="friend_ds_lost", 
+						effect=DrakonidEnforcerEffect())
+
+	def die(self, battle, status, j):
+		super().die(battle, status, j)
+		if status == 1:
+			battle.attacking_player.effects_after_friend_lost_ds.pop(self)
+		else:
+			battle.attacked_player.effects_after_friend_lost_ds.pop(self)
+
 
 class Houndmaster(Card):
 	#btlcry
@@ -165,15 +202,15 @@ class Junkbot(Card):
 	def __init__(self):
 		super().__init__(name="Junkbot", attack_value=1, health=5, tier=5, 
 						m_type=MinionType.MECH, 
-						has_effects_after_friendly_deaths=True,
-						effects_after_friendly_deaths=JunkbotEffect())
+						has_effect="friend_death",
+						effect=JunkbotEffect())
 
 	def die(self, battle, status, j):
 		super().die(battle, status, j)
 		if status == 1:
-			battle.attacking_player.effects_after_friendly_deaths.pop(self)
+			battle.attacking_player.effects_after_friend_is_dead.pop(self)
 		else:
-			battle.attacked_player.effects_after_friendly_deaths.pop(self)
+			battle.attacked_player.effects_after_friend_is_dead.pop(self)
 	
 
 class KangorsApprentice(Card):
@@ -207,7 +244,7 @@ class KangorsApprentice(Card):
 					# summoned_mech.has_ds = mech.has_ds
 					# summoned_mech.has_deathrattle = mech.has_deathrattle
 					# summoned_mech.has_triggered_attack = mech.has_triggered_attack
-					# summoned_mech.damage_effect = mech.damage_effect
+
 
 					friendly_minions.insert(j + i, summoned_mech)
 					# if DeflectOBot in friendly_minions and random_deathrattle_minion.m_type == MinionType.MECH:
@@ -228,15 +265,15 @@ class LightfangEnforcer(Card):
 class MamaBear(Card):
 	def __init__(self):
 		super().__init__(name="Mama Bear", attack_value=5, health=5, tier=6, 
-						m_type=MinionType.BEAST, has_effect=True, 
-						effects=MamaBearChangeStats())
+						m_type=MinionType.BEAST, has_effect="friend_summoned",
+						effect=MamaBearChangeStats())
 
 	def die(self, battle, status, j):
 		super().die(battle, status, j)
 		if status == 1:
-			battle.attacking_player.effects_dict.pop(self)
+			battle.attacking_player.effects_after_friend_is_summoned.pop(self)
 		else:
-			battle.attacked_player.effects_dict.pop(self)
+			battle.attacked_player.effects_after_friend_is_summoned.pop(self)
 
 
 class MenagerieMagician(Card):
@@ -262,15 +299,15 @@ class NadinaTheRed(Card):
 class PackLeader(Card):
 	def __init__(self):
 		super().__init__(name="Pack Leader", attack_value=3, health=3, tier=3, 
-						m_type=MinionType.BEAST, has_effect=True, 
-						effects=PackLeaderChangeStats())
+						m_type=MinionType.BEAST, has_effect="friend_summoned", 
+						effect=PackLeaderChangeStats())
 
 	def die(self, battle, status, j):
 		super().die(battle, status, j)
 		if status == 1:
-			battle.attacking_player.effects_dict.pop(self)
+			battle.attacking_player.effects_after_friend_is_summoned.pop(self)
 		else:
-			battle.attacked_player.effects_dict.pop(self)
+			battle.attacked_player.effects_after_friend_is_summoned.pop(self)
 
 
 class RedWhelp(Card):
@@ -296,15 +333,15 @@ class ScavengingHyena(Card):
 	def __init__(self):
 		super().__init__(name="Scavenging Hyena", attack_value=2, health=2, tier=1, 
 						m_type=MinionType.BEAST, 
-						has_effects_after_friendly_deaths=True,
-						effects_after_friendly_deaths=ScavengingHyenaEffect())
+						has_effect="friend_death",
+						effect=ScavengingHyenaEffect())
 
 	def die(self, battle, status, j):
 		super().die(battle, status, j)
 		if status == 1:
-			battle.attacking_player.effects_after_friendly_deaths.pop(self)
+			battle.attacking_player.effects_after_friend_is_dead.pop(self)
 		else:
-			battle.attacked_player.effects_after_friendly_deaths.pop(self)
+			battle.attacked_player.effects_after_friend_is_dead.pop(self)
 	
 
 class SelflessHero(Card):
@@ -335,19 +372,23 @@ class ShifterZerus(Card):
 
 
 
-class SoulJuggler(Card):
-	def __init__(self):
-		super().__init__(name="Soul Juggler", attack_value=3, health=3, tier=3, 
-						m_type=MinionType.MINION, 
-						has_effects_after_friendly_deaths=True,
-						effects_after_friendly_deaths=SoulJugglerEffect())
+# class SoulJuggler(Card):
+# 	def __init__(self):
+# 		super().__init__(name="Soul Juggler", attack_value=3, health=3, tier=3, 
+# 						m_type=MinionType.MINION, 
+# 						friend_death=True,
+# 						effects_after_friend_is_dead=SoulJugglerEffect())
 
-	def die(self, battle, status, j):
-		super().die(battle, status, j)
-		if status == 1:
-			battle.attacking_player.effects_after_friendly_deaths.pop(self)
-		else:
-			battle.attacked_player.effects_after_friendly_deaths.pop(self)
+# 	def die(self, battle, status, j):
+# 		super().die(battle, status, j)
+# 		if status == 1:
+# 			battle.attacking_player.effects_after_friend_is_dead.pop(self)
+# 			battle.attacking_player.attack_after_deaths -= 1
+# 		else:
+# 			battle.attacked_player.effects_after_friend_is_dead.pop(self)
+# 			battle.attacked_player.attack_after_deaths -= 1
+
+
 
 
 class SpawnOfnZoth(Card):
@@ -382,11 +423,12 @@ class UnstableGhoul(Card):
 
 		if friendly_minions:
 			for minion in friendly_minions:
-				minion.take_damage(1, self.poisonous)
+				minion.take_damage(1, self.poisonous, battle, status)
 
 		if enemy_minions:
 			for minion in enemy_minions:
-				minion.take_damage(1, self.poisonous)
+				st = 2 if status == 1 else 1
+				minion.take_damage(1, self.poisonous, battle, st)
 
 		if status == 1:
 			battle.attacking_player.effects_causing_next_death.append(self)
@@ -443,29 +485,13 @@ class DeflectoBotChangeStats(Effect):
 	def change_stats(self, minion, battle, status):
 		if minion.m_type == MinionType.MECH:
 			if status == 1:
-				dict_ = battle.attacking_player.effects_dict
+				dict_ = battle.attacking_player.effects_after_friend_is_summoned
 			else:
-				dict_ = battle.attacked_player.effects_dict
+				dict_ = battle.attacked_player.effects_after_friend_is_summoned
 
 			obj = list(dict_.keys())[list(dict_.values()).index(self)]
 			obj.attack_value += 1
 			obj.has_ds = True
-
-
-class JunkbotEffect(Effect):
-	def __init__(self):
-		super().__init__(class_type=Junkbot)
-
-	def change_stats(self, minion, battle, status):
-		if minion.m_type == MinionType.MECH:
-			if status == 1:
-				dict_ = battle.attacking_player.effects_after_friendly_deaths
-			else:
-				dict_ = battle.attacked_player.effects_after_friendly_deaths
-
-			obj = list(dict_.keys())[list(dict_.values()).index(self)]
-			obj.attack_value += 2
-			obj.health += 2
 
 
 class MamaBearChangeStats(Effect):
@@ -488,6 +514,24 @@ class PackLeaderChangeStats(Effect):
 			minion.attack_value += 3
 		return minion
 
+##### gain sth after death:
+class JunkbotEffect(Effect):
+	def __init__(self):
+		super().__init__(class_type=Junkbot)
+
+	def change_stats(self, minion, battle, status):
+		if minion.m_type == MinionType.MECH:
+			if status == 1:
+				dict_ = battle.attacking_player.effects_after_friend_is_dead
+			else:
+				dict_ = battle.attacked_player.effects_after_friend_is_dead
+
+			obj = list(dict_.keys())[list(dict_.values()).index(self)]
+			obj.attack_value += 2
+			obj.health += 2
+
+
+
 class ScavengingHyenaEffect(Effect):
 	def __init__(self):
 		super().__init__(class_type=ScavengingHyena)
@@ -495,36 +539,59 @@ class ScavengingHyenaEffect(Effect):
 	def change_stats(self, minion, battle, status):
 		if minion.m_type == MinionType.BEAST:
 			if status == 1:
-				dict_ = battle.attacking_player.effects_after_friendly_deaths
+				dict_ = battle.attacking_player.effects_after_friend_is_dead
 			else:
-				dict_ = battle.attacked_player.effects_after_friendly_deaths
+				dict_ = battle.attacked_player.effects_after_friend_is_dead
 
 			obj = list(dict_.keys())[list(dict_.values()).index(self)]
 			obj.attack_value += 2
 			obj.health += 1
 
-class SoulJugglerEffect(Effect):
+
+# gain sth after losing DS:
+class DrakonidEnforcerEffect(Effect):
 	def __init__(self):
-		super().__init__(class_type=SoulJuggler)
+		super().__init__(class_type=DrakonidEnforcer)
 
 	def change_stats(self, minion, battle, status):
-		
-		if minion.m_type == MinionType.DEMON:
-			random_enemy_minion = None
-			if status == 1:
-				if battle.attacked_player.warband:
-					random_enemy_minion = random.choice(battle.attacked_player.warband)
-					j = battle.attacked_player.warband.index(random_enemy_minion)
-			else:
-				if battle.attacking_player.warband:
-					random_enemy_minion = random.choice(battle.attacking_player.warband)
-					j = battle.attacking_player.warband.index(random_enemy_minion)
 
-			if random_enemy_minion:
-				random_enemy_minion.take_damage(3, False)
-				if random_enemy_minion.health < 1:
-					player = battle.attacking_player if status == 2 else battle.attacked_player
-					player.effects_causing_next_death.append(random_enemy_minion)
+		if status == 1:
+			dict_ = battle.attacking_player.effects_after_friend_lost_ds
+		else:
+			dict_ = battle.attacked_player.effects_after_friend_lost_ds
+
+		obj = list(dict_.keys())[list(dict_.values()).index(self)]
+		obj.attack_value += 2
+		obj.health += 2
+
+
+# class SoulJugglerEffect(Effect):
+# 	def __init__(self):
+# 		super().__init__(class_type=SoulJuggler)
+
+# 	def change_stats(self, minion, battle, status):
+# 		pass
+		
+		# if minion.m_type == MinionType.DEMON:
+		# 	random_enemy_minion = None
+		# 	if status == 1:
+		# 		if battle.attacked_player.warband:
+		# 			battle.attacking_player.attack_after_deaths += 1
+		# 			# random_enemy_minion = random.choice(battle.attacked_player.warband)
+		# 			# j = battle.attacked_player.warband.index(random_enemy_minion)
+		# 	else:
+		# 		if battle.attacking_player.warband:
+		# 			battle.attacked_player.attack_after_deaths += 1
+					# random_enemy_minion = random.choice(battle.attacking_player.warband)
+					# j = battle.attacking_player.warband.index(random_enemy_minion)
+
+			# if random_enemy_minion:
+			# 	random_enemy_minion.take_damage(3, False)
+			# 	if random_enemy_minion.health < 1:
+			# 		print("[[[[[[[[[[[[", random_enemy_minion.name, "]]]]]]]]]]]]")
+			# 		print("[[[[[[[[[[[[", random_enemy_minion.health, "]]]]]]]]]]]]")
+			# 		player = battle.attacking_player if status == 2 else battle.attacked_player
+			# 		player.effects_causing_next_death.append(random_enemy_minion)
 
 
 

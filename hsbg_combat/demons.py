@@ -30,11 +30,12 @@ class FloatingWatcher(Card):
 class ImpGangBoss(Card):
 	def __init__(self):
 		super().__init__(name="Imp Gang Boss", attack_value=2, health=4, tier=3, 
-						m_type=MinionType.DEMON, damage_effect=True)	
+						m_type=MinionType.DEMON)	
 
-	def act_after_damage(self, battle, status):
+	def take_damage(self, damage, poisonous, battle, status):
+		super().take_damage(damage, poisonous, battle, status)
 		friendly_minions = battle.attacking_player.warband if status == 1 else battle.attacked_player.warband
-		j = battle.attacking_player.attack_index if status == 1 else battle.attacked_player.attacked_minion
+		j = battle.attacking_player.warband.index(self) if status == 1 else battle.attacked_player.warband.index(self)
 		if len(friendly_minions) < 7:
 			imp = self.summon_minion(Imp, battle, status)
 			friendly_minions.insert(j + 1, imp)
@@ -43,9 +44,10 @@ class ImpGangBoss(Card):
 class ImpMama(Card):
 	def __init__(self):
 		super().__init__(name="Imp Mama", attack_value=6, health=10, tier=6, 
-						m_type=MinionType.DEMON, damage_effect=True)	
+						m_type=MinionType.DEMON)	
 
-	def act_after_damage(self, battle, status):
+	def take_damage(self, damage, poisonous, battle, status):
+		super().take_damage(damage, poisonous, battle, status)
 		demons = [
 			AnnihilanBattlemaster,
 			FiendishServant, 
@@ -60,7 +62,7 @@ class ImpMama(Card):
 			]
 		random_demon = random.choice(demons)
 		friendly_minions = battle.attacking_player.warband if status == 1 else battle.attacked_player.warband
-		j = battle.attacking_player.attack_index if status == 1 else battle.attacked_player.attacked_minion
+		j = battle.attacking_player.warband.index(self) if status == 1 else battle.attacked_player.warband.index(self)
 
 		if len(friendly_minions) < 7:
 			demon = self.summon_minion(random_demon, battle, status)
@@ -109,7 +111,7 @@ class Voidlord(Card):
 class VulgarHomunculus(Card):
 	# add btlcry
 	def __init__(self):
-		super().__init__(name="VulgarHomunculus", attack_value=2, health=4, tier=1, 
+		super().__init__(name="Vulgar Homunculus", attack_value=2, health=4, tier=1, 
 						m_type=MinionType.DEMON, taunt=True)
 
 
