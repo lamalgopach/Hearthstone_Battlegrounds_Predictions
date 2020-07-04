@@ -21,9 +21,6 @@ def find_minions(warband, dict_, has_effect):
 
 	for minion in warband:
 		if minion.has_effect == has_effect:
-			print(minion.name)
-			print("minion")
-			print()
 			dict_[minion] = minion.effect
 
 	return dict_
@@ -33,10 +30,12 @@ def start_of_game(warband1, warband2):
 				
 	w1 = copy.deepcopy(warband1)
 	w2 = copy.deepcopy(warband2)
-	player1 = Player("Alice", warband1, w1, dead_minions=[], this_turn_dead=[], 
-						deathrattles=[], effects_causing_next_death=[])
-	player2 = Player("Bob", warband2, w2, dead_minions=[], this_turn_dead=[], 
-						deathrattles=[], effects_causing_next_death=[])
+	player1 = Player("Alice", warband1, w1, dead_minions=[], dead_minions_dict={}, 
+						this_turn_dead=[], deathrattles=[], 
+						effects_causing_next_death=[])
+	player2 = Player("Bob", warband2, w2, dead_minions=[], dead_minions_dict={}, 
+						this_turn_dead=[], deathrattles=[], 
+						effects_causing_next_death=[])
 
 	player1.effects_after_friend_is_summoned = find_minions(w1, {}, "friend_summoned")
 	player2.effects_after_friend_is_summoned = find_minions(w2, {}, "friend_summoned")
@@ -85,8 +84,6 @@ def combat(battle, player1, player2):
 			minion1.triggered_attack(battle=battle)
 		else:
 			minion2.take_damage(minion1.attack_value, minion1.poisonous, battle, status=2)
-
-
 
 		print("								Attacking: ", battle.attacking_player.name, battle.attacking_player.attack_index)
 		print("								", minion1.name, minion1.attack_value, minion1.health)
@@ -157,8 +154,9 @@ warband1 = [
 	# KaboomBot(),
 
 	# RedWhelp(),
+ 	UnstableGhoul(),
 	SecurityRover(),
-	DeflectoBot(),
+	# DeflectoBot(),
 	# SecurityRover(),
 	# DeflectoBot(),
 	# SavannahHighmane(),
@@ -224,9 +222,9 @@ warband2 = [
 # 	RighteousProtector(), 
 	CaveHydra(),
 	# HeraldOfFlame(),
+ 	UnstableGhoul(),
 
 	# SelflessHero(),
- 	# UnstableGhoul(),
  
 	# KaboomBot(),	
 	# KaboomBot(),
@@ -244,10 +242,12 @@ warband2 = [
 	# IronhideDirehorn(),
 
 #3	
+
 	KindlyGrandmother(),
 	RatPack(),
 	# IronhideDirehorn(),
 	# ScavengingHyena(),
+
 
 
 	# MechanoEgg(),
