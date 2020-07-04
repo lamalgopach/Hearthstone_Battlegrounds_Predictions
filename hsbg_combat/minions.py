@@ -90,7 +90,6 @@ class Card:
 		if effects:
 			for k, v in effects.items():
 				v.change_stats(self, battle, status)
-				print("Junkbot haaaalo")
 
 
 	def triggered_attack(self, battle):
@@ -169,7 +168,7 @@ class DefenderOfArgus(Card):
 class DeflectoBot(Card):
 	def __init__(self):
 		super().__init__(name="Deflect-o-Bot", attack_value=3, health=2, tier=3, 
-						m_type=MinionType.MINION, has_ds=True, 
+						m_type=MinionType.MECH, has_ds=True, 
 						has_effect="friend_summoned",
 						effect=DeflectoBotChangeStats())
 
