@@ -207,18 +207,3 @@ class BattleState:
 				break
 
 		return dead_attacking_minions, dead_attacked_minions
-
-	# def check_dead_minions(self):
-
-	# 	if self.attacking_player.gain_from_death:
-	# 		for dead_minion in self.attacking_player.this_turn_dead:
-
-
-
-
-
-
-
-
-
-

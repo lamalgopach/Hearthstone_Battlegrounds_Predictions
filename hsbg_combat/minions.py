@@ -1,5 +1,6 @@
 import random
 from enum import Enum
+import copy
 
 class MinionType(Enum):
 	MINION = 0
@@ -60,7 +61,6 @@ class Card:
 			self.has_ds = False
 			effects = battle.attacking_player.effects_after_friend_lost_ds if status == 1 else battle.attacked_player.effects_after_friend_lost_ds
 			if effects:
-				print("goni")
 				for k, v in effects.items():
 					v.change_stats(self, battle, status)
 
@@ -90,6 +90,7 @@ class Card:
 		if effects:
 			for k, v in effects.items():
 				v.change_stats(self, battle, status)
+				print("Junkbot haaaalo")
 
 
 	def triggered_attack(self, battle):
@@ -98,6 +99,8 @@ class Card:
 		x = battle.attacked_player.attacked_minion
 		left_i = None
 		right_i = None
+		left_minion = None
+		right_minion = None
 		
 		if x != 0 and x + 1 < len(enemy_minions):
 			left_i = x - 1
@@ -420,21 +423,19 @@ class UnstableGhoul(Card):
 	def deathrattle(self, battle, status):
 		friendly_minions = battle.attacking_player.warband if status == 1 else battle.attacked_player.warband
 		enemy_minions = battle.attacked_player.warband if status == 1 else battle.attacking_player.warband
-
-		if friendly_minions:
-			for minion in friendly_minions:
-				minion.take_damage(1, self.poisonous, battle, status)
-
-		if enemy_minions:
-			for minion in enemy_minions:
-				st = 2 if status == 1 else 1
-				minion.take_damage(1, self.poisonous, battle, st)
-
+		f_m = tuple(friendly_minions)
+		e_m = tuple(enemy_minions)
+		if f_m:
+			for m in f_m:
+				m.take_damage(1, self.poisonous, battle, status)
+		if e_m:
+			st = 2 if status == 1 else 1
+			for m in e_m:
+				m.take_damage(1, self.poisonous, battle, st)
 		if status == 1:
 			battle.attacking_player.effects_causing_next_death.append(self)
 		else:
 			battle.attacked_player.effects_causing_next_death.append(self)
-
 
 
 class VirmenSensei(Card):
