@@ -119,7 +119,10 @@ class SecurityRover(Card):
 	def take_damage(self, damage, poisonous, battle, status):
 		super().take_damage(damage, poisonous, battle, status)
 		friendly_minions = battle.attacking_player.warband if status == 1 else battle.attacked_player.warband
-		j = battle.attacking_player.warband.index(self) if status == 1 else battle.attacked_player.warband.index(self)
+		if self not in friendly_minions:
+			j = battle.attacking_player.dead_minions_dict[self] if status == 1 else battle.attacked_player.dead_minions_dict[self]
+		else:
+			j = battle.attacking_player.warband.index(self) if status == 1 else battle.attacked_player.warband.index(self)
 		if len(friendly_minions) < 7:
 			guard_bot = self.summon_minion(GuardBot, battle, status)
 			friendly_minions.insert(j + 1, guard_bot)

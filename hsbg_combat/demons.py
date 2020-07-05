@@ -35,10 +35,15 @@ class ImpGangBoss(Card):
 	def take_damage(self, damage, poisonous, battle, status):
 		super().take_damage(damage, poisonous, battle, status)
 		friendly_minions = battle.attacking_player.warband if status == 1 else battle.attacked_player.warband
-		j = battle.attacking_player.warband.index(self) if status == 1 else battle.attacked_player.warband.index(self)
+
+		if self not in friendly_minions:
+			j = battle.attacking_player.dead_minions_dict[self] if status == 1 else battle.attacked_player.dead_minions_dict[self]
+		else:
+			j = battle.attacking_player.warband.index(self) if status == 1 else battle.attacked_player.warband.index(self)
 		if len(friendly_minions) < 7:
-			imp = self.summon_minion(Imp, battle, status)
+			imp = self.summon_minion(ImpGB, battle, status)
 			friendly_minions.insert(j + 1, imp)
+
 
 
 class ImpMama(Card):
@@ -62,7 +67,11 @@ class ImpMama(Card):
 			]
 		random_demon = random.choice(demons)
 		friendly_minions = battle.attacking_player.warband if status == 1 else battle.attacked_player.warband
-		j = battle.attacking_player.warband.index(self) if status == 1 else battle.attacked_player.warband.index(self)
+		
+		if self not in friendly_minions:
+			j = battle.attacking_player.dead_minions_dict[self] if status == 1 else battle.attacked_player.dead_minions_dict[self]
+		else:
+			j = battle.attacking_player.warband.index(self) if status == 1 else battle.attacked_player.warband.index(self)
 
 		if len(friendly_minions) < 7:
 			demon = self.summon_minion(random_demon, battle, status)
@@ -80,7 +89,7 @@ class Imprisoner(Card):
 
 	def deathrattle(self, battle, status):
 		friendly_minions = battle.attacking_player.warband if status == 1 else battle.attacked_player.warband
-		j = battle.attacking_player.attack_index if status == 1 else battle.attacked_player.attacked_minion
+		j = battle.attacking_player.dead_minions_dict[self] if status == 1 else battle.attacked_player.dead_minions_dict[self]
 
 		imp = self.summon_minion(Imp, battle, status)
 		friendly_minions.insert(j, imp)
@@ -101,7 +110,7 @@ class Voidlord(Card):
 
 	def deathrattle(self, battle, status):
 		friendly_minions = battle.attacking_player.warband if status == 1 else battle.attacked_player.warband
-		j = battle.attacking_player.attack_index if status == 1 else battle.attacked_player.attacked_minion
+		j = battle.attacking_player.dead_minions_dict[self] if status == 1 else battle.attacked_player.dead_minions_dict[self]
 		i = 0
 		while len(friendly_minions) < 7 and i != 3:
 			voidwalker = self.summon_minion(Voidwalker, battle, status)
@@ -115,11 +124,14 @@ class VulgarHomunculus(Card):
 						m_type=MinionType.DEMON, taunt=True)
 
 
-
 # summoned:
 class Imp(Card):
 	def __init__(self):
 		super().__init__(name="Imp", attack_value=1, health=1, tier=1, 
+						m_type=MinionType.DEMON)
+class ImpGB(Card):
+	def __init__(self):
+		super().__init__(name="ImpGB", attack_value=1, health=1, tier=1, 
 						m_type=MinionType.DEMON)
 
 
