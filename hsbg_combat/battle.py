@@ -2,20 +2,19 @@ import random
 from dragons import RedWhelp
 import copy
 
-
 def attack_in_start_of_combat(battle, redwhelp, status):
 	friendly_minions = battle.attacking_player.warband if status == 1 else battle.attacked_player.warband
 	enemy_minions = battle.attacked_player.warband if status == 1 else battle.attacking_player.warband
 	damage = redwhelp.add_damage_in_combat(friendly_minions=friendly_minions)
 	attacked_minion = random.choice(enemy_minions)
 	j = enemy_minions.index(attacked_minion)
-	attacked_minion.take_damage(damage, False, battle, status)
+	st = 2 if status == 1 else 1
+	attacked_minion.take_damage(damage, False, battle, st)
 
 	if attacked_minion.health < 1:
 		battle.execute_death_phase(0, 0)
 		if isinstance(attacked_minion, RedWhelp):
 			return attacked_minion
-
 
 class Player:
 	def __init__(self, name, start_warband, warband,
@@ -144,7 +143,6 @@ class BattleState:
 			attacked_minion = random.randint(0, len(self.attacked_player.warband) - 1)
 		return attacked_minion	
 
-	# def execute_deaths(self, d_ag_ms, d_ad_ms):
 	def execute_deaths(self, player, deaths_number, status):
 		if player.this_turn_dead:
 			for minion in player.this_turn_dead:
@@ -192,5 +190,4 @@ class BattleState:
 			# elif not self.attacking_player.warband or not self.attacked_player.warband:
 			# 	print("two")
 			# 	break
-
 		return dead_attacking_minions, dead_attacked_minions

@@ -16,7 +16,6 @@ def choose_first(player1, player2):
 		game = [player2.warband, player1.warband]
 	return game
 
-
 def find_minions(warband, dict_, has_effect):
 
 	for minion in warband:
@@ -24,7 +23,6 @@ def find_minions(warband, dict_, has_effect):
 			dict_[minion] = minion.effect
 
 	return dict_
-
 
 def start_of_game(warband1, warband2):
 				
@@ -59,7 +57,6 @@ def start_of_game(warband1, warband2):
 	battle.print_state("START OF THE GAME: ")
 
 	return battle, player1, player2
-
 
 def combat(battle, player1, player2):
 	winner = None
@@ -106,13 +103,11 @@ def combat(battle, player1, player2):
 			# ATTACKING minion INDEX:
 			battle.attacking_player.attack_index += 1 - dead_attacking_minions
 			battle.attacked_player.attack_index -= dead_attacked_minions
-
 			# ATTACKING/ATTACKED INDEX -> 0:
 			if battle.attacking_player.attack_index < 0 or battle.attacking_player.attack_index > len(battle.attacking_player.warband) - 1:
 				battle.attacking_player.attack_index = 0
 			if battle.attacked_player.attack_index < 0 or battle.attacked_player.attack_index > len(battle.attacked_player.warband) - 1:
 				battle.attacked_player.attack_index = 0
-
 			battle.round += 1
 
 		statement = f'Warbands after {battle.attacking_player.name}\'s attack:'
@@ -123,10 +118,8 @@ def combat(battle, player1, player2):
 		damage = 0
 
 	else:
-		# print()
 		winner = battle.attacking_player if battle.attacking_player.warband else battle.attacked_player
 		loser = battle.attacking_player if not battle.attacking_player.warband else battle.attacked_player
-
 		print(f'{winner.name} WINNER')
 		# print(f'{loser.name} LOSER')
 		damage = winner.count_final_damage(winner.warband)
@@ -135,7 +128,6 @@ def combat(battle, player1, player2):
 
 	# print(player1.life, "player1 life", player1.name)
 	# print(player2.life, "player2 life", player2.name)
-
 	# print(len(player1.warband.warband))
 	# print(len(player2.warband.warband))
 
@@ -143,66 +135,37 @@ def combat(battle, player1, player2):
 
 
 warband1 = [ 
-# #1
-	# HeraldOfFlame(),
-	# GlyphGuardian(),
-	# RedWhelp(),
+	RedWhelp(),
 	DeflectoBot(),
-	# ImpMama(),
-	# FiendishServant(),
-	# Imprisoner(), 
-	# KaboomBot(),
-
-	# RedWhelp(),
- 	UnstableGhoul(),
-	SecurityRover(),
-	# DeflectoBot(),
-	# SecurityRover(),
-	# DeflectoBot(),
-	# SavannahHighmane(),
-
-# #2
-
-	# RatPack(),
-	# Ghastcoiler(),
-	# Maexxna(),
-
-
-
-	# RedWhelp(),
-	# FloatingWatcher(),
-	# AnnihilanBattlemaster(),
-	# SoulJuggler(),
-	# SoulJuggler(),
-#3
-	# FoeReaper4000(),
-	# HarvestGolem(),
-	# Mecharoo(),
+	DeflectoBot(),
+	CaveHydra(),
+	Voidlord(),
+	ImpMama(),
 	DrakonidEnforcer(),
-	DrakonidEnforcer(),
-	# SneedsOldShredder(),
-	Junkbot(),
+	# HeraldOfFlame(),
+ 	# UnstableGhoul(),
+	# HeraldOfFlame(),
+ 	# UnstableGhoul(),
+	]
 
-	# ZappSlywick(),
+warband2 = [
+	RedWhelp(),
+	KindlyGrandmother(),
+	RatPack(),
+	ReplicatingMenace(),
+	Mecharoo(), 
+	ImpGangBoss(),
+	]
 
-	# KingBagurgle(),
-
-#######################################
-	# StewardOfTime(),
-	# HangryDragon(),
-	# TwilightEmissary(),
-	# CobaltScalebane(),
-
-
-
-	# GentleMegasaur(),
-
-	# MetaltoothLeaper(),
-	# Zoobot(),
-	# ScrewjankClunker(),
-
-
+###################################
+# MINIONS:
+	# RighteousProtector(), 
+	# SelflessHero(),
+	# WrathWeaver(),
 	# CrowdFavorite(),
+ 	# UnstableGhoul(),
+ 	# SoulJuggler(),
+	# PackLeader(),
 	# ShifterZerus(),
 	# DefenderOfArgus(),
 	# VirmenSensei(),
@@ -212,82 +175,78 @@ warband1 = [
 	# MenagerieMagician(),
 	# BrannBronzebeard(),
 	# StrongshellScavenger(),
+	# NadinaTheRed(),
+	# ZappSlywick(),
 
-	# FelfinNavigator(),
-	# Toxfin(),
-	]
-
-warband2 = [
-# #1
-# 	RighteousProtector(), 
-	CaveHydra(),
-	# HeraldOfFlame(),
- 	UnstableGhoul(),
-
-	# SelflessHero(),
- 
-	# KaboomBot(),	
-	# KaboomBot(),
-	# KaboomBot(),
-	# ImpGangBoss(),
-	# Imprisoner(),  
-	# Voidlord(),
-
-# #2
-# 	NadinaTheRed(),
-	# RedWhelp(),
-
-	# GoldrinnTheGreatWolf(),
-
-	# IronhideDirehorn(),
-
-#3	
-
-	KindlyGrandmother(),
-	RatPack(),
-	# IronhideDirehorn(),
+# BEASTS:
 	# ScavengingHyena(),
+	# Alleycat(),
+	# RabidSaurolisk(),
+	# KindlyGrandmother(),
+	# RatPack(),
+	# Ghastcoiler(),
+	# Maexxna(),
+	# CaveHydra(),
+	# SavannahHighmane(),
+	# GoldrinnTheGreatWolf(),
+	# IronhideDirehorn(),
+	# GentleMegasaur(),
+	# MamaBear(),
 
-
-
+# MECHS:
+	# KaboomBot(),
+	# HarvestGolem(),
+	# Mecharoo(),
+	# MicroMachine(),
+	# MetaltoothLeaper(),
+	# Zoobot(),
+	# ScrewjankClunker(),
+	# PogoHopper(),
+	# IronSensei(),
+	# SecurityRover(),
+	# DeflectoBot(),
+	# Junkbot(),
 	# MechanoEgg(),
 	# PilotedShredder(),
+	# SneedsOldShredder(),
 	# ReplicatingMenace(),
-
 	# KangorsApprentice(),
+	# FoeReaper4000(),
 
-	ScavengingHyena(),
-	PackLeader(),	
-	MamaBear(),
+# DEMONS:
+	# FiendishServant(),
+	# Imprisoner(), 
+	# ImpGangBoss(),
+	# NathrezimOverseer(),
+	# Voidlord(),
+	# ImpMama(),
+	# FloatingWatcher(),
+	# AnnihilanBattlemaster(),
 
-############################################
+# DRAGONS:
+	# RedWhelp(),
+	# GlyphGuardian(),
+	# HeraldOfFlame(),
+	# StewardOfTime(),
+	# HangryDragon(),
+	# TwilightEmissary(),
+	# CobaltScalebane(),
 	# Murozond(),
+	# DrakonidEnforcer(),
 	# RazorgoreTheUntamed(),
 	# KalecgosArcaneAspect(),
 
-
+# MURLOCS:
 	# MurlocTidecaller(),
 	# ColdlightSeer(),
 	# RockpoolHunter(),
 	# PrimalfinLookout(),
+	# FelfinNavigator(),
+	# Toxfin(),
+	# KingBagurgle(),
 
+#######################################
 
-	# Alleycat(),
-	# RabidSaurolisk(),
-
-
-	# MicroMachine(),
-	# PogoHopper(),
-	# IronSensei(),
-	# Junkbot(),
-# 
-
-	# WrathWeaver(),
-	# NathrezimOverseer(),
-	# NathrezimOverseer(),
-	# SoulJuggler(),
-	# SoulJuggler(),
-	]
 
 battle, player1, player2 = start_of_game(warband1, warband2)
 combat(battle, player1, player2)

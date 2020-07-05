@@ -1,4 +1,4 @@
-from minions import *
+from card import *
 
 
 class ColdlightSeer(Card):
