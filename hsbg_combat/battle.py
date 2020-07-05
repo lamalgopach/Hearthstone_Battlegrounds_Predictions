@@ -144,31 +144,18 @@ class BattleState:
 			attacked_minion = random.randint(0, len(self.attacked_player.warband) - 1)
 		return attacked_minion	
 
-	def execute_deaths(self, d_ag_ms, d_ad_ms):
-
-		if self.attacking_player.this_turn_dead:
-			for minion in self.attacking_player.this_turn_dead:
-				j = self.attacking_player.warband.index(minion)
-				if j <= self.attacking_player.attack_index:
-					d_ag_ms += 1
+	# def execute_deaths(self, d_ag_ms, d_ad_ms):
+	def execute_deaths(self, player, deaths_number, status):
+		if player.this_turn_dead:
+			for minion in player.this_turn_dead:
+				j = player.warband.index(minion)
+				if j <= player.attack_index:
+					deaths_number += 1
 				if minion.has_deathrattle:
-					self.attacking_player.deathrattles.append(minion)
-				minion.die(self, status=1, j=j)
-
-			self.attacking_player.this_turn_dead = []
-
-		if self.attacked_player.this_turn_dead:
-			for minion in self.attacked_player.this_turn_dead:
-				j = self.attacked_player.warband.index(minion)
-				if j <= self.attacked_player.attack_index:
-					d_ad_ms += 1 
-				if minion.has_deathrattle:
-					self.attacked_player.deathrattles.append(minion)
-				minion.die(self, status=2, j=j)
-
-			self.attacked_player.this_turn_dead = []
-
-		return d_ag_ms, d_ad_ms
+					player.deathrattles.append(minion)
+				minion.die(self, status, j=j)
+			player.this_turn_dead = []
+		return deaths_number
 
 	def execute_deathrattles(self):
 		
@@ -187,23 +174,26 @@ class BattleState:
 
 			players = [self.attacking_player, self.attacked_player]
 
-			
 			for player in players:
 				for minion in player.warband:
 					if minion.health < 1:
 						player.this_turn_dead.append(minion)
+						player.dead_minions_dict[minion] = player.warband.index(minion)
+						player.dead_minions.append(minion)
 
-			if self.attacking_player.this_turn_dead or self.attacked_player.this_turn_dead:
-				dead_attacking_minions, dead_attacked_minions = self.execute_deaths(d_ag_ms=dead_attacking_minions, d_ad_ms=dead_attacked_minions)		
-
+			if self.attacking_player.this_turn_dead:
+				dead_attacking_minions = self.execute_deaths(player=self.attacking_player, deaths_number=dead_attacking_minions, status=1)
+			
+			if self.attacked_player.this_turn_dead:
+				dead_attacked_minions = self.execute_deaths(player=self.attacked_player, deaths_number=dead_attacked_minions, status=2)
 
 			if self.attacking_player.deathrattles or self.attacked_player.deathrattles:
 				self.execute_deathrattles()
 
-
 			if not (self.attacking_player.effects_causing_next_death or self.attacked_player.effects_causing_next_death):
 				break 
-			elif not self.attacking_player.warband or not self.attacked_player.warband:
-				break
+			# elif not self.attacking_player.warband or not self.attacked_player.warband:
+			# 	print("two")
+			# 	break
 
 		return dead_attacking_minions, dead_attacked_minions
