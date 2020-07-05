@@ -95,6 +95,7 @@ class RatPack(Card):
 	def deathrattle(self, battle, status):
 		friendly_minions = battle.attacking_player.warband if status == 1 else battle.attacked_player.warband
 		j = battle.attacking_player.dead_minions_dict[self] if status == 1 else battle.attacked_player.dead_minions_dict[self]
+		# j = battle.attacking_player.warband.index(self) if status == 1 else battle.attacked_player.warband.index(self)
 
 		x = self.attack_value
 		i = 0

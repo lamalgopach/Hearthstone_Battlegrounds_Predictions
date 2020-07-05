@@ -75,23 +75,6 @@ class Card:
 		# else:
 		# 	self.health -= damage
 
-	def die(self, battle, status, j):
-		friendly_minions = battle.attacking_player.warband if status == 1 else battle.attacked_player.warband
-		del friendly_minions[j]
-		if status == 1:
-			battle.attacking_player.dead_minions_dict[self] = j
-			battle.attacking_player.dead_minions.append(self)
-		else:
-			battle.attacked_player.dead_minions_dict[self] = j
-			battle.attacked_player.dead_minions.append(self)
-
-		effects = battle.attacking_player.effects_after_friend_is_dead if status == 1 else battle.attacked_player.effects_after_friend_is_dead
-
-		if effects:
-			for k, v in effects.items():
-				v.change_stats(self, battle, status)
-
-
 	def triggered_attack(self, battle):
 
 		enemy_minions = battle.attacked_player.warband
@@ -123,7 +106,16 @@ class Card:
 
 		if right_minion:
 			right_minion.take_damage(self.attack_value, self.poisonous, battle, status=2)
+	
 
+	def die(self, battle, status, j):
+		friendly_minions = battle.attacking_player.warband if status == 1 else battle.attacked_player.warband
+		del friendly_minions[j]
+		effects = battle.attacking_player.effects_after_friend_is_dead if status == 1 else battle.attacked_player.effects_after_friend_is_dead
+
+		if effects:
+			for k, v in effects.items():
+				v.change_stats(self, battle, status)
 
 
 	def summon_minion(self, minion_class, battle, status):
@@ -140,7 +132,6 @@ class BrannBronzebeard(Card):
 	def __init__(self):
 		super().__init__(name="Brann Bronzebeard", attack_value=2, health=4, tier=5, 
 						m_type=MinionType.MINION)
-
 
 
 class CrowdFavorite(Card):
