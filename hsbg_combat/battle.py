@@ -169,6 +169,8 @@ class BattleState:
 			self.attacked_player.effects_causing_next_death = []
 
 			players = [self.attacking_player, self.attacked_player]
+			status_dict = {self.attacking_player:1, self.attacked_player:2}
+			deaths_number_dict = {self.attacking_player:dead_attacking_minions, self.attacked_player:dead_attacked_minions}
 
 			for player in players:
 				for minion in player.warband:
@@ -177,15 +179,13 @@ class BattleState:
 						player.dead_minions_dict[minion] = player.warband.index(minion)
 						player.dead_minions.append(minion)
 
-			if self.attacking_player.this_turn_dead:
-				dead_attacking_minions = self.execute_deaths(player=self.attacking_player, deaths_number=dead_attacking_minions, status=1)
-			if self.attacked_player.this_turn_dead:
-				dead_attacked_minions = self.execute_deaths(player=self.attacked_player, deaths_number=dead_attacked_minions, status=2)
-			if self.attacking_player.deathrattles:
-				self.execute_deathrattles(player=self.attacking_player, status=1)
-			if self.attacked_player.deathrattles:
-				self.execute_deathrattles(player=self.attacked_player, status=2)
-
+			for player in players:
+				if player.this_turn_dead:
+					dead_attacking_minions = self.execute_deaths(player=player, deaths_number=deaths_number_dict[player], status=status_dict[player])
+		
+			for player in players:
+				if player.deathrattles:
+					self.execute_deathrattles(player=player, status=status_dict[player])
 
 			if not (self.attacking_player.effects_causing_next_death or self.attacked_player.effects_causing_next_death):
 				break 
