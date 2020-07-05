@@ -45,7 +45,7 @@ class HeraldOfFlame(Card):
 				else:
 					leftmost_minion = battle.attacked_player.warband[i]
 					if leftmost_minion.health > 0:
-						leftmost_minion.take_damage(3, self.poisonous, battle)
+						leftmost_minion.take_damage(3, self.poisonous, battle, 2)
 						if leftmost_minion.health >= 0:
 							break
 						else:
