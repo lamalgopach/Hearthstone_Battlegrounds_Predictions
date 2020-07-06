@@ -122,21 +122,21 @@ class ShifterZerus(Card):
 		super().__init__(name="Shifter Zerus", attack_value=1, health=1, tier=3, 
 						m_type=MinionType.MINION)
 
-# class SoulJuggler(Card):
-# 	def __init__(self):
-# 		super().__init__(name="Soul Juggler", attack_value=3, health=3, tier=3, 
-# 						m_type=MinionType.MINION, 
-# 						friend_death=True,
-# 						effects_after_friend_is_dead=SoulJugglerEffect())
+class SoulJuggler(Card):
+	def __init__(self):
+		super().__init__(name="Soul Juggler", attack_value=3, health=3, tier=3, 
+						m_type=MinionType.MINION, has_effect="friend_death", 
+						effect=SoulJugglerEffect())
 
-# 	def die(self, battle, status, j):
-# 		super().die(battle, status, j)
-# 		if status == 1:
-# 			battle.attacking_player.effects_after_friend_is_dead.pop(self)
-# 			battle.attacking_player.attack_after_deaths -= 1
-# 		else:
-# 			battle.attacked_player.effects_after_friend_is_dead.pop(self)
-# 			battle.attacked_player.attack_after_deaths -= 1
+	def die(self, battle, status, j):
+		super().die(battle, status, j)
+		if status == 1:
+			battle.attacking_player.effects_after_friend_is_dead.pop(self)
+			print(battle.attacking_player.effects_after_friend_is_dead, "effects effects")
+
+		else:
+			battle.attacked_player.effects_after_friend_is_dead.pop(self)
+			print(battle.attacked_player.effects_after_friend_is_dead, "effects effects")
 
 class SpawnOfnZoth(Card):
 	def __init__(self):
@@ -218,25 +218,38 @@ class PackLeaderChangeStats(Effect):
 			minion.attack_value += 3
 		return minion
 
-# class SoulJugglerEffect(Effect):
-# 	def __init__(self):
-# 		super().__init__(class_type=SoulJuggler)
-
-# 	def change_stats(self, minion, battle, status):
-# 		pass
-		
-		# if minion.m_type == MinionType.DEMON:
-		# 	random_enemy_minion = None
-		# 	if status == 1:
-		# 		if battle.attacked_player.warband:
-		# 			battle.attacking_player.attack_after_deaths += 1
-		# 			# random_enemy_minion = random.choice(battle.attacked_player.warband)
-		# 			# j = battle.attacked_player.warband.index(random_enemy_minion)
-		# 	else:
-		# 		if battle.attacking_player.warband:
-		# 			battle.attacked_player.attack_after_deaths += 1
-					# random_enemy_minion = random.choice(battle.attacking_player.warband)
-					# j = battle.attacking_player.warband.index(random_enemy_minion)
+class SoulJugglerEffect(Effect):
+	def __init__(self):
+		super().__init__(class_type=SoulJuggler)
+	def change_stats(self, minion, battle, status):
+		if minion.m_type == MinionType.DEMON:
+			random_enemy_minion = None
+			if status == 1:
+				player = battle.attacked_player
+			else:
+				player = battle.attacking_player
+			if player.warband:
+				minions_no_negative_health = [minion for minion in player.warband if minion.health > 0]
+				if minions_no_negative_health:
+					random_enemy_minion = random.choice(minions_no_negative_health)
+				else:
+					random_enemy_minion = None
+				if random_enemy_minion:
+					st = 1 if status == 2 else 2
+					random_enemy_minion.take_damage(3, False, battle, st)
+					if random_enemy_minion.health < 1:
+						player.effects_causing_next_death.append(random_enemy_minion)
+						if isinstance(random_enemy_minion, SoulJuggler):
+							j = player.warband.index(random_enemy_minion)
+							random_enemy_minion.die(battle, st, j)
+			# if status == 1:
+			# 	if battle.attacked_player.warband:
+			# 		random_enemy_minion = random.choice(battle.attacked_player.warband)
+			# 		j = battle.attacked_player.warband.index(random_enemy_minion)
+			# else:
+			# 	if battle.attacking_player.warband:
+			# 		random_enemy_minion = random.choice(battle.attacking_player.warband)
+			# 		j = battle.attacking_player.warband.index(random_enemy_minion)
 
 			# if random_enemy_minion:
 			# 	random_enemy_minion.take_damage(3, False)
