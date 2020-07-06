@@ -1,6 +1,19 @@
 import random 
 from card import *
 
+class BolvarFireblood(Card):
+	def __init__(self):
+		super().__init__(name="Bolvar, Fireblood", attack_value=1, health=7, tier=4, 
+						m_type=MinionType.MINION, has_ds=True, 
+						has_effect="friend_ds_lost", effect=BolvarFirebloodEffect())
+	def die(self, battle, status, j):
+		super().die(battle, status, j)
+		if status == 1:
+			battle.attacking_player.effects_after_friend_lost_ds.pop(self)
+		else:
+			battle.attacked_player.effects_after_friend_lost_ds.pop(self)
+
+
 class BrannBronzebeard(Card):
 # add effect
 	def __init__(self):
@@ -89,7 +102,7 @@ class PackLeader(Card):
 	def __init__(self):
 		super().__init__(name="Pack Leader", attack_value=3, health=3, tier=3, 
 						m_type=MinionType.MINION, has_effect="friend_summoned", 
-						effect=PackLeaderChangeStats())
+						effect=PackLeaderEffect())
 	def die(self, battle, status, j):
 		super().die(battle, status, j)
 		if status == 1:
@@ -209,7 +222,7 @@ class FinkleEinhorn(Card):
 		super().__init__(name="Finkle Einhorn", attack_value=3, health=3, tier=1, 
 						m_type=MinionType.MINION)
 
-class PackLeaderChangeStats(Effect):
+class PackLeaderEffect(Effect):
 	def __init__(self):
 		super().__init__(class_type=PackLeader)
 
@@ -242,22 +255,19 @@ class SoulJugglerEffect(Effect):
 						if isinstance(random_enemy_minion, SoulJuggler):
 							j = player.warband.index(random_enemy_minion)
 							random_enemy_minion.die(battle, st, j)
-			# if status == 1:
-			# 	if battle.attacked_player.warband:
-			# 		random_enemy_minion = random.choice(battle.attacked_player.warband)
-			# 		j = battle.attacked_player.warband.index(random_enemy_minion)
-			# else:
-			# 	if battle.attacking_player.warband:
-			# 		random_enemy_minion = random.choice(battle.attacking_player.warband)
-			# 		j = battle.attacking_player.warband.index(random_enemy_minion)
 
-			# if random_enemy_minion:
-			# 	random_enemy_minion.take_damage(3, False)
-			# 	if random_enemy_minion.health < 1:
-			# 		print("[[[[[[[[[[[[", random_enemy_minion.name, "]]]]]]]]]]]]")
-			# 		print("[[[[[[[[[[[[", random_enemy_minion.health, "]]]]]]]]]]]]")
-			# 		player = battle.attacking_player if status == 2 else battle.attacked_player
-			# 		player.effects_causing_next_death.append(random_enemy_minion)
+
+# gain sth after losing DS:
+class BolvarFirebloodEffect(Effect):
+	def __init__(self):
+		super().__init__(class_type=BolvarFireblood)
+	def change_stats(self, minion, battle, status):
+		if status == 1:
+			dict_ = battle.attacking_player.effects_after_friend_lost_ds
+		else:
+			dict_ = battle.attacked_player.effects_after_friend_lost_ds
+		obj = list(dict_.keys())[list(dict_.values()).index(self)]
+		obj.attack_value += 2
 
 # Jakub:
 # minion = SpawnOfnZoth()
