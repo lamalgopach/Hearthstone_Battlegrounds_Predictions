@@ -65,14 +65,19 @@ def combat(battle, player1, player2):
 
 	# attack till at least one player has no minions:
 	while battle.attacking_player.warband and battle.attacked_player.warband:
+	 	# create minions in game:
+	 	# attacking minion:
+		while True:
+			minion1 = battle.attacking_player.warband[battle.attacking_player.attack_index]
+			if minion1.attack_value == 0:
+				battle.attacking_player.attack_index += 1
+				continue
+			else:
+				break
 		# choose attacked minion:
 		attacked_minion = battle.choose_attacked_minion()
 		battle.attacked_player.attacked_minion = attacked_minion
-
-	 	# create minions in game:
-		minion1 = battle.attacking_player.warband[battle.attacking_player.attack_index]
 		minion2 = battle.attacked_player.warband[attacked_minion]
-
 		# attack phase:
 		minion1.attack()
 		minion1.take_damage(minion2.attack_value, minion2.poisonous, battle, status=1)
@@ -134,10 +139,10 @@ def combat(battle, player1, player2):
 
 
 warband1 = [ 
+	MechanoEgg(),
 	NadinaTheRed(),
 	SelflessHero(),
 	Ghastcoiler(),
-	PilotedShredder(),
 	SneedsOldShredder(),
 	CobaltScalebane(),
  	BolvarFireblood(),
@@ -147,12 +152,11 @@ warband2 = [
 
 	DeflectoBot(),
 	Ghastcoiler(),
-	GlyphGuardian(),
+	MechanoEgg(),
 	PilotedShredder(),
 	SneedsOldShredder(),
 	HeraldOfFlame(),
 	BolvarFireblood(),
-
 	]
 
 ###################################
