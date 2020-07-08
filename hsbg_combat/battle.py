@@ -52,6 +52,18 @@ class Player:
 		self.level = level
 		self.life = life
 
+	def find_minions_with_superpowers(self, warband):
+		for minion in warband:
+			if minion.has_effect:
+				self.add_to_effect_dict(minion, minion.has_effect)
+
+	def add_to_effect_dict(self, minion, minions_effect):
+		if minions_effect == "friend_summoned":
+			self.effects_after_friend_is_summoned[minion] = minion.effect
+		elif minions_effect == "friend_death":
+			self.effects_after_friend_is_dead[minion] = minion.effect
+		elif minions_effect == "friend_ds_lost":
+			self.effects_after_friend_lost_ds[minion] = minion.effect
 
 	# at the end of the battle count damage:
 	def count_final_damage(self, alive_minions):
@@ -163,12 +175,17 @@ class BattleState:
 
 	def execute_death_phase(self, dead_attacking_minions, dead_attacked_minions):
 		while True:
+
 			self.attacking_player.effects_causing_next_death = []
 			self.attacked_player.effects_causing_next_death = []
 
 			players = [self.attacking_player, self.attacked_player]
 			status_dict = {self.attacking_player:1, self.attacked_player:2}
 			deaths_number_dict = {self.attacking_player:dead_attacking_minions, self.attacked_player:dead_attacked_minions}
+			# print()
+			# print("number of deaths BEFORE:")
+			# for k, v in deaths_number_dict.items():
+			# 	print(k, v)
 
 			for player in players:
 				for minion in player.warband:
@@ -179,8 +196,12 @@ class BattleState:
 
 			for player in players:
 				if player.this_turn_dead:
-					dead_attacking_minions = self.execute_deaths(player=player, deaths_number=deaths_number_dict[player], status=status_dict[player])
-		
+					deaths_number_dict[player] = self.execute_deaths(player=player, deaths_number=deaths_number_dict[player], status=status_dict[player])
+			
+			# print("number of deaths AFTER:")
+			# for k, v in deaths_number_dict.items():
+			# 	print(k, v)
+
 			for player in players:
 				if player.deathrattles:
 					self.execute_deathrattles(player=player, status=status_dict[player])
@@ -190,4 +211,7 @@ class BattleState:
 			# elif not self.attacking_player.warband or not self.attacked_player.warband:
 			# 	print("two")
 			# 	break
+		dead_attacking_minions = deaths_number_dict[self.attacking_player]
+		dead_attacked_minions = deaths_number_dict[self.attacked_player]
+		print(dead_attacking_minions, dead_attacked_minions)
 		return dead_attacking_minions, dead_attacked_minions

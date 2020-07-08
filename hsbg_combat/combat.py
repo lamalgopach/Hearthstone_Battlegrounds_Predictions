@@ -30,19 +30,19 @@ def start_of_game(warband1, warband2):
 	w2 = copy.deepcopy(warband2)
 	player1 = Player("Alice", warband1, w1, dead_minions=[], dead_minions_dict={}, 
 						this_turn_dead=[], deathrattles=[], 
+						effects_after_friend_is_summoned = {},
+						effects_after_friend_is_dead = {}, 
+						effects_after_friend_lost_ds = {},
 						effects_causing_next_death=[])
 	player2 = Player("Bob", warband2, w2, dead_minions=[], dead_minions_dict={}, 
 						this_turn_dead=[], deathrattles=[], 
+						effects_after_friend_is_summoned = {},
+						effects_after_friend_is_dead = {}, 
+						effects_after_friend_lost_ds = {},
 						effects_causing_next_death=[])
 
-	player1.effects_after_friend_is_summoned = find_minions(w1, {}, "friend_summoned")
-	player2.effects_after_friend_is_summoned = find_minions(w2, {}, "friend_summoned")
-
-	player1.effects_after_friend_is_dead = find_minions(w1, {}, "friend_death")
-	player2.effects_after_friend_is_dead = find_minions(w2, {}, "friend_death")
-
-	player1.effects_after_friend_lost_ds = find_minions(w1, {}, "friend_ds_lost")
-	player2.effects_after_friend_lost_ds = find_minions(w2, {}, "friend_ds_lost")
+	player1.find_minions_with_superpowers(w1)
+	player2.find_minions_with_superpowers(w2)
 
 	# THE ORDER OF ATTACK:
 	game = choose_first(player1, player2)
@@ -66,7 +66,6 @@ def combat(battle, player1, player2):
 	# attack till at least one player has no minions:
 	while battle.attacking_player.warband and battle.attacked_player.warband:
 		# choose attacked minion:
-
 		attacked_minion = battle.choose_attacked_minion()
 		battle.attacked_player.attacked_minion = attacked_minion
 
@@ -135,26 +134,25 @@ def combat(battle, player1, player2):
 
 
 warband1 = [ 
-	RedWhelp(),
-	DeflectoBot(),
-	DeflectoBot(),
-	CaveHydra(),
-	Voidlord(),
-	ImpMama(),
-	DrakonidEnforcer(),
-	# HeraldOfFlame(),
- 	# UnstableGhoul(),
-	# HeraldOfFlame(),
- 	# UnstableGhoul(),
+	NadinaTheRed(),
+	SelflessHero(),
+	Ghastcoiler(),
+	PilotedShredder(),
+	SneedsOldShredder(),
+	CobaltScalebane(),
+ 	BolvarFireblood(),
 	]
 
 warband2 = [
-	RedWhelp(),
-	KindlyGrandmother(),
-	RatPack(),
-	ReplicatingMenace(),
-	Mecharoo(), 
-	ImpGangBoss(),
+
+	DeflectoBot(),
+	Ghastcoiler(),
+	GlyphGuardian(),
+	PilotedShredder(),
+	SneedsOldShredder(),
+	HeraldOfFlame(),
+	BolvarFireblood(),
+
 	]
 
 ###################################
@@ -177,6 +175,7 @@ warband2 = [
 	# StrongshellScavenger(),
 	# NadinaTheRed(),
 	# ZappSlywick(),
+	# BolvarFireblood(),
 
 # BEASTS:
 	# ScavengingHyena(),

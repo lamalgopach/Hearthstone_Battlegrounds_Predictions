@@ -9,7 +9,6 @@ class MinionType(Enum):
 	MECH = 4
 	DEMON = 5
 
-
 class Card:
 	def __init__(self, *, name, attack_value, health, tier, m_type, taunt=False, 
 		
@@ -37,7 +36,6 @@ class Card:
 		#EFFECTS:
 		self.has_effect = has_effect
 		self.effect = effect
-
 
 	def attack(self):
 		# used in Glyph Guardian
@@ -106,25 +104,26 @@ class Card:
 		if right_minion:
 			right_minion.take_damage(self.attack_value, self.poisonous, battle, status=2)
 	
-
 	def die(self, battle, status, j):
 		friendly_minions = battle.attacking_player.warband if status == 1 else battle.attacked_player.warband
 		del friendly_minions[j]
 		effects = battle.attacking_player.effects_after_friend_is_dead if status == 1 else battle.attacked_player.effects_after_friend_is_dead
-
 		if effects:
 			for k, v in effects.items():
 				v.change_stats(self, battle, status)
 
-
 	def summon_minion(self, minion_class, battle, status):
 		minion = minion_class()
+
+		if minion.has_effect:
+			player = battle.attacking_player if status == 1 else battle.attacked_player
+			player.add_to_effect_dict(minion, minion.has_effect)
+
 		effects = battle.attacking_player.effects_after_friend_is_summoned if status == 1 else battle.attacked_player.effects_after_friend_is_summoned
 		if effects:
 			for obj, effect_obj in effects.items():
 				effect_obj.change_stats(minion, battle, status)
 		return minion
-
 
 #effects:
 class Effect:
