@@ -1,5 +1,5 @@
 import random 
-from card import *
+from .card import *
 
 class BolvarFireblood(Card):
 	def __init__(self):
@@ -199,11 +199,10 @@ class WaxriderTogwaggle(Card):
 	def __init__(self):
 		super().__init__(name="Waxrider Togwaggle", attack_value=1, health=2, tier=2, 
 						m_type=MinionType.MINION)
-
-	# def change_stats_after_attack(self, minion1, minion2, battle, status):
-	# 	if minion.m_type == MinionType.DRAGON:
-	# 		self.health += 2
-	# 		self.attack_value += 2
+	def change_stats_after_attack(self, minion1, minion2, battle, status):
+		if minion.m_type == MinionType.DRAGON:
+			self.health += 2
+			self.attack_value += 2
 
 class WrathWeaver(Card):
 	#btlcry damage

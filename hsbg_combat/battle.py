@@ -1,6 +1,6 @@
 import random
-from dragons import RedWhelp
 import copy
+from .dragons import RedWhelp
 
 def attack_in_start_of_combat(battle, redwhelp, status):
 	friendly_minions = battle.attacking_player.warband if status == 1 else battle.attacked_player.warband
@@ -17,26 +17,19 @@ def attack_in_start_of_combat(battle, redwhelp, status):
 			return attacked_minion
 
 class Player:
-	def __init__(self, name, start_warband, warband,
-				attack_index=0, attacked_minion=0,
+	def __init__(self, name, start_warband, warband, attack_index=0, 
 
-				dead_minions=[], dead_minions_dict={}, 
-				this_turn_dead=[], deathrattles=[], 
+			dead_minions=[], dead_minions_dict={}, this_turn_dead=[], deathrattles=[], 
 
-				effects_after_friend_is_summoned = {},
-				effects_after_friend_is_dead = {},
-				effects_after_friend_lost_ds = {},
-				
-				effects_causing_next_death=[], 
+			effects_after_friend_is_summoned = {}, effects_after_friend_is_dead = {},
+			effects_after_friend_lost_ds = {}, effects_causing_next_death=[], 
 
-				level=1, life=40):
+			level=1, life=40):
 
 		self.name = name
 		self.start_warband = start_warband 
 		self.warband = warband
-
 		self.attack_index = attack_index
-		self.attacked_minion = attacked_minion
 
 		self.dead_minions = dead_minions
 		self.dead_minions_dict = dead_minions_dict
@@ -46,7 +39,6 @@ class Player:
 		self.effects_after_friend_is_summoned = effects_after_friend_is_summoned
 		self.effects_after_friend_is_dead = effects_after_friend_is_dead
 		self.effects_after_friend_lost_ds = effects_after_friend_lost_ds
-
 		self.effects_causing_next_death = effects_causing_next_death
 
 		self.level = level
@@ -213,5 +205,5 @@ class BattleState:
 			# 	break
 		dead_attacking_minions = deaths_number_dict[self.attacking_player]
 		dead_attacked_minions = deaths_number_dict[self.attacked_player]
-		print(dead_attacking_minions, dead_attacked_minions)
+		# print(dead_attacking_minions, dead_attacked_minions)
 		return dead_attacking_minions, dead_attacked_minions

@@ -1,4 +1,4 @@
-from card import *
+from .card import *
 
 class AnnoyoModule(Card):
 	# add magnetic

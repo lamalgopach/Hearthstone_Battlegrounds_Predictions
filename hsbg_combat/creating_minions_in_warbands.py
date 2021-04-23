@@ -1,7 +1,7 @@
 import random
 from random import choice
-from minions import DragonspawnLieutenant, GlyphGuardian, InfestedWolf, MurlocWarleader
-from minions import RedWhelp, RighteousProtector, RockpoolHunter, SpawnOfnZoth, SelflessHero
+from .minions import DragonspawnLieutenant, GlyphGuardian, InfestedWolf, MurlocWarleader
+from .minions import RedWhelp, RighteousProtector, RockpoolHunter, SpawnOfnZoth, SelflessHero
 import copy
 
 

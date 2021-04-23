@@ -1,6 +1,7 @@
 import copy
-from battle import *
-from multiple_types_deathrattle_minions import *
+from .battle import *
+
+from .multiple_types_deathrattle_minions import *
 
 def choose_first(player1, player2):
 	order = True
@@ -54,77 +55,85 @@ def start_of_game(warband1, warband2):
 	attacked_warband = player2.warband if game[1] == player2.warband else player1.warband
 
 	battle = BattleState([attacking_player, attacked_player], 0)
-	battle.print_state("START OF THE GAME: ")
+	# battle.print_state("START OF THE GAME: ")
 
 	return battle, player1, player2
 
 def combat(battle, player1, player2):
 	winner = None
 	battle.start_of_combat()
-	battle.print_state("after start of combat:")
+	# battle.print_state("after start of combat:")
 
 	# attack till at least one player has no minions:
 	while battle.attacking_player.warband and battle.attacked_player.warband:
 	 	# create minions in game:
 	 	# attacking minion:
+		start = battle.attacking_player.attack_index
 		while True:
 			minion1 = battle.attacking_player.warband[battle.attacking_player.attack_index]
 			if minion1.attack_value == 0:
 				battle.attacking_player.attack_index += 1
-				continue
+				if battle.attacking_player.attack_index == len(battle.attacking_player.warband):
+					battle.attacking_player.attack_index = 0
+				if battle.attacking_player.attack_index == start:
+					minion1 = None
+					break
 			else:
 				break
-		# choose attacked minion:
-		attacked_minion = battle.choose_attacked_minion()
-		battle.attacked_player.attacked_minion = attacked_minion
-		minion2 = battle.attacked_player.warband[attacked_minion]
-		# attack phase:
-		minion1.attack()
-		minion1.take_damage(minion2.attack_value, minion2.poisonous, battle, status=1)
-		if minion1.has_triggered_attack and len(battle.attacked_player.warband) > 1:
-			minion1.triggered_attack(battle=battle)
-		else:
+		if minion1:
+			# choose attacked minion:
+			attacked_minion = battle.choose_attacked_minion()
+			battle.attacked_player.attacked_minion = attacked_minion
+			minion2 = battle.attacked_player.warband[attacked_minion]
+			# attack phase:
+			minion1.attack()
+			minion1.take_damage(minion2.attack_value, minion2.poisonous, battle, status=1)
+			if minion1.has_triggered_attack and len(battle.attacked_player.warband) > 1:
+				minion1.triggered_attack(battle=battle)
+
 			minion2.take_damage(minion1.attack_value, minion1.poisonous, battle, status=2)
 
-		print("								Attacking: ", battle.attacking_player.name, battle.attacking_player.attack_index)
-		print("								", minion1.name, minion1.attack_value, minion1.health)
-		print("								Attacked: ", battle.attacked_player.name)
-		print("								", minion2.name, minion2.attack_value, minion2.health)
-		print()
-		# count dead minions:
-		dead_attacking_minions = 0
-		dead_attacked_minions = 0
+			# print("								Attacking: ", battle.attacking_player.name, battle.attacking_player.attack_index)
+			# print("								", minion1.name, minion1.attack_value, minion1.health)
+			# print("								Attacked: ", battle.attacked_player.name)
+			# print("								", minion2.name, minion2.attack_value, minion2.health)
+			# print()
+			# count dead minions:
+			dead_attacking_minions = 0
+			dead_attacked_minions = 0
 
-		if minion1.has_overkill and minion2.health < 0:
-			minion1.overkill(battle=battle)
+			if minion1.has_overkill and minion2.health < 0:
+				minion1.overkill(battle=battle)
 
-		dead_attacking_minions, dead_attacked_minions = battle.execute_death_phase(dead_attacking_minions, dead_attacked_minions)
+			dead_attacking_minions, dead_attacked_minions = battle.execute_death_phase(dead_attacking_minions, dead_attacked_minions)
 
-		if minion1.health > 0 and minion1.has_windfury:
-			minion1.has_windfury = False
+			if minion1.health > 0 and minion1.has_windfury:
+				minion1.has_windfury = False
 
+			else:
+				# ATTACKING minion INDEX:
+				battle.attacking_player.attack_index += 1 - dead_attacking_minions
+				battle.attacked_player.attack_index -= dead_attacked_minions
+				# ATTACKING/ATTACKED INDEX -> 0:
+				if battle.attacking_player.attack_index < 0 or battle.attacking_player.attack_index > len(battle.attacking_player.warband) - 1:
+					battle.attacking_player.attack_index = 0
+				if battle.attacked_player.attack_index < 0 or battle.attacked_player.attack_index > len(battle.attacked_player.warband) - 1:
+					battle.attacked_player.attack_index = 0
+				battle.round += 1
 		else:
-			# ATTACKING minion INDEX:
-			battle.attacking_player.attack_index += 1 - dead_attacking_minions
-			battle.attacked_player.attack_index -= dead_attacked_minions
-			# ATTACKING/ATTACKED INDEX -> 0:
-			if battle.attacking_player.attack_index < 0 or battle.attacking_player.attack_index > len(battle.attacking_player.warband) - 1:
-				battle.attacking_player.attack_index = 0
-			if battle.attacked_player.attack_index < 0 or battle.attacked_player.attack_index > len(battle.attacked_player.warband) - 1:
-				battle.attacked_player.attack_index = 0
 			battle.round += 1
 
-		statement = f'Warbands after {battle.attacking_player.name}\'s attack:'
-		battle.print_state(statement)
+		# statement = f'Warbands after {battle.attacking_player.name}\'s attack:'
+		# battle.print_state(statement)
 
 	if not battle.attacking_player.warband and not battle.attacked_player.warband:
-		print("NO WINNER")
+		# print("NO WINNER")
 		damage = 0
 
 	else:
 		winner = battle.attacking_player if battle.attacking_player.warband else battle.attacked_player
 		loser = battle.attacking_player if not battle.attacking_player.warband else battle.attacked_player
-		print(f'{winner.name} WINNER')
+		# print(f'{winner.name} WINNER')
 		# print(f'{loser.name} LOSER')
 		damage = winner.count_final_damage(winner.warband)
 		loser.life -= damage
@@ -135,28 +144,32 @@ def combat(battle, player1, player2):
 	# print(len(player1.warband.warband))
 	# print(len(player2.warband.warband))
 
-	return winner
+	if winner:
+		return winner.name
+	else:
+		return None
+
 
 
 warband1 = [ 
-	MechanoEgg(),
-	NadinaTheRed(),
-	SelflessHero(),
-	Ghastcoiler(),
-	SneedsOldShredder(),
+
+	# Ghastcoiler(),
+	# SneedsOldShredder(),
 	CobaltScalebane(),
  	BolvarFireblood(),
+ 	# MechanoEgg(),
+	# NadinaTheRed(),
+	# MechanoEgg(),
 	]
 
 warband2 = [
 
 	DeflectoBot(),
-	Ghastcoiler(),
 	MechanoEgg(),
-	PilotedShredder(),
-	SneedsOldShredder(),
-	HeraldOfFlame(),
-	BolvarFireblood(),
+	# HeraldOfFlame(),
+	# BolvarFireblood(),
+	# MechanoEgg(),
+	# MechanoEgg(),
 	]
 
 ###################################
@@ -250,6 +263,21 @@ warband2 = [
 
 #######################################
 
+def simulate(w1, w2, x):
+	a, b = 0, 0
+	draw = 0
+	for _ in range(x):
+		battle, player1, player2 = start_of_game(w1, w2)
+		winner = combat(battle, player1, player2)
+		if not winner:
+			draw += 1
+		elif winner == "Alice":
+			a += 1
+		elif winner == "Bob":
+			b += 1
+	return "Alice: ", a,"Bob: ", b, "draw: ", draw
 
-battle, player1, player2 = start_of_game(warband1, warband2)
-combat(battle, player1, player2)
+
+print(simulate(warband1, warband2, 100))
+
+
